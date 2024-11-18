@@ -1,9 +1,9 @@
-import Header from "@/components/header";
+// import Header from "@/components/header";
 import Image from "next/image";
 import logo from "../public/logo.svg";
 import search from "../public/search.svg";
 import bell from "../public/bell.svg";
-import loginImage from "../public/login-image.png";
+import loggedIn from "../public/loggedin.svg";
 export default function Home() {
   return (
     <div className='flex flex-1 items-center bg-gray-800 px-8  h-[12vh]'>
@@ -20,7 +20,7 @@ export default function Home() {
           <Image src={bell} alt='bell' height={5} width={5} className="w-5"/>
         </div>
         <div className=" flex items-center rounded-full bg-white">
-          <Image src={""} alt='bell' height={12} width={12} className="w-12"/>
+          <Image src={loggedIn} alt='bell' height={12} width={12} className="w-12"/>
         </div>
       </div>
     </div>
