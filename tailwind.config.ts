@@ -12,7 +12,7 @@ export default {
   		colors: {
 			gray: {
 				300: '#C1C1C1',
-				800: '#191A1D',
+				950: '#191A1D',
 			},
 
   			background: 'hsl(var(--background))',
