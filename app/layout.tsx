@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
-
+import { SidebarProvider } from "@/components/ui/sidebar";
+// import {AppSidebar} from "@/components/sidebar-demo";
+import CustomSidebar from "@/components/sidebar";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -11,6 +13,11 @@ const geistSans = localFont({
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
+  weight: "100 900",
+});
+const inter = localFont({
+  src: "./fonts/Inter_Regular.ttf",
+  variable: "--font-inter",
   weight: "100 900",
 });
 
@@ -27,13 +34,31 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-        <div>
-          <Header/>
-        </div>
-        {children}
+        <SidebarProvider>
+          <div className="flex flex-col w-full">
+            {/* Header is always at the top */}
+            <nav className="flex flex-1 w-full z-10 ">
+              <Header />
+            </nav>
+
+            {/* Sidebar and content */}
+            <div className="flex flex-row flex-1">
+              {/* Sidebar */}
+              <aside className=" bg-gray-950">
+                <CustomSidebar />
+              </aside>
+
+              {/* Main content */}
+              <main className="flex-1 bg-gray-100">
+                {children}
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
 }
+

@@ -13,6 +13,7 @@ export default {
 			gray: {
 				300: '#C1C1C1',
 				950: '#191A1D',
+				900: '#1F2023'
 			},
 
   			background: 'hsl(var(--background))',
@@ -73,5 +74,6 @@ export default {
   		}
   	}
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
