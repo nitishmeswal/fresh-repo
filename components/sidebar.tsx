@@ -3,8 +3,7 @@ import { SidebarProvider } from './ui/sidebar'
 
 const Sidebar = () => {
   return (
-    <div>
-      <SidebarProvider/>
+    <div className=''>
     </div>
   )
 }
