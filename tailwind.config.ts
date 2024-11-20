@@ -11,11 +11,15 @@ export default {
   	extend: {
   		colors: {
 			gray: {
+				200: '#C9C9C9',
 				300: '#C1C1C1',
 				950: '#191A1D',
-				900: '#1F2023'
+				900: '#1F2023',
+				400: '#797979'
 			},
-
+			blue: {
+				600: '#0055FF'
+			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

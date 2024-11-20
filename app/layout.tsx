@@ -46,9 +46,9 @@ export default function RootLayout({
             {/* Sidebar and content */}
             <div className="flex flex-row flex-1">
               {/* Sidebar */}
-              <aside className=" bg-gray-950">
+              <div className=" bg-gray-950">
                 <CustomSidebar />
-              </aside>
+              </div>
 
               {/* Main content */}
               <main className="flex-1 bg-gray-100">
