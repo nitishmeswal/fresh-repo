@@ -35,7 +35,7 @@ export function FilterMenu({ name, filters}: {name: string, filters: string[]}) 
           className="w-[200px] justify-between text-gray-350 font-medium text-lg bg-gray-950 group hover:bg-gray-800 border-0 rounded-full hover:text-gray-200"
         >
           {value
-            ? filters.find((filter) => filter[0] === value)?.[1]
+            ? filters.find((filter) => filter === value)
             : name}
           <ChevronDown className="" />
         </Button>
@@ -43,9 +43,9 @@ export function FilterMenu({ name, filters}: {name: string, filters: string[]}) 
       <PopoverContent className="w-[160px] p-0 ">
         <Command>
           {/* <CommandInput placeholder="Search filter..." className="h-9" /> */}
-          <CommandList>
+          <CommandList className=" border-0">
             <CommandEmpty>No filter found.</CommandEmpty>
-            <CommandGroup className=" bg-gray-950">
+            <CommandGroup className=" bg-gray-950 border-0 border-black">
               {filters.map((filter) => (
                 <CommandItem
                   key={filter}
