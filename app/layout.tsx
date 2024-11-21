@@ -42,7 +42,7 @@ export default function RootLayout({
             <nav className="flex w-full sticky top-0">
               <Header />
             </nav>
-            <div className="h-[0.5px] w-full bg-gray-250"></div>
+            <div className="h-[1px] w-full bg-gray-250"></div>
             {/* Sidebar and content */}
             <div className="flex flex-row flex-1">
               {/* Sidebar */}
