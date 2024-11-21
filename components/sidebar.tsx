@@ -1,139 +1,121 @@
-import React from 'react'
-// import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
-import dashboard from '../public/dashboard.svg'
-import aiModel from '../public/ai-models.svg'
-import earnings from '../public/earnings.svg'
-import connectToEarn from '../public/connect-to-earn.svg'
-import settings from '../public/settings.svg'
-import community from '../public/community.svg'
-import gpuMarketplace from '../public/gpu-marketplace.svg'
-import info from '../public/info.svg'
-import Image from 'next/image'
+
+
+
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useSidebarContext } from "@/context/sidebar-slug";
+
+const FeatureOptions = [
+  {
+    label: "Dashboard",
+    icon: "/dashboard.svg",
+    href: "/dashboard",
+  },
+  {
+    label: "GPU Marketplace",
+    icon: "/gpu-marketplace.svg",
+    href: "/gpu-marketplace",
+  },
+  {
+    label: "AI Models",
+    icon: "/ai-models.svg",
+    href: "/ai-models",
+  },
+  {
+    label: "Earnings",
+    icon: "/earnings.svg",
+    href: "/earnings",
+  },
+  {
+    label: "Connect to Earn",
+    icon: "/connect-to-earn.svg",
+    href: "/connect-to-earn",
+  },
+];
+
+const SettingsOptions = [
+  {
+    label: "Community",
+    icon: "/community.svg",
+    href: "/community",
+  },
+  {
+    label: "Settings",
+    icon: "/settings.svg",
+    href: "/settings",
+  },
+  {
+    label: "More info",
+    icon: "/info.svg",
+    href: "/more-info",
+  },
+];
+
 const CustomSidebar = () => {
-  // const active = slug.param 
-  const FeatureOptions = [
-    {
-      label: 'Dashboard',
-      icon: dashboard,
-      href: '/',
-    },
-    {
-      label: 'GPU Marketplace',
-      icon: gpuMarketplace,
-      href: '/gpu-marketplace'
-    },
-    {
-      label: 'AI Models',
-      icon: aiModel,
-      href: '/ai-models',
-    },
-    {
-      label: 'Earnings',
-      icon: earnings,
-      href: '/earnings',
-    },
-    {
-      label: 'Connect to Earn',
-      icon: connectToEarn,
-      href: '/connect-to-earn',
-    }]
+  const [hydrated, setHydrated] = useState(false);
+  const { currentTab, setCurrentTabHandler } = useSidebarContext();
+  console.log("current State of tab is ", currentTab);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
-  const SettingsOptions = [
-    {
-      label: 'Community',
-      icon: community,
-      href: '/community',
-    },
-    {
-      label: 'Settings',
-      icon: settings,
-      href: '/settings',
-    },
-    {
-      label: 'More info',
-      icon: info,
-      href: '/info',
-    }
-  ]
+  if (!hydrated) return null;
+  const handleTabSwitch = (tab: string) => {
+    setCurrentTabHandler(tab);
+  };
+
+  const renderMenuItems = (options: typeof FeatureOptions) => {
+    return options.map((option, index) => (
+      <li key={index}>
+        <a
+          onClick={() => handleTabSwitch(option.href.substring(1))}
+          href={option.href}
+          className={`${
+            currentTab === option.href.substring(1) ? "bg-blue-600" : ""
+          } ${currentTab === '' && option.href === '/dashboard' ?  "bg-blue-600" : ""
+          }
+          flex items-center px-3 py-2 rounded-full dark:text-gray-950 hover:bg-blue-600 group`}
+        >
+          <Image
+            src={option.icon}
+            alt={option.label}
+            className="w-6 h-6 ml-2"
+            width={24}
+            height={24}
+          />
+          <span
+            className={`${
+              currentTab === option.href.substring(1) || currentTab === '' && option.href === '/dashboard'  ? "text-gray-100"  : "text-gray-200" 
+            }  ms-3 text-lg group-hover:text-gray-100`}
+          >
+            {option.label}
+          </span>
+        </a>
+      </li>
+    ));
+  };
+
   return (
-<div className=" bg-gray-950 px-2 pt-10 ">
-  <aside id="default-sidebar" className="flex flex-col w-fit z-40 h-screen bg-gray-950 text-gray-100 transition-transform -translate-x-full sm:translate-x-0 ml-1"  aria-label="Sidebar">
-   <div className="h-full px-3 py-4 overflow-y-auto  dark:bg-gray-800">
-      <ul className="space-y-2 font-medium">
-      {FeatureOptions && FeatureOptions.map((option, index)=>(
+    <div className="bg-gray-950 px-2 pt-10">
+      <aside
+        id="default-sidebar"
+        className="flex flex-col w-fit h-screen bg-gray-950 text-gray-100 transition-transform sm:translate-x-0 ml-1"
+        aria-label="Sidebar"
+      >
+        <div className="h-full px-3 py-4 overflow-y-auto">
+          <ul className="space-y-2 font-medium">
+            {renderMenuItems(FeatureOptions)}
 
-        <li key={index}>
-        <div className='py-2'>
-          <a href={option.href} className="flex items-center px-3 py-2 rounded-full dark:text-gray-950 hover:bg-blue-600 focus:bg-blue-600 dark:hover:bg-gray-700 group">
-             <Image src={option.icon} alt={option.label} className="w-6 h-6 ml-2 text-gray-400" />
-             <span className="ms-3 text-lg text-gray-200 group-hover:text-gray-100 mr-6">{option.label}</span>
-          </a>
+            <div className="py-6">
+              <div className="flex w-full h-[0.5px] bg-gray-850/10"></div>
+            </div>
+
+            {renderMenuItems(SettingsOptions)}
+          </ul>
         </div>
-      </li>
-      ))}
-      <div className=' py-6'>
-      <div className=' flex flex-1 justify-center items-center w-full h-[0.5px] bg-gray-850/10 '></div>
-      </div>
-      {SettingsOptions && SettingsOptions.map((option, index)=>(
-        <li key={index}>
-        <div className='py-2'>
+      </aside>
+    </div>
+  );
+};
 
-          <a href={option.href} className="flex items-center px-3 py-2 rounded-full dark:text-gray-950 hover:bg-blue-600 dark:hover:bg-gray-700 group">
-             <Image src={option.icon} alt={option.label} className="w-6 h-6 ml-2 text-gray-400" />
-             <span className="ms-3 text-lg text-gray-200 group-hover:text-gray-100 mr-6">{option.label}</span>
-          </a>
-        </div>
-      </li>
-      ))}
-      </ul>
-   </div>
-  </aside>    
-</div>
-
-  )
-}
-
-export default CustomSidebar
-
-
-
-
-
-
-  {/* <Sidebar>
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {FeatureOptions.map((item, index) => (
-              <SidebarMenuItem key={index}>
-                <SidebarMenuButton asChild>
-                  <a href={item.href} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 rounded-md">
-                    <Image src={item.icon} alt={item.label} className="w-6 h-6" />
-                    <span>{item.label}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-      <div className="w-full h-[2px] bg-gray-800 my-4"></div>
-      <SidebarGroup>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {SettingsOptions.map((item, index) => (
-              <SidebarMenuItem key={index}>
-                <SidebarMenuButton asChild>
-                  <a href={item.href} className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 rounded-md">
-                    <Image src={item.icon} alt={item.label} className="w-6 h-6" />
-                    <span>{item.label}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    </SidebarContent>
-  </Sidebar> */}
+export default CustomSidebar;
