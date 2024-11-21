@@ -9,7 +9,7 @@ const FeatureOptions = [
   {
     label: "Dashboard",
     icon: "/dashboard.svg",
-    href: "/dashboard",
+    href: "/",
   },
   {
     label: "GPU Marketplace",
