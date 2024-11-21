@@ -39,10 +39,10 @@ export default function RootLayout({
         <SidebarProvider>
           <div className="flex flex-col w-full">
             {/* Header is always at the top */}
-            <nav className="flex flex-1 w-full z-10 ">
+            <nav className="flex w-full sticky top-0">
               <Header />
             </nav>
-
+            <div className="h-[0.5px] w-full bg-gray-250"></div>
             {/* Sidebar and content */}
             <div className="flex flex-row flex-1">
               {/* Sidebar */}
