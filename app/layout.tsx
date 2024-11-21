@@ -50,12 +50,12 @@ export default function RootLayout({
             {/* Sidebar and content */}
             <div className="flex flex-row flex-1">
               {/* Sidebar */}
-              <div className=" bg-gray-950">
+              <div className=" bg-gray-950 h-full">
                 <CustomSidebar />
               </div>
 
               {/* Main content */}
-              <main className="flex-1 bg-gray-100">
+              <main className="flex-1 bg-black">
                 {children}
               </main>
             </div>

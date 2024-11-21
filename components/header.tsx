@@ -7,7 +7,7 @@ import loggedIn from "../public/loggedin.svg";
 import Link from 'next/link';
 const Header = () => {
   return (
-    <div className='flex flex-1 w-full items-center bg-gray-950 px-8 text-lg h-[13vh] -mt-[2px]'>
+    <div className='flex flex-1 w-full items-center bg-gray-950 px-10 py-2 text-lg h-[13vh] '>
       <div className="flex flex-row justify-evenly w-full items-center">
 
         <div id='logo' className=' flex justify-center mr-16 items-center'>
@@ -17,7 +17,7 @@ const Header = () => {
         </div>
         <div className="w-full flex  flex-row items-center bg-black rounded-full mx-4 mr-10 px-4 py-2">
             <Image src={search} alt='search' height={6} width={6} className="w-6"/>
-            <input type="text" className=" w-[80%] bg-black text-gray-300 ml-6 " placeholder="Search..."/>
+            <input type="text" className=" w-[80%] bg-black text-gray-300 ml-6 " placeholder="Search for something"/>
         </div>
       </div>
         <div className="flex justify-center items-center mx-4 my-2">
