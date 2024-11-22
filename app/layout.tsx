@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { SessionProvider} from "next-auth/react";
 // import {AppSidebar} from "@/components/sidebar-demo";
 import CustomSidebar from "@/components/sidebar";
 const geistSans = localFont({
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
+      <SessionProvider>
         <SidebarProvider>
           <div className="flex flex-col w-full">
             {/* Header is always at the top */}
@@ -59,6 +61,7 @@ export default function RootLayout({
             </div>
           </div>
         </SidebarProvider>
+      </SessionProvider>
       </body>
     </html>
   );

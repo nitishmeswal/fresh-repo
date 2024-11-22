@@ -9,7 +9,7 @@ const FeatureOptions = [
   {
     label: "Dashboard",
     icon: "/dashboard.svg",
-    href: "/  ",
+    href: "/",
   },
   {
     label: "GPU Marketplace",
@@ -74,7 +74,7 @@ const CustomSidebar = () => {
         <a
           onClick={() => handleTabSwitch(option.href.substring(1))}
           className={`${
-            currentTab === option.href.substring(1) ? "bg-blue-600" : "bg-transparent"
+            currentTab === option.href.substring(1) || currentTab === '' && option.href.substring(1) === '' ? "bg-blue-600" : "bg-transparent"
           } flex items-center px-3 py-2 rounded-full dark:text-gray-950 hover:bg-blue-600 group`}
         >
           <Image
@@ -86,7 +86,7 @@ const CustomSidebar = () => {
           />
           <span
             className={`${
-              currentTab === option.href.substring(1) ? "text-gray-100" : "text-gray-200"
+              currentTab === option.href.substring(1) || currentTab === '' && option.href.substring(1) === '' ? "text-gray-100" : "text-gray-200"
             } mx-3 mr-4 text-lg group-hover:text-gray-100`}
           >
             {option.label}
