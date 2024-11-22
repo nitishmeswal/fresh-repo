@@ -7,7 +7,6 @@ import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 // import {AppSidebar} from "@/components/sidebar-demo";
 import CustomSidebar from "@/components/sidebar";
-import { SidebarTabProvider } from "@/context/sidebar-slug";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -39,7 +38,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-      <SidebarTabProvider>
         <SidebarProvider>
           <div className="flex flex-col w-full">
             {/* Header is always at the top */}
@@ -61,7 +59,6 @@ export default function RootLayout({
             </div>
           </div>
         </SidebarProvider>
-      </SidebarTabProvider>
       </body>
     </html>
   );

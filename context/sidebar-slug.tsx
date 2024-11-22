@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type sidebarTabField = {
     currentTab: string;
@@ -8,7 +8,7 @@ type sidebarTabField = {
 } 
 
 export const SidebarContex = createContext<sidebarTabField>({
-    currentTab: "Dashboard",
+    currentTab: "",
     setCurrentTabHandler: () => {},
 });
 
@@ -24,15 +24,17 @@ export function useSidebarContext () {
 export const SidebarTabProvider = ({children}: {children: React.ReactNode}) => {
     const [currentTab, setCurrentTab] = useState<string>("");
 
-    // useEffect(() => {
-    //     // const storedTab = localStorage.getItem("currentTab");
-    //     if (storedTab) {
-    //         setCurrentTab(storedTab);
-    //     }   
-    // }, [])
+    useEffect(() => {
+        const storedTab = sessionStorage.getItem("currentTab");
+        if (storedTab) {
+            setCurrentTab(storedTab);
+        }   
+    }, [])
 
     const setCurrentTabHandler = (tab: string) => {
-        // localStorage.setItem("currentTab", tab);
+        sessionStorage.setItem("currentTab", tab);
+
+        console.log("switching to tab is ", tab);
         setCurrentTab(tab);
     }
 
