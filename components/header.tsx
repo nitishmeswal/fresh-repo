@@ -19,7 +19,6 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const { handleTheme, lightTheme } = useThemeContext();
 
-  // Close dropdown when clicking outside
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -47,7 +46,6 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Search Bar */}
           <div className="w-full flex flex-row items-center bg-black rounded-full mx-4 mr-10 px-4 py-2">
             <Image src={search} alt="search" height={6} width={6} className="w-6" />
             <input
