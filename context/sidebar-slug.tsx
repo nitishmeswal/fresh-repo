@@ -33,7 +33,6 @@ export const SidebarTabProvider = ({children}: {children: React.ReactNode}) => {
 
     const setCurrentTabHandler = (tab: string) => {
         sessionStorage.setItem("currentTab", tab);
-
         console.log("switching to tab is ", tab);
         setCurrentTab(tab);
     }

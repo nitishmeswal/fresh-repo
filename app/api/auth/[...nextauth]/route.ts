@@ -1,10 +1,13 @@
-import NextAuth from "next-auth"
+import NextAuth, { SessionStrategy } from "next-auth"
 // import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
+import dbConnect from "@/app/lib/db"
+import User from "@/app/model/User"
+import bcrypt from "bcrypt"
 // import { NextApiRequest, NextApiResponse } from "next"
 // import { EmailProvider } from "next-auth/providers/email"
-export const authOptions = {
+export const handler = NextAuth({
   // Configure one or more authentication providers
   providers: [
     // GithubProvider({
@@ -50,7 +53,7 @@ export const authOptions = {
                 name: user.username,
               };
             }
-          })
+          }),
         ],
         pages: {
           signIn: '/login',
@@ -64,12 +67,12 @@ export const authOptions = {
           },
         },
         session: {
-          strategy: "jwt",
+          strategy: "jwt" as SessionStrategy,
           maxAge: 30 * 24 * 60 * 60, // 30 days
         },
+    
     // ...add more providers here
-  ],
   
-}
+})
 
-export default NextAuth(authOptions)
+export { handler as GET, handler as  POST}

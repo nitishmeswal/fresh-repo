@@ -8,6 +8,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { SessionProvider} from "next-auth/react";
 // import {AppSidebar} from "@/components/sidebar-demo";
 import CustomSidebar from "@/components/sidebar";
+import { ThemeProvider } from "@/context/theme";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -41,25 +42,24 @@ export default function RootLayout({
       >
       <SessionProvider>
         <SidebarProvider>
-          <div className="flex flex-col w-full">
-            {/* Header is always at the top */}
-            <nav className="flex w-full">
-              <Header />
-            </nav>
-            <div className="h-[1px] w-full bg-gray-250"></div>
-            {/* Sidebar and content */}
-            <div className="flex flex-row flex-1">
-              {/* Sidebar */}
-              <div className=" bg-gray-950 h-full">
-                <CustomSidebar />
+          <ThemeProvider>
+            <div className="flex flex-col w-full">
+              {/* Header is always at the top */}
+              <nav className="flex w-full">
+                <Header />
+              </nav>
+              <div className="h-[1px] w-full bg-gray-250"></div>
+              {/* Sidebar and content */}
+              <div className="flex flex-row flex-1">
+                <div className=" bg-gray-950/10 h-full">
+                  <CustomSidebar />
+                </div>
+                <main className="flex-1 bg-black">
+                  {children}
+                </main>
               </div>
-
-              {/* Main content */}
-              <main className="flex-1 bg-black">
-                {children}
-              </main>
             </div>
-          </div>
+          </ThemeProvider>
         </SidebarProvider>
       </SessionProvider>
       </body>
