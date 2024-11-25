@@ -13,9 +13,11 @@ import { Modal } from "@/components/modals/Modals"
 import { Heading } from "@/components/heading"
 import { Input } from "@/components/inputs/input"
 import { Button } from "@/components/Button"
+import useLoginModal from "@/hooks/useLoginModal"
 
 export const RegisterModal = () => {
    const registerModalHooks = useRegisterModal()
+   const loginModalHooks = useLoginModal()
    const [isLoading, setIsLoading] = useState<boolean>(false)
 
    const {
@@ -48,7 +50,7 @@ export const RegisterModal = () => {
 
    const bodyContent = (
       <div className="flex flex-col gap-4">
-         <Heading title="Welcome to Cloudbnb" subtitle="Create account for start journey!" />
+         <Heading title="Welcome to NEUROLOV" subtitle="Create account for start journey!" />
          <Input
             id="email"
             label="Email"
@@ -88,7 +90,11 @@ export const RegisterModal = () => {
                <div>Already have account?</div>
                <div
                   className="cursor-pointer text-neutral-800 hover:underline"
-                  onClick={registerModalHooks.onClose}
+                  onClick={()=>
+                     {
+                        registerModalHooks.onClose()
+                        return loginModalHooks.onOpen;
+                     }}
                >
                   Log in
                </div>
@@ -101,7 +107,7 @@ export const RegisterModal = () => {
       <Modal
          disabled={isLoading}
          isOpen={registerModalHooks.isOpen}
-         title="Register Cloudbnb"
+         title="Register NEUROLOV"
          body={bodyContent}
          footer={footerContent}
          actionLabel="Continue"

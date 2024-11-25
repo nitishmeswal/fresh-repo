@@ -10,17 +10,17 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 
 import useLoginModal from "@/hooks/useLoginModal"
-
 import { Modal } from "@/components/modals/Modals"
 import { Heading } from "@/components/heading"
 import { Input } from "@/components/inputs/input"
 import { Button } from "@/components/Button"
+import useRegisterModal from "@/hooks/useRegisterModal"
 
 export const LoginModal = () => {
    const router = useRouter()
    const loginModalHooks = useLoginModal()
    const [isLoading, setIsLoading] = useState<boolean>(false)
-
+   const registerModalHooks = useRegisterModal()
    // Form state
    const {
       register,
@@ -89,7 +89,14 @@ export const LoginModal = () => {
                <div>Don&apos;t have account?</div>
                <div
                   className="cursor-pointer text-neutral-800 hover:underline"
-                  onClick={loginModalHooks.onClose}
+                  onClick={()=>{
+
+                     registerModalHooks.onOpen()
+                     console.log("login modal is closed now")
+                     return loginModalHooks.onClose
+                  }
+                     
+                  }
                >
                   Sign Up
                </div>
@@ -102,7 +109,7 @@ export const LoginModal = () => {
       <Modal
          disabled={isLoading}
          isOpen={loginModalHooks.isOpen}
-         title="Login Cloudbnb"
+         title="Login NEUROLOV"
          body={bodyContent}
          footer={footerContent}
          actionLabel="Continue"

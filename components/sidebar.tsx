@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-// import { useSidebarContext } from "@/context/sidebar-slug";
+import { useTheme } from "next-themes";
 
 const FeatureOptions = [
   {
@@ -53,11 +53,11 @@ const SettingsOptions = [
 
 const CustomSidebar = () => {
   const router = useRouter();
-  const pathname = usePathname()
-
-  // Extract the active tab from the URL path
+  const pathname = usePathname();
+  const { theme } = useTheme();
   const [currentTab, setCurrentTab] = useState("");
 
+  console.log("current theme ", theme);
   useEffect(() => {
     const activeTab = pathname.split("/")[1] || "dashboard"; // Default to 'dashboard'
     setCurrentTab(activeTab);
@@ -74,33 +74,47 @@ const CustomSidebar = () => {
         <a
           onClick={() => handleTabSwitch(option.href.substring(1))}
           className={`${
-            currentTab === option.href.substring(1) || currentTab === '' && option.href.substring(1) === '' ? "bg-blue-600" : "bg-transparent"
-          } flex items-center px-3 py-2 rounded-full dark:text-gray-950 hover:bg-blue-600 group`}
+            currentTab === option.href.substring(1) ||
+            (currentTab === "" && option.href.substring(1) === "")
+              ? theme === "dark"
+                ? "bg-blue-500 text-white"
+                : "bg-blue-600 text-white"
+              : theme === "dark"
+              ? "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+              : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+          } flex items-center px-3 py-2 rounded-full`}
         >
           <Image
             src={option.icon}
             alt={option.label}
-            className="w-5 h-5 ml-2"
+            className={`w-5 h-5 ml-2 ${
+              currentTab === option.href.substring(1) ||
+              (currentTab === "" && option.href.substring(1) === "")
+                ? "filter brightness-150"
+                : "filter brightness-100"
+            }`}
             width={20}
             height={20}
           />
-          <span
-            className={`${
-              currentTab === option.href.substring(1) || currentTab === '' && option.href.substring(1) === '' ? "text-gray-100" : "text-gray-200"
-            } mx-3 mr-4 text-lg group-hover:text-gray-100`}
-          >
-            {option.label}
-          </span>
+          <span className="mx-3 mr-4 text-lg">{option.label}</span>
         </a>
       </li>
     ));
   };
 
   return (
-    <div className="bg-gray-950 px-6 pt-[26px]">
+    <div
+      className={`px-6 pt-[26px] ${
+        theme === "dark"
+          ? "bg-gray-950 text-gray-100"
+          : "bg-gray-100 text-gray-800"
+      }`}
+    >
       <aside
         id="default-sidebar"
-        className="flex flex-col w-fit h-screen bg-gray-950 text-gray-100 transition-transform sm:translate-x-0 ml-1"
+        className={`flex flex-col w-fit h-screen transition-transform sm:translate-x-0 ml-1 ${
+          theme === "dark" ? "bg-gray-950 text-gray-100" : "bg-gray-100 text-gray-800"
+        }`}
         aria-label="Sidebar"
       >
         <div className="h-full py-4 px-4 overflow-y-auto">
@@ -108,7 +122,11 @@ const CustomSidebar = () => {
             {renderMenuItems(FeatureOptions)}
 
             <div className="py-6">
-              <div className="flex w-full h-[1px] bg-gray-850/10"></div>
+              <div
+                className={`flex w-full h-[1px] ${
+                  theme === "dark" ? "bg-gray-150/20" : "bg-gray-300"
+                }`}
+              ></div>
             </div>
 
             {renderMenuItems(SettingsOptions)}
