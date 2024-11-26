@@ -57,7 +57,7 @@ const CustomSidebar = () => {
   const { theme } = useTheme();
   const [currentTab, setCurrentTab] = useState("");
 
-  console.log("current theme ", theme);
+  // console.log("current theme ", theme);
   useEffect(() => {
     const activeTab = pathname.split("/")[1] || "dashboard"; // Default to 'dashboard'
     setCurrentTab(activeTab);
@@ -76,13 +76,12 @@ const CustomSidebar = () => {
           className={`${
             currentTab === option.href.substring(1) ||
             (currentTab === "" && option.href.substring(1) === "")
-              ? theme === "dark"
-                ? "bg-blue-500 text-white"
-                : "bg-blue-600 text-white"
-              : theme === "dark"
+              ?  "bg-blue-600 text-white"
+                : 
+              theme === "dark"
               ? "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-gray-100"
               : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-          } flex items-center px-3 py-2 rounded-full`}
+          } flex items-center px-3 py-2 rounded-full hover:cursor-pointer`}
         >
           <Image
             src={option.icon}

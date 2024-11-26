@@ -25,6 +25,7 @@ const Header = () => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setShowDropdown(false);
     }
+    setTheme('dark');
   }, []);
 
   useEffect(() => {
@@ -66,7 +67,7 @@ const Header = () => {
               className={`w-[80%] ml-6 ${
                 theme == 'dark' ? "bg-gray-200" : "bg-black"
               }`}
-              placeholder="Search for something"
+              placeholder="Search for something" 
             />
           </div>
         </div>
