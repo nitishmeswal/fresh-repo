@@ -25,7 +25,7 @@ const Header = () => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setShowDropdown(false);
     }
-    setTheme('dark');
+    // setTheme('dark');
   }, []);
 
   useEffect(() => {
