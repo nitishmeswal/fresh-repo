@@ -5,8 +5,9 @@ import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SessionProvider from "@/components/sessionProvider";
 // import {AppSidebar} from "@/components/sidebar-demo";
-import { ThemeProvider} from "next-themes"
+import { ThemeProvider } from "next-themes"
 import CustomSidebar from "@/components/sidebar";
+
 // import { ThemeProvider } from "@/context/theme";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,6 +35,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
   // console.log({ Header, SidebarProvider, SessionProvider, CustomSidebar, ThemeProvider });
   return (
     <html lang="en">
@@ -54,7 +58,9 @@ export default function RootLayout({
                 <div className=" bg-gray-950/10 h-full">
                   <CustomSidebar />
                 </div>
-                <main className="flex-1 bg-black">
+                <main className={`flex-1 
+                      dark:bg-gray-950 bg-gray-100 
+                   `}>
                   {children}
                 </main>
               </div>

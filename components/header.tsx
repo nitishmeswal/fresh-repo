@@ -61,7 +61,7 @@ const Header = () => {
               <Image src={search} alt="search" height={6} width={6} className="w-6" />
               <input
                 type="text"
-                className={`w-full focus:border-none mx-4 ${
+                className={`w-full focus:border-none focus:outline-none mx-4 ${
                   theme == 'dark' ? "bg-gray-200" : "bg-black"
                 }`}
                 placeholder="Search for something" 
@@ -78,7 +78,7 @@ const Header = () => {
                     <Image
                       src={bell}
                       alt="bell"
-                      className={`w-8 ${theme == 'dark' ? "text-gray-900" : "text-gray-950"}`}
+                      className={`w-8 hover:cursor-pointer ${theme == 'dark' ? "text-gray-900" : "text-gray-950"}`}
                     />
                   </div>
                   
@@ -124,7 +124,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <button className=" flex bg-transparent border-none absolute right-0" 
+              <button className=" flex border-none rounded p-2 bg-transparent absolute right-0" 
                       onClick={
                             ()=> {
                               console.log(theme)

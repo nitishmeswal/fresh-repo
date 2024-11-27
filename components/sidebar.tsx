@@ -5,7 +5,51 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
-import { FeatureOptions, SettingsOptions } from "@/utils/constant";
+const FeatureOptions = [
+  {
+    label: "Dashboard",
+    icon: "/dashboard.svg",
+    href: "/",
+  },
+  {
+    label: "GPU Marketplace",
+    icon: "/gpu-marketplace.svg",
+    href: "/gpu-marketplace",
+  },
+  {
+    label: "AI Models",
+    icon: "/ai-models.svg",
+    href: "/ai-models",
+  },
+  {
+    label: "Earnings",
+    icon: "/earnings.svg",
+    href: "/earnings",
+  },
+  {
+    label: "Connect to Earn",
+    icon: "/connect-to-earn.svg",
+    href: "/connect-to-earn",
+  },
+];
+
+const SettingsOptions = [
+  {
+    label: "Community",
+    icon: "/community.svg",
+    href: "/community",
+  },
+  {
+    label: "Settings",
+    icon: "/settings.svg",
+    href: "/settings",
+  },
+  {
+    label: "More info",
+    icon: "/info.svg",
+    href: "/more-info",
+  },
+];
 
 const CustomSidebar = () => {
   const router = useRouter();
@@ -13,7 +57,7 @@ const CustomSidebar = () => {
   const { theme } = useTheme();
   const [currentTab, setCurrentTab] = useState("");
 
-  console.log("current theme ", theme);
+  // console.log("current theme ", theme);
   useEffect(() => {
     const activeTab = pathname.split("/")[1] || "dashboard"; // Default to 'dashboard'
     setCurrentTab(activeTab);
@@ -34,7 +78,7 @@ const CustomSidebar = () => {
             (currentTab === "" && option.href.substring(1) === "")
               ?  "bg-blue-600 text-white"
                 : 
-              theme === "dark"
+              theme === "light"
               ? "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-gray-100"
               : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
           } flex items-center px-3 py-2 rounded-full hover:cursor-pointer`}
@@ -60,7 +104,7 @@ const CustomSidebar = () => {
   return (
     <div
       className={`px-6 pt-[26px] ${
-        theme === "dark"
+        theme === "light"
           ? "bg-gray-950 text-gray-100"
           : "bg-gray-100 text-gray-800"
       }`}
@@ -68,7 +112,7 @@ const CustomSidebar = () => {
       <aside
         id="default-sidebar"
         className={`flex flex-col w-fit h-screen transition-transform sm:translate-x-0 ml-1 ${
-          theme === "dark" ? "bg-gray-950 text-gray-100" : "bg-gray-100 text-gray-800"
+          theme === "light" ? "bg-gray-950 text-gray-100" : "bg-gray-100 text-gray-800"
         }`}
         aria-label="Sidebar"
       >
