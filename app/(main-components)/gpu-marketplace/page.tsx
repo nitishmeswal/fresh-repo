@@ -69,7 +69,7 @@ const Home = () => {
                     ].map((item, itemIndex) => (
                       <div key={itemIndex} className="flex flex-col">
                         <h1 className="text-sm dark:text-gray-500 text-gray-450 uppercase">{item.label}</h1>
-                        <p className="text-sm dark:text-gray-900 text-white mt-1">{item.value}</p>
+                        <p className="text-sm dark:text-gray-900 text-[#D0D0D0] mt-1">{item.value}</p>
                       </div>
                     ))}
                   </div>
