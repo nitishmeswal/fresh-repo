@@ -103,7 +103,7 @@ const CustomSidebar = () => {
 
   return (
     <div
-      className={`px-6 pt-[26px] ${
+      className={`px-6 pt-[26px] font-inter ${
         theme === "light"
           ? "bg-gray-950 text-gray-100"
           : "bg-gray-100 text-gray-800"
