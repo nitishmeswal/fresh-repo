@@ -59,7 +59,7 @@ export default function RootLayout({
                   <CustomSidebar />
                 </div>
                 <main className={`flex-1 
-                      dark:bg-gray-950 bg-gray-100 
+                      bg-gray-950 
                    `}>
                   {children}
                 </main>
