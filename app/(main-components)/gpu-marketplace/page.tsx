@@ -35,7 +35,7 @@ const Home = () => {
                     <div className="flex flex-col justify-start px-6">
                       <h1 className="text-xl font-medium dark:text-gray-900 text-white">{gpu.gpuModel}</h1>
                       <p className="text-md dark:text-gray-600 text-gray-650 space-y-4">{gpu.host}</p>
-                      <p className="text-sm text-gray-700 dark:text-white font-medium mt-2 group-hover:text-gray-800 dark:group-hover:text-[#D8D8D8]">
+                      <p className="text-sm dark:text-gray-700 text-white font-medium mt-2 group-hover:text-gray-800 dark:group-hover:text-[#D8D8D8]">
                         {gpu.location}
                       </p>
                     </div>
