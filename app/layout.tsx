@@ -40,12 +40,17 @@ export default function RootLayout({
 
   // console.log({ Header, SidebarProvider, SessionProvider, CustomSidebar, ThemeProvider });
   return (
-    <html lang="en">
-      <body
+    <html lang="en" suppressHydrationWarning>
+      <body 
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
       <SessionProvider>
-        <ThemeProvider>
+        <ThemeProvider 
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        >
           <SidebarProvider>
             <div className="flex flex-col w-full">
               {/* Header is always at the top */}
@@ -58,8 +63,9 @@ export default function RootLayout({
                 <div className=" bg-gray-950/10 h-full">
                   <CustomSidebar />
                 </div>
+                <div className="h-full w-[0.5px] opacity-0 dark:opacity-100 bg-white dark:bg-black"></div>
                 <main className={`flex-1 
-                      bg-gray-950 
+                      bg-gray-950 dark:bg-white 
                    `}>
                   {children}
                 </main>

@@ -78,7 +78,7 @@ const Header = () => {
                     <Image
                       src={bell}
                       alt="bell"
-                      className={`w-8 hover:cursor-pointer ${theme == 'dark' ? "text-gray-900" : "text-gray-950"}`}
+                      className={`h-13 hover:cursor-pointer ${theme == 'dark' ? "text-gray-900" : "text-gray-950"}`}
                     />
                   </div>
                   
@@ -91,7 +91,7 @@ const Header = () => {
                     <Image
                       src={loggedIn}
                       alt="loggedIn"
-                      className="w-[68px]"
+                      className="w-15"
                       onClick={() => setShowDropdown((prev) => !prev)} // Toggle dropdown on click
                     />
                   </div>
@@ -109,7 +109,7 @@ const Header = () => {
                       Welcome to Neurolov
                     </div>
                     
-                    <div className="flex justify-between px-4 pt-10 mt-2 py-4">
+                    <div className="flex justify-between mt-2 ">
                       <button
                         className={`px-4 py-2 border-none w-fit ${
                           theme == 'dark'
@@ -124,7 +124,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <button className=" flex border-none rounded p-2 bg-transparent absolute right-0" 
+              <button className=" flex border-none rounded p-2 bg-transparent absolute right-2" 
                       onClick={
                             ()=> {
                               console.log(theme)
@@ -132,9 +132,9 @@ const Header = () => {
                             }}
                       >
                {theme === 'light' ? (
-                  <Sun className="w-16" />
+                  <Sun className="w-8 h-8 rotate-0 scale-100 transition-all duration-150" />
                 ) : (
-                  <Moon className="w-16" />
+                  <Moon className="w-8 h-8 rotate-0 scale-100 transition-all duration-150" />
                 )}
               </button>
             </div>
