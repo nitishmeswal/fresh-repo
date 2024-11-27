@@ -5,7 +5,7 @@ import { filters, GPUData } from '@/utils/constant';
 
 const Home = () => {
   return (
-    <div className="flex flex-1 w-full h-screen py-8 flex-col overflow-hidden dark:bg-white bg-black">
+    <div className="flex flex-1 w-full h-screen py-8 px-4 flex-col overflow-hidden dark:bg-white bg-black2">
       {/* Fixed filter menu at the top */}
       <div className="flex flex-row p-4 justify-start shrink-0">
         {filters.map((filter, index) => (
