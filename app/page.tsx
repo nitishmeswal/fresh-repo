@@ -1,7 +1,7 @@
 // import Header from "@/components/header";
 
 import { FilterMenu } from "@/components/FilterMenu"
-import { filters } from "@/data"
+import { filters } from "@/utils/constant"
 
 
 

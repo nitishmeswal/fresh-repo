@@ -2,7 +2,7 @@ import React from 'react';
 import rtx3090 from "@/public/RTX 3090 vector model_1.png";
 import Image, { StaticImageData } from 'next/image';
 import { FilterMenu } from '@/components/FilterMenu';
-import { filters } from '@/data';
+import { filters } from '@/utils/constant';
 
 
 type GPUDataType = {

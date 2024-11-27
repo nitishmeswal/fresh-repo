@@ -5,51 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
-const FeatureOptions = [
-  {
-    label: "Dashboard",
-    icon: "/dashboard.svg",
-    href: "/",
-  },
-  {
-    label: "GPU Marketplace",
-    icon: "/gpu-marketplace.svg",
-    href: "/gpu-marketplace",
-  },
-  {
-    label: "AI Models",
-    icon: "/ai-models.svg",
-    href: "/ai-models",
-  },
-  {
-    label: "Earnings",
-    icon: "/earnings.svg",
-    href: "/earnings",
-  },
-  {
-    label: "Connect to Earn",
-    icon: "/connect-to-earn.svg",
-    href: "/connect-to-earn",
-  },
-];
-
-const SettingsOptions = [
-  {
-    label: "Community",
-    icon: "/community.svg",
-    href: "/community",
-  },
-  {
-    label: "Settings",
-    icon: "/settings.svg",
-    href: "/settings",
-  },
-  {
-    label: "More info",
-    icon: "/info.svg",
-    href: "/more-info",
-  },
-];
+import { FeatureOptions, SettingsOptions } from "@/utils/constant";
 
 const CustomSidebar = () => {
   const router = useRouter();
@@ -57,7 +13,7 @@ const CustomSidebar = () => {
   const { theme } = useTheme();
   const [currentTab, setCurrentTab] = useState("");
 
-  // console.log("current theme ", theme);
+  console.log("current theme ", theme);
   useEffect(() => {
     const activeTab = pathname.split("/")[1] || "dashboard"; // Default to 'dashboard'
     setCurrentTab(activeTab);
