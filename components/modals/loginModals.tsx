@@ -21,7 +21,7 @@ export const LoginModal = () => {
    const loginModalHooks = useLoginModal()
    const [isLoading, setIsLoading] = useState<boolean>(false)
    const registerModalHooks = useRegisterModal()
-   // Form state
+   
    const {
       register,
       handleSubmit,

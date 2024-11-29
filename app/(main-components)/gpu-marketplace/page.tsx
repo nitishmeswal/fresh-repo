@@ -18,7 +18,7 @@ const Home = () => {
       </div>
       
       {/* Scrollable GPU list */}
-      <div className="w-full px-8 overflow-y-auto flex-grow">
+      <div className="w-full px-8 overflow-y-auto space-y-4 flex-grow">
         {GPUData.map((gpu, index) => (
           <div key={index} className="mb-4">
             <div className="flex p-6 rounded-lg my-4 dark:bg-gray-100 bg-gray-950 justify-center w-full">
