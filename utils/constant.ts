@@ -120,7 +120,7 @@ export const GPUData: GPUDataType[] = [
     storageSize: "344 GB",
     motherboard: "ASUSTek Computer INC.",
     smClock: "210 MHz",
-    rentPrice: "1001 $VLOV/Hr",
+    rentPrice: "1001 $NLOV/Hr",
   },
   {
     gpuModel: "1x NVIDIA GeForce RTX 3090",
@@ -140,3 +140,4 @@ export const GPUData: GPUDataType[] = [
     rentPrice: "1001 $VLOV/Hr",
   },
 ];
+
