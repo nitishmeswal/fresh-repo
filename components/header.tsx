@@ -92,7 +92,9 @@ const Header = () => {
                       src={loggedIn}
                       alt="loggedIn"
                       className="w-15"
-                      onClick={() => setShowDropdown((prev) => !prev)} // Toggle dropdown on click
+                      onClick={() => setShowDropdown((prev) => {
+                        console.log(prev)
+                        return !prev})} // Toggle dopdown on click
                     />
                   </div>
                 {showDropdown && (
@@ -132,9 +134,9 @@ const Header = () => {
                             }}
                       >
                {theme === 'light' ? (
-                  <Sun className="w-8 h-8 rotate-0 scale-100 transition-all duration-150" />
+                  <Sun className="w-6 h-6 rotate-0 scale-100 transition-all duration-150" />
                 ) : (
-                  <Moon className="w-8 h-8 rotate-0 scale-100 transition-all duration-150" />
+                  <Moon className="w-6 h-6 hover:border-slate-100 bg-gray-850 rotate-0 scale-100 transition-all duration-150" />
                 )}
               </button>
             </div>
