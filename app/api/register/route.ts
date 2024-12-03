@@ -5,11 +5,11 @@ import User from '@/app/model/User';
 
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json();
+    const { username, email,  password } = await req.json();
     
-    if (!username || !password) {
+    if (!username || !password || !email) {
       return NextResponse.json(
-        { error: 'Username and password are required' },
+        { error: 'Username, email and password are required' },
         { status: 400 }
       );
     }
@@ -17,9 +17,14 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const existingUser = await User.findOne({ username });
+    const existingEmail = await User.findOne({ email });
+    if(existingEmail) return NextResponse.json(
+      { error: 'Email already exist' },
+      { status: 400 }
+    );
     if (existingUser) {
       return NextResponse.json(
-        { error: 'Username already exists' },
+        { error: 'Username already used' },
         { status: 400 }
       );
     }
@@ -29,6 +34,7 @@ export async function POST(req: Request) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const user = await User.create({
       username,
+      email,
       password: hashedPassword,
     });
 

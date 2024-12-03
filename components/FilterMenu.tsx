@@ -18,14 +18,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-
 export function FilterMenu({ name, filters}: {name: string, filters: string[]}) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
 
-  return (
-    <div className="flex flex-1 px-4 w-40">
-
+  return ( 
+    <div className="flex flex-1 px-4 w-40 justify-start">
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button

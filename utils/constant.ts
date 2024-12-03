@@ -71,6 +71,17 @@ export const filters = [
   }
 ]
 
+export const AIModelData = [
+  {
+    name: "Generation",
+    options: ["GPT-3", "GPT-4", "GPT-5"],
+  },
+  {
+    name: "Category",
+    options: ["Text", "Image", "Audio"],
+  }
+]
+
 export const mainServices: {name:string, description:string}[] = [
   {
     name: "Rent GPU",

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+
 declare type RegisterModalTypeStore = {
     isOpen: boolean
     onOpen: () => void

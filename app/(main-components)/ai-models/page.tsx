@@ -1,7 +1,7 @@
 "use client"
 
 import { FilterMenu } from '@/components/FilterMenu';
-import { filters } from '@/utils/constant';
+import { AIModelData } from '@/utils/constant';
 import { useTheme } from 'next-themes';
 import React from 'react'
 
@@ -10,11 +10,11 @@ const Home = () => {
   return (
     <div className={`flex flex-1 w-full p-8 flex-col`}>
       <div className="flex flex-row p-4 justify-start">
-        {filters.map((filter, index) => (
+        {AIModelData.map((filter, index) => (
           <FilterMenu
             key={index} 
             name={filter.name} 
-            filters={filter.options} 
+            filters={filter.options}
           />
         ))}
       </div>
