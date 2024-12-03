@@ -25,17 +25,17 @@ export const handler = NextAuth({
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-              username: { label: "Username", type: "text" },
+              email: { label: "email", type: "text" },
               password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-              if (!credentials?.username || !credentials?.password) {
+              if (!credentials?.email || !credentials?.password) {
                 throw new Error('Please enter username and password');
               }
               
               await dbConnect();
               
-              const user = await User.findOne({ username: credentials.username });
+              const user = await User.findOne({ email: credentials.email });
               if (!user) {
                 throw new Error('No user found');
               }
@@ -47,7 +47,8 @@ export const handler = NextAuth({
       
               return {
                 id: user._id.toString(),
-                name: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
               };
             }
           }),
