@@ -1,12 +1,10 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import { NextAuthOptions } from "next-auth"
 import { SessionStrategy } from "next-auth"
-// import NextAuthConfig from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import dbConnect from "@/app/lib/db"
 import User from "@/app/model/User"
 import bcrypt from "bcryptjs"
-import { promises } from "dns"
 
 const requiredEnvVars = [
   'GOOGLE_CLIENT_ID', 
