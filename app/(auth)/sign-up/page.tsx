@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast"
 import { AiFillGithub } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import { z } from "zod"
+// @ts-ignore
 import { zodResolver } from "@hookform/resolvers/zod"
 
 // Validation schema
