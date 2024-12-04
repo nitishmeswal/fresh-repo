@@ -29,7 +29,7 @@ export const Input: FC<InputTypes> = ({
    errors,
 }) => {
    return (
-      <div className="relative w-full">
+      <div className="relative w-full mb-4">
          {formatPrice && <BiDollar size={24} className="absolute text-neutral-700 top-5 left-2" />}
          <input
             id={id}

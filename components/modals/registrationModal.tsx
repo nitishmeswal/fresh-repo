@@ -6,7 +6,7 @@ import { AiFillGithub } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-
+import logo from "@/public/logo.svg"
 import useRegisterModal from "@/hooks/useRegisterModal"
 
 import { Modal } from "@/components/modals/Modals"
