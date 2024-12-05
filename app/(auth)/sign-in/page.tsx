@@ -7,13 +7,11 @@ import { AiFillGithub } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import logo from "@/public/logo.svg"
-
-import { Heading } from "@/components/heading"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/inputs/input"
-import { Button } from "@/components/Button"
 import Link from "next/link"
 import Image from "next/image"
+import logo from "@/public/logo.svg"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -39,7 +37,7 @@ export default function LoginPage() {
       setIsLoading(false)
       if (callback?.ok) {
         toast.success("Logged in successfully")
-        router.push("/dashboard") // Redirect to dashboard or home page
+        router.push("/dashboard")
         router.refresh()
       }
       if (callback?.error) {
@@ -49,29 +47,39 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
-        <div>
-            <Image src={logo} alt="logo" width={100} height={100} />
-          <Heading 
-            title="Welcome back to Cloudbnb" 
-            subtitle="Login today, start big things!" 
+        <div className="flex flex-col items-center">
+          <Image 
+            src={logo} 
+            alt="Logo" 
+            width={80} 
+            height={80} 
+            className="mb-6"
           />
+          <h2 className="text-3xl font-bold text-foreground tracking-tight">
+            Welcome back
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Login to continue your journey
+          </p>
         </div>
+        
         <form 
-          onSubmit={handleSubmit(handleOnSubmit)} 
-          className="mt-8 space-y-6"
+          onSubmit={handleSubmit(handleOnSubmit)}
+          className="space-y-6"
         >
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="space-y-4">
             <Input
               id="email"
-              label="Email"
+              label="Email Address"
               type="email"
               disabled={isLoading}
               register={register}
               errors={errors}
               required
             />
+
             <Input
               id="password"
               label="Password"
@@ -85,44 +93,50 @@ export default function LoginPage() {
 
           <div>
             <Button 
-              label="Continue" 
-            //   type="submit" 
-              disabled={isLoading} 
-              onClick={()=>{}}
-            //   fullWidth
-            />
+              type="submit" 
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Continue'}
+            </Button>
           </div>
 
           <div className="flex items-center justify-center my-4">
-            <hr className="w-full border-t border-gray-300" />
-            <span className="px-3 text-gray-500 bg-white">Or</span>
-            <hr className="w-full border-t border-gray-300" />
+            <hr className="w-full border-t border-muted" />
+            <span className="px-3 text-muted-foreground bg-background">Or continue with</span>
+            <hr className="w-full border-t border-muted" />
           </div>
 
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
             <Button 
-              outline 
-              label="Continue with Google" 
-              icon={FcGoogle} 
+              variant="outline"
+              type="button"
               onClick={() => signIn('google')}
               disabled={isLoading}
-            />
+              className="w-full"
+            >
+              <FcGoogle className="mr-2 h-5 w-5" />
+              Google
+            </Button>
+
             <Button 
-              outline 
-              label="Continue with Github" 
-              icon={AiFillGithub} 
+              variant="outline"
+              type="button"
               onClick={() => signIn('github')}
               disabled={isLoading}
-              
-            />
+              className="w-full"
+            >
+              <AiFillGithub className="mr-2 h-5 w-5" />
+              GitHub
+            </Button>
           </div>
 
-          <div className="text-center mt-4">
-            <p className="text-neutral-600">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link 
                 href="/sign-up" 
-                className="text-neutral-800 hover:underline font-semibold"
+                className="font-semibold text-primary hover:underline"
               >
                 Sign Up
               </Link>
