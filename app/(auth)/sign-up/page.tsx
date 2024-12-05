@@ -56,7 +56,7 @@ export default function SignupPage() {
 
       if (signInResponse?.error) {
         toast.error("Registration successful, but login failed")
-        router.push('/login')
+        router.push('/sign-in')
       } else {
         toast.success("Registration successful")
         router.push('/dashboard')
