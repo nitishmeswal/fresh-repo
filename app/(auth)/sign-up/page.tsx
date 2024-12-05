@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
 import logo from "@/public/logo.svg"
+import { useTheme } from "next-themes"
 
 // Validation schema
 const signupSchema = z.object({
@@ -30,6 +31,7 @@ const signupSchema = z.object({
 export default function SignupPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const { theme } = useTheme()
 
   const {
     register,
@@ -84,7 +86,10 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+    <div className={`
+      flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8
+      ${theme === 'light' ? 'bg-gray-850' : 'bg-gray-100'}
+    `}>
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
           <Image 
@@ -94,10 +99,16 @@ export default function SignupPage() {
             height={80} 
             className="mb-6"
           />
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">
+          <h2 className={`
+            text-3xl font-semibold tracking-tight
+            ${theme === 'light' ? 'text-white' : 'text-black'}
+          `}>
             Create your account
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className={`
+            mt-2 text-sm
+            ${theme === 'light' ? 'text-gray-450' : 'text-gray-600'}
+          `}>
             Start your journey with NEUROLOV
           </p>
         </div>
@@ -135,16 +146,27 @@ export default function SignupPage() {
 
           <Button 
             type="submit" 
-            className="w-full"
+            className={`
+              w-full
+              ${theme === 'light' 
+                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                : 'bg-blue-500 hover:bg-blue-600 text-black'
+              }
+            `}
             disabled={isLoading}
           >
             {isLoading ? 'Creating Account...' : 'Sign Up'}
           </Button>
 
           <div className="flex items-center justify-center my-4">
-            <hr className="w-full border-t border-muted" />
-            <span className="px-3 text-muted-foreground bg-background">Or continue with</span>
-            <hr className="w-full border-t border-muted" />
+            <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
+            <span className={`
+              px-3 
+              ${theme === 'light' ? 'text-gray-450 bg-gray-850' : 'text-gray-600 bg-gray-100'}
+            `}>
+              Or continue with
+            </span>
+            <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -153,7 +175,12 @@ export default function SignupPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className="w-full"
+              className={`
+                w-full 
+                ${theme === 'light' 
+                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
+                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+              `}
             >
               <FcGoogle className="mr-2 h-5 w-5" />
               Google
@@ -164,7 +191,12 @@ export default function SignupPage() {
               type="button"
               onClick={handleGithubSignIn}
               disabled={isLoading}
-              className="w-full"
+              className={`
+                w-full 
+                ${theme === 'light' 
+                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
+                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+              `}
             >
               <AiFillGithub className="mr-2 h-5 w-5" />
               GitHub
@@ -172,11 +204,19 @@ export default function SignupPage() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className={`
+              text-sm 
+              ${theme === 'light' ? 'text-gray-450' : 'text-gray-600'}
+            `}>
               Already have an account?{" "}
               <Link 
                 href="/sign-in" 
-                className="font-semibold text-primary hover:underline"
+                className={`
+                  font-semibold 
+                  ${theme === 'light' 
+                    ? 'text-blue-600 hover:text-blue-500' 
+                    : 'text-blue-500 hover:text-blue-600'}
+                `}
               >
                 Log in
               </Link>
