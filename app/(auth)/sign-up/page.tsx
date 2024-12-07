@@ -19,7 +19,8 @@ import { useTheme } from "next-themes"
 
 // Validation schema
 const signupSchema = z.object({
-  name: z.string().min(2, { message: "Full name must be at least 2 characters" }),
+  firstName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
+  lastName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string()
     .min(8, { message: "Password must be at least 8 characters" })
@@ -40,7 +41,8 @@ export default function SignupPage() {
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
     },
@@ -119,18 +121,29 @@ export default function SignupPage() {
           noValidate
         >
           <div className="space-y-4">
-            <Input
+            <Input 
               {...register("email")}
               id="email"
               type="email"
+              placeholder="enter the valid email"
               disabled={isLoading}
               required
             />
 
             <Input
-              {...register("name")}
-              id="name"
+              {...register("firstName")}
+              id="first name"
               type="text"
+              placeholder="enter the first name"
+              disabled={isLoading}
+              required
+            />
+
+            <Input
+              {...register("lastName")}
+              id="first name"
+              type="text"
+              placeholder="enter the last name"
               disabled={isLoading}
               required
             />
@@ -139,6 +152,7 @@ export default function SignupPage() {
               {...register("password")}
               id="password"
               type="password"
+              placeholder="enter the password"
               disabled={isLoading}
               required
             />
@@ -149,8 +163,8 @@ export default function SignupPage() {
             className={`
               w-full
               ${theme === 'light' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                : 'bg-blue-500 hover:bg-blue-600 text-black'
+                ? 'bg-blue-600 hover:bg-blue-700 text-black' 
+                : 'bg-blue-500 hover:bg-blue-600 text-light'
               }
             `}
             disabled={isLoading}
@@ -178,8 +192,8 @@ export default function SignupPage() {
               className={`
                 w-full 
                 ${theme === 'light' 
-                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
-                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+                  ? 'border-gray-700 hover:bg-gray-700 text-black' 
+                  : 'border-gray-300 hover:bg-gray-200 text-white'}
               `}
             >
               <FcGoogle className="mr-2 h-5 w-5" />
@@ -194,8 +208,8 @@ export default function SignupPage() {
               className={`
                 w-full 
                 ${theme === 'light' 
-                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
-                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+                  ? 'border-gray-700 hover:bg-gray-700 text-black' 
+                  : 'border-gray-300 hover:bg-gray-200 text-white'}
               `}
             >
               <AiFillGithub className="mr-2 h-5 w-5" />

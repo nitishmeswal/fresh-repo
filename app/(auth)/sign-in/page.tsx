@@ -108,8 +108,8 @@ export default function LoginPage() {
               className={`
                 w-full
                 ${theme === 'light' 
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-black'}
+                  ? 'bg-blue-600 hover:bg-blue-700 text-black' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'}
               `}
               disabled={isLoading}
             >
@@ -137,8 +137,8 @@ export default function LoginPage() {
               className={`
                 w-full 
                 ${theme === 'light' 
-                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
-                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+                  ? 'border-gray-700 hover:bg-gray-700 text-black' 
+                  : 'border-gray-300 hover:bg-gray-200 text-white'}
               `}
             >
               <FcGoogle className="mr-2 h-5 w-5" />
@@ -153,8 +153,8 @@ export default function LoginPage() {
               className={`
                 w-full 
                 ${theme === 'light' 
-                  ? 'border-gray-700 hover:bg-gray-700 text-white' 
-                  : 'border-gray-300 hover:bg-gray-200 text-black'}
+                  ? 'border-gray-700 hover:bg-gray-700 text-black' 
+                  : 'border-gray-300 hover:bg-gray-200 text-white'}
               `}
             >
               <AiFillGithub className="mr-2 h-5 w-5" />
