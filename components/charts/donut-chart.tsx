@@ -3,14 +3,13 @@
 import * as React from "react"
 import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
+import { useTheme } from "next-themes"
+
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -19,45 +18,45 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 const chartData = [
-  { name: "Done", value: 275, fill: "#0055FF" },
-  { name: "Overdue Work", value: 200, fill: "#818181" },
-  { name: "Processing", value: 287, fill: "#356CF9" },
-  { name: "Work Finished Late", value: 173, fill: "#00FFBF" },
+  { activity: "Done", value: 28, fill: "var(--color-chrome)" },
+  { activity: "Overdue Work", value: 22, fill: "var(--color-safari)" },
+  { activity: "Processing", value:30, fill: "var(--color-firefox)" },
+  { activity: "Work Finished Late", value: 20, fill: "var(--color-edge)" },
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
   chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
+    label: "Done",
+    color: "#818181",
   },
   safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
+    label: "Overdue Work",
+    color: "#0055ff",
   },
   firefox: {
     label: "Firefox",
-    color: "hsl(var(--chart-3))",
+    color: "#00ffbf",
   },
   edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
+    label: "Work Finished Late",
+    color: "#356cf9",
   },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
+
 } satisfies ChartConfig
 
 export function DonutChart() {
+  const {theme} = useTheme()
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.value, 0)
   }, [])
 
   return (
-    <Card className="flex flex-col">
+    <Card className={`flex flex-col border-none
+      ${theme === 'light' 
+        ? 'bg-gray-850 hover:bg-blue-600' 
+        : 'bg-gray-100 hover:bg-blue-500'
+      }
+    `}>
 
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -71,9 +70,9 @@ export function DonutChart() {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
+              dataKey="value"
+              nameKey="activity"
+              innerRadius={65}
               strokeWidth={5}
             >
               <Label
@@ -89,16 +88,18 @@ export function DonutChart() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className={`fill-for text-[40px] font-extrabold 
+                            ${theme === 'light' ? 'text-white' : 'text-black'}
+                            `}
                         >
                           {totalVisitors.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-muted-foreground text-sm text-[#8E9ABB]"
                         >
-                          Visitors
+                          Jobs
                         </tspan>
                       </text>
                     )
@@ -109,14 +110,14 @@ export function DonutChart() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
+      {/* <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+        
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }
