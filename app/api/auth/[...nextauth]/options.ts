@@ -2,15 +2,19 @@ import { NextAuthOptions } from "next-auth"
 import { SessionStrategy } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
+import GithubProvider from "next-auth/providers/github"
 import dbConnect from "@/app/lib/db"
 import User from "@/app/model/User"
 import bcrypt from "bcryptjs"
+import { Github } from "lucide-react"
 
 const requiredEnvVars = [
   'GOOGLE_CLIENT_ID', 
   'GOOGLE_CLIENT_SECRET', 
   'NEXTAUTH_SECRET',
-  'NEXTAUTH_URL'
+  'NEXTAUTH_URL',
+  'GITHUB_CLIENT_ID',
+  'GITHUB_CLIENT_SECRET'
 ];
 
 requiredEnvVars.forEach(env => {
@@ -24,6 +28,17 @@ export const authConfig: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_SECRET!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       authorization: {
         params: {
           prompt: "consent",
