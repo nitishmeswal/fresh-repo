@@ -1,42 +1,51 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
-import axios from "axios"
-import { SubmitHandler, useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
-import { AiFillGithub } from "react-icons/ai"
-import { FcGoogle } from "react-icons/fc"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import Image from "next/image"
-import logo from "@/public/logo.svg"
-import { useTheme } from "next-themes"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import axios from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { AiFillGithub } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.svg";
+import { useTheme } from "next-themes";
 
 // Validation schema
 const signupSchema = z.object({
-  firstName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
-  lastName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
+  firstName: z.string().min(3, { message: "First name must be at least 3 characters" }),
+  lastName: z.string().min(3, { message: "Last name must be at least 3 characters" }),
   email: z.string().email({ message: "Invalid email address" }),
-  password: z.string()
+  password: z
+    .string()
     .min(8, { message: "Password must be at least 8 characters" })
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-      message: "Password must include uppercase, lowercase, number, and special character"
-    })
-})
+      message: "Password must include uppercase, lowercase, number, and special character",
+    }),
+});
 
 export default function SignupPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const { theme } = useTheme()
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { theme } = useTheme();
+  const [passwordStrength, setPasswordStrength] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChar: false,
+  });
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -46,133 +55,134 @@ export default function SignupPage() {
       email: "",
       password: "",
     },
-  })
+  });
+
+  // Watch password input for live validation
+  const password = watch("password");
+
+  const validatePassword = (password: string) => {
+    setPasswordStrength({
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      specialChar: /[\!\@\#\$\%\^\&\*\)\(\+\=\.\<\>\{\}\[\]\:\;\'\"\|\~\`\_\-]/.test(password),
+    });
+  };
 
   const handleOnSubmit: SubmitHandler<z.infer<typeof signupSchema>> = async (data) => {
-    setIsLoading(true)
-    
+    setIsLoading(true);
+
     try {
-      // Register user
-      await axios.post("/api/register", data)
-      
-      // Attempt to sign in after registration
+      await axios.post("/api/register", data);
+
       const signInResponse = await signIn("credentials", {
         redirect: false,
         email: data.email,
-        password: data.password
-      })
+        password: data.password,
+      });
 
       if (signInResponse?.error) {
-        toast.error("Registration successful, but login failed")
-        router.push('/sign-in')
+        toast.error("Registration successful, but login failed");
+        router.push("/sign-in");
       } else {
-        toast.success("Registration successful")
-        router.push('/dashboard')
+        toast.success("Registration successful");
+        router.push("/");
       }
     } catch (error: any) {
-      // Handle registration errors
-      const errorMessage = error.response?.data?.error || "Registration failed"
-      toast.error(errorMessage)
+      const errorMessage = error.response?.data?.error || "Registration failed";
+      toast.error(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  // Social login handlers
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" })
-  }
+    signIn("google", { callbackUrl: "/dashboard" });
+  };
 
   const handleGithubSignIn = () => {
-    signIn("github", { callbackUrl: "/dashboard" })
-  }
+    signIn("github", { callbackUrl: "/dashboard" });
+  };
 
   return (
-    <div className={`
-      flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8
-      ${theme === 'light' ? 'bg-gray-850' : 'bg-gray-100'}
-    `}>
+    <div
+      className={`flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ${
+        theme === "light" ? "bg-gray-850" : "bg-gray-100"
+      }`}
+    >
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
-          <Image 
-            src={logo} 
-            alt="Logo" 
-            height={40} 
-            className="mb-6"
-          />
-          <h2 className={`
-            text-3xl font-semibold tracking-tight
-            ${theme === 'light' ? 'text-white' : 'text-black'}
-          `}>
+          <Image src={logo} alt="Logo" height={40} className="mb-6" />
+          <h2
+            className={`text-3xl font-semibold tracking-tight ${
+              theme === "light" ? "text-white" : "text-black"
+            }`}
+          >
             Create your account
           </h2>
-          <p className={`
-            mt-2 text-sm
-            ${theme === 'light' ? 'text-gray-450' : 'text-gray-600'}
-          `}>
-            Start your journey with NEUROLOV
-          </p>
         </div>
-        
-        <form 
-          className="space-y-6 " 
-          onSubmit={handleSubmit(handleOnSubmit)}
-          noValidate
-        >
-          <div className="space-y-4 font-semibold text-[20px] ">
-            <Input className=""
+
+        <form className="space-y-6" onSubmit={handleSubmit(handleOnSubmit)} noValidate>
+          <div className="space-y-4">
+            <Input
               {...register("email")}
               id="email"
               type="email"
-              placeholder="enter valid email"
+              placeholder="Enter valid email"
               disabled={isLoading}
-              required
             />
-            <div className="flex flex-row space-x-8">
+            {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
+
+            <div className="flex space-x-4">
               <Input
                 {...register("firstName")}
-                id="first name"
+                id="firstName"
                 type="text"
-                placeholder="enter first name"
+                placeholder="First Name"
                 disabled={isLoading}
-                required
-                />
-
+              />
               <Input
                 {...register("lastName")}
-                id="first name"
+                id="lastName"
                 type="text"
-                placeholder="enter last name"
+                placeholder="Last Name"
                 disabled={isLoading}
-                // required
-                />
-                </div>
+              />
+            </div>
+            {errors.firstName && <span className="text-red-500 text-sm">{errors.firstName.message}</span>}
+            {errors.lastName && <span className="text-red-500 text-sm">{errors.lastName.message}</span>}
 
             <Input
               {...register("password")}
               id="password"
               type="password"
-              placeholder="enter password"
+              placeholder="Enter password"
+              onChange={(e) => validatePassword(e.target.value)}
               disabled={isLoading}
-              required
             />
+            {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
+
+            {/* Password Strength Indicator */}
+            <div className="mt-2 space-y-1 text-sm">
+              <p className={passwordStrength.length ? "text-green-500" : "text-red-500"}>At least 8 characters</p>
+              <p className={passwordStrength.uppercase ? "text-green-500" : "text-red-500"}>
+                At least 1 uppercase letter
+              </p>
+              <p className={passwordStrength.lowercase ? "text-green-500" : "text-red-500"}>
+                At least 1 lowercase letter
+              </p>
+              <p className={passwordStrength.number ? "text-green-500" : "text-red-500"}>At least 1 number</p>
+              <p className={passwordStrength.specialChar ? "text-green-500" : "text-red-500"}>
+                At least 1 special character
+              </p>
+            </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className={`
-              w-full
-              ${theme === 'light' 
-                ? 'bg-blue-600 hover:bg-blue-700 text-black' 
-                : 'bg-blue-500 hover:bg-blue-600 text-light'
-              }
-            `}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating Account...' : 'Sign Up'}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Creating Account..." : "Continue"}
           </Button>
-
-          <div className="flex items-center flex-col justify-center my-4">
+            <div className="flex items-center flex-col justify-center my-4">
             <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
             <span className={`
               px-3 
@@ -181,9 +191,9 @@ export default function SignupPage() {
               Or continue with
             </span>
             <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
             <Button 
               variant="outline"
               type="button"
@@ -199,7 +209,7 @@ export default function SignupPage() {
               <FcGoogle className="mr-2 h-5 w-5" />
               Google
             </Button>
-
+                
             <Button 
               variant="outline"
               type="button"
@@ -215,9 +225,9 @@ export default function SignupPage() {
               <AiFillGithub className="mr-2 h-5 w-5" />
               GitHub
             </Button>
-          </div>
-
-          <div className="text-center">
+            </div>
+                
+            <div className="text-center">
             <p className={`
               text-sm 
               ${theme === 'light' ? 'text-gray-450' : 'text-gray-600'}
@@ -239,5 +249,5 @@ export default function SignupPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
