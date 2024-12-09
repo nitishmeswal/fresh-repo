@@ -15,7 +15,6 @@ import loggedIn from "../public/loggedin.svg";
 import { Button } from "./Button";
 
 const Header = () => {
-  // const loginModalHooks = useLoginModal();
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -147,7 +146,7 @@ const Header = () => {
 
                       ))}
                       {
-                          <a href={`${process.env.NEXTAUTH_URL}/sign-in`} className={`w-full px-4 py-2 flex items-center flex-row cursor-pointer hover:${
+                          <a href={`sign-in`} className={`w-full px-4 py-2 flex items-center flex-row cursor-pointer hover:${
                           theme === 'dark' 
                             ? "bg-gray-200" 
                             : "bg-gray-800"

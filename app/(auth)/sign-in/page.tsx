@@ -58,12 +58,11 @@ export default function LoginPage() {
           <Image 
             src={logo} 
             alt="Logo" 
-            width={80} 
-            height={80} 
+            height={40} 
             className="mb-6"
           />
           <h2 className={`
-            text-3xl font-semibold tracking-tight
+            text-3xl fnt-semibold tracking-tight
             ${theme === 'light' ? 'text-white' : 'text-black'}
           `}>
             Welcome back
@@ -117,7 +116,7 @@ export default function LoginPage() {
             </Button>
           </div>
 
-          <div className="flex items-center justify-center my-4">
+          <div className="flex items-center flex-col justify-center my-4">
             <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
             <span className={`
               px-3 
@@ -125,6 +124,7 @@ export default function LoginPage() {
             `}>
               Or continue with
             </span>
+          
             <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
           </div>
 
