@@ -12,12 +12,14 @@ export default function SignupError({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error)
+    console.error(error)  
   }, [error])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white shadow-md rounded-lg p-8">
+    <div className="flex min-h-screen items-center justify-center
+     bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 
+                    bg-white shadow-md rounded-lg p-8">
         <div className="text-center">
           <AlertTriangle 
             className="mx-auto h-16 w-16 text-red-500 mb-4" 

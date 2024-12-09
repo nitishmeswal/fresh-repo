@@ -147,7 +147,7 @@ const Header = () => {
 
                       ))}
                       {
-                          <a href="http://localhost:3000/sign-in" className={`w-full px-4 py-2 flex items-center flex-row cursor-pointer hover:${
+                          <a href={`${process.env.NEXTAUTH_URL}/sign-in`} className={`w-full px-4 py-2 flex items-center flex-row cursor-pointer hover:${
                           theme === 'dark' 
                             ? "bg-gray-200" 
                             : "bg-gray-800"
