@@ -97,8 +97,7 @@ export default function SignupPage() {
           <Image 
             src={logo} 
             alt="Logo" 
-            width={80} 
-            height={80} 
+            height={40} 
             className="mb-6"
           />
           <h2 className={`
@@ -116,43 +115,44 @@ export default function SignupPage() {
         </div>
         
         <form 
-          className="space-y-6" 
+          className="space-y-6 " 
           onSubmit={handleSubmit(handleOnSubmit)}
           noValidate
         >
-          <div className="space-y-4">
-            <Input 
+          <div className="space-y-4 font-semibold text-[20px] ">
+            <Input className=""
               {...register("email")}
               id="email"
               type="email"
-              placeholder="enter the valid email"
+              placeholder="enter valid email"
               disabled={isLoading}
               required
             />
+            <div className="flex flex-row space-x-8">
+              <Input
+                {...register("firstName")}
+                id="first name"
+                type="text"
+                placeholder="enter first name"
+                disabled={isLoading}
+                required
+                />
 
-            <Input
-              {...register("firstName")}
-              id="first name"
-              type="text"
-              placeholder="enter the first name"
-              disabled={isLoading}
-              required
-            />
-
-            <Input
-              {...register("lastName")}
-              id="first name"
-              type="text"
-              placeholder="enter the last name"
-              disabled={isLoading}
-              required
-            />
+              <Input
+                {...register("lastName")}
+                id="first name"
+                type="text"
+                placeholder="enter last name"
+                disabled={isLoading}
+                // required
+                />
+                </div>
 
             <Input
               {...register("password")}
               id="password"
               type="password"
-              placeholder="enter the password"
+              placeholder="enter password"
               disabled={isLoading}
               required
             />
@@ -172,7 +172,7 @@ export default function SignupPage() {
             {isLoading ? 'Creating Account...' : 'Sign Up'}
           </Button>
 
-          <div className="flex items-center justify-center my-4">
+          <div className="flex items-center flex-col justify-center my-4">
             <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
             <span className={`
               px-3 
