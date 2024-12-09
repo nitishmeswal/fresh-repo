@@ -36,9 +36,13 @@ export default function Home() {
                 }`}
             >
               <div className="p-2 space-y-2">
-                <h1 className={` fill-foreground
+                <h1 className={`
+                  fill-foreground
                   text-[24px] 
                   font-semibold 
+                  ${theme === 'light' 
+                    ? 'text-white border-gray-700' 
+                    : 'text-black border-gray-300'}
                 `}>
                   {service.name}
                 </h1>
