@@ -1,5 +1,4 @@
-import { NextAuthOptions } from "next-auth"
-import { SessionStrategy } from "next-auth"
+import { NextAuthOptions,SessionStrategy } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
