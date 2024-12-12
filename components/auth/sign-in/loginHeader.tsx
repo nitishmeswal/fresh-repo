@@ -1,8 +1,12 @@
 import Image from "next/image"
 import logo from "@/public/logo.svg"
-import { textColor, subtextColor, } from "@/utils/theme-color"
+import { useTheme } from "next-themes"
+import ThemedStyles from "@/utils/theme-color"
+export const LoginHeader = () => {
 
-export const LoginHeader = () => (
+  const { theme } = useTheme()
+  const { textColor, subtextColor } = ThemedStyles(theme)
+  return (
   <div className="flex flex-col items-center">
     <Image 
       src={logo} 
@@ -19,8 +23,9 @@ export const LoginHeader = () => (
     <p className={`
       mt-2 text-sm
       ${subtextColor}
-    `}>
+      `}>
       Login to continue your journey
     </p>
   </div>
-)
+  )
+}

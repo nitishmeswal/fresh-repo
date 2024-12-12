@@ -16,9 +16,4 @@ const ThemedStyles = (theme: string | undefined) => ({
             : 'border-gray-300 hover:bg-gray-200 text-white'
     }
 });
-const theme = localStorage.getItem('theme');
-const { pageBackground, headerBackground, textColor, hoverButtonStyle,
-        subtextColor, borderColor, buttonStyles } = ThemedStyles(theme!);
-
-export { pageBackground, headerBackground, textColor, hoverButtonStyle, 
-        subtextColor, borderColor, buttonStyles };
+export default  ThemedStyles;
