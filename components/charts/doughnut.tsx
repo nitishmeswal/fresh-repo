@@ -45,7 +45,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
   };
 
   const options = {
-    cutout: "70%", // Adjusts the size of the doughnut hole
+    cutout: border ? "80%" : "70%", 
     plugins: {
       legend: {
         display: false, // Hides the legend
@@ -67,14 +67,17 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="relative">
-        <Doughnut data={data} className="h-[12vh]" options={options} />
-        <div className="absolute inset-0 flex items-center justify-center">
+        <Doughnut data={data} className={`h-[${border ? 12 : 13 }vh]`} options={options} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
-            className={`text-xl font-extrabold ${
+            className={`text-3xl font-extrabold ${
               theme === "dark" ? "text-black" : "text-white"
             }`}
           >
             {totalVisitors.toLocaleString()}
+          </span>
+          <span className=" text-sm text-gray-550">
+            jobs
           </span>
         </div>
       </div>
