@@ -4,15 +4,9 @@ const UserSchema = new mongoose.Schema({
   id: {
     type: String,
   },
-  firstName: {
+  name: {
     type: String,
-    // required: [true, 'Please provide a username'],
-    unique: true,
-  },
-  lastName: {
-    type: String,
-    // required: [true, 'Please provide a username'],
-    unique: true,
+    required: [true, 'Please provide a name'],
   },
   email: {
     type: String,
@@ -22,6 +16,12 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please provide a password'],
+  },
+  provider: {
+    type: String,
+  },
+  providerId: {
+    type: String,
   },
   createdAt: {
     type: Date,
@@ -41,13 +41,14 @@ const UserSchema = new mongoose.Schema({
 
 export interface UserType  {
   id: string;
-  firstName: string;
-  lastName: string;
+  name:string
   email: string;
   // image?: string;
   // role: 'user' | 'admin' | 'superadmin';
   // subscriptions: Subscription[];
   password: string;
+  provider?: string;
+  providerId?: string;
   createdAt: Date;
   updatedAt: Date;
   status: 'active' | 'suspended' | 'deleted';

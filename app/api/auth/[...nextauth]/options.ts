@@ -6,7 +6,6 @@ import GithubProvider from "next-auth/providers/github"
 import dbConnect from "@/app/lib/db"
 import User from "@/app/model/User"
 import bcrypt from "bcryptjs"
-import { Github } from "lucide-react"
 
 const requiredEnvVars = [
   'GOOGLE_CLIENT_ID', 
@@ -80,7 +79,7 @@ export const authConfig: NextAuthOptions = {
           return {
             id: user._id.toString(),
             email: user.email,
-            name: `${user.firstName} ${user.lastName}`.trim()
+            name: `${user.name}`.trim()
           }
         } catch (error) {
           console.error('Authentication error:', error)
@@ -104,7 +103,7 @@ export const authConfig: NextAuthOptions = {
         if(token){
             // @ts-ignore
             session.user.id = token.id
-            if (session.user && token.email && token.firstname) {
+            if (session.user && token.email) {
                 session.user.email = token.email
             }
         }
@@ -113,13 +112,65 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.firstName = user.firstname
-        token.lastName = user.lastname
+        token.name = user.name
         token.email = user.email
       }
       return token
-    }
+    },
+
+    // async signIn({ user, account }) {
+    //   try {
+    //     await dbConnect();
+
+    //     const existingUser = await User.findOne({ email: user.email });
+
+    //     if (existingUser) {
+    //       // Update existing user
+    //       const providerExists = existingUser.providers.some(
+    //         (p:any) => p.provider === account?.provider && p.providerId === account?.id
+    //       );
+
+    //       if (!providerExists) {
+    //         existingUser.providers.push({
+    //           provider: account?.provider,
+    //           providerId: account?.id,
+    //           name: user.name,
+    //           image: user.image,
+    //           email: user.email,
+    //         });
+    //       }
+
+    //       existingUser.name = user.name || existingUser.name;
+    //       existingUser.image = user.image || existingUser.image;
+
+    //       await existingUser.save();
+    //     } else {
+    //       // Create new user
+    //       await User.create({
+    //         email: user.email,
+    //         name: user.name,
+    //         image: user.image,
+    //         providers: [
+    //           {
+    //             provider: account?.provider,
+    //             providerId: account?.id,
+    //             name: user.name,
+    //             image: user.image,
+    //             email: user.email,
+    //           },
+    //         ],
+    //         roles: ['user'], // Default role
+    //       });
+    //     }
+
+    //     return true;
+    //   } catch (error) {
+    //     console.error("Error during sign in:", error);
+    //     return false;
+    //   }
+    // },
   },
+  
 
   session: {
     strategy: "jwt" as SessionStrategy,

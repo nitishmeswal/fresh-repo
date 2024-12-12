@@ -12,7 +12,6 @@ import logo from "../public/logo.svg";
 import search from "../public/search.svg";
 import bell from "../public/bell.svg";
 import loggedIn from "../public/loggedin.svg";
-import { Button } from "./Button";
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -164,7 +163,10 @@ const Header = () => {
             </div>
             <button 
               className="flex border-none rounded p-2 bg-transparent absolute right-2" 
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              onClick={() => {
+                localStorage.setItem('theme', theme || "dark")
+                setTheme(theme === 'light' ? 'dark' : 'light')}
+              }
             >
               {theme === 'light' ? (
                 <Sun className="w-6 h-6 rotate-0 scale-100 transition-all duration-150" />
