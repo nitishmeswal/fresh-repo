@@ -1,9 +1,7 @@
 "use client";
-
-import * as React from "react";
 import { Label, Pie, PieChart } from "recharts";
 import { useTheme } from "next-themes";
-
+import Chart from "chart.js/auto";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -11,13 +9,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { TrendingUp } from "lucide-react";
+import { useMemo } from "react";
+
 
 const chartData = [
-  { activity: "Done", value: 28, fill: "var(--color-chrome)" },
-  { activity: "Overdue Work", value: 22, fill: "var(--color-safari)" },
-  { activity: "Processing", value: 30, fill: "var(--color-firefox)" },
-  { activity: "Work Finished Late", value: 20, fill: "var(--color-edge)" },
+  { activity: "Done", value: 28, fill: "var(--color-chrome)", color: "#818181" },
+  { activity: "Overdue Work", value: 22, fill: "var(--color-safari)", color: "#0055ff" },
+  { activity: "Processing", value: 30, fill: "var(--color-firefox)", color: "#00ffbf" },
+  { activity: "Work Finished Late", value: 20, fill: "var(--color-edge)", color: "#356cf9" },
 ];
 
 const chartConfig = {
@@ -43,7 +42,7 @@ export function DonutChart() {
   const { theme } = useTheme();
 
   // Calculate total value
-  const totalVisitors = React.useMemo(() => {
+  const totalVisitors = useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.value, 0);
   }, []);
 

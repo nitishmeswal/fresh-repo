@@ -1,12 +1,13 @@
 "use client"
 
-import { DonutChart } from '@/components/charts/donut-chart';
-
+import DoughnutChart from '@/components/charts/doughnut';
 import { useTheme } from 'next-themes';
 import React from 'react'
-
+import { ChartData } from 'chart.js';
+import { chartData, trafficData } from '@/utils/constant';
 const Home = () => {
   const { theme } = useTheme();
+
   return (
     <div className={`flex flex-1 w-full p-8 flex-col`}>
       <ul className="flex flex-row justify-between">
@@ -28,7 +29,7 @@ const Home = () => {
                   </span>
                   <div className=' flex flex-1 justify-center p-2 items-center ' >
                     {/* please put the chart here */}
-                    <DonutChart  />
+                    <DoughnutChart chartData={chartData}/>
                   </div>
                   </div>
             </li>
@@ -44,6 +45,12 @@ const Home = () => {
                 }`}
                 >
               Earnings report
+              <div className=' flex flex-1 justify-center p-2 items-center'>
+                <DoughnutChart 
+                  chartData={trafficData} 
+                  border={true}
+                  />
+              </div>
             </li>
             <li className={`
                 flex shadow-md group justify-stretch w-full 

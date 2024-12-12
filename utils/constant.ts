@@ -152,3 +152,18 @@ export const GPUData: GPUDataType[] = [
   },
 ];
 
+export const chartData = [
+  { activity: "Done", value: 28, color: "#818181" },
+  { activity: "Overdue Work", value: 22, color: "#0055ff" },
+  { activity: "Processing", value: 30, color: "#00ffbf" },
+  { activity: "Work Finished Late", value: 20, color: "#356cf9" },
+];
+
+export const trafficData = [
+  {
+    activity: "Social Media", value: 22, color:"#F97316"
+  },
+  {
+    activity: "Organic Search", value: 78, color:"#ffffff"
+  }
+]
