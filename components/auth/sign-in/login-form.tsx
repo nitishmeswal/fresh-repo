@@ -5,10 +5,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import{ toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 // import { Input } from "@/components/inputs/input"
-import { hoverButtonStyle } from "@/utils/theme-color"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-// import { buttonStyles, textColor } from "@/utils/theme-color"
 
 export const LoginForm: React.FC<FieldValues> = () => {
   const router = useRouter()

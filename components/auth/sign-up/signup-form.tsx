@@ -26,7 +26,6 @@ import {
 export const SignupForm: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const theme = localStorage.getItem("theme");
   const [passwordStrength, setPasswordStrength] = useState({
     length: false,
     uppercase: false,

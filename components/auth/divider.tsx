@@ -1,4 +1,3 @@
-import { borderColor, subtextColor } from "@/utils/theme-color";
 import React from 'react'
 
 const Divider = () => {

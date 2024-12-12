@@ -1,6 +1,5 @@
 "use client"
 import { SignupForm } from "@/components/auth/sign-up/signup-form";
-// import { pageBackground, textColor } from "@/utils/theme-color";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SocialLogin } from "@/components/auth/third-party-login";
 import Divider from "@/components/auth/divider";

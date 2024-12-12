@@ -164,7 +164,7 @@ const Header = () => {
             <button 
               className="flex border-none rounded p-2 bg-transparent absolute right-2" 
               onClick={() => {
-                localStorage.setItem('theme', theme || "dark")
+                // localStorage.setItem('theme', theme || "dark")
                 setTheme(theme === 'light' ? 'dark' : 'light')}
               }
             >
