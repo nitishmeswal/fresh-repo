@@ -4,10 +4,13 @@
     "next/typescript",
     "plugin:storybook/recommended"
   ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "rules": {
     "@typescript-eslint/no-unused-vars": [
-      "error", 
-      { 
+      "error",
+      {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
@@ -17,27 +20,21 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-non-null-assertion": "warn",
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
-    
     "@typescript-eslint/ban-ts-comment": [
-      "error", 
-      { 
+      "error",
+      {
         "ts-ignore": "allow-with-description",
-        "minimumDescriptionLength": 10 
+        "minimumDescriptionLength": 10
       }
     ],
-    
     "no-unused-expressions": "error",
     "no-unused-labels": "error",
     "no-useless-computed-key": "error",
-    
     "import/no-unused-modules": "warn",
     "import/no-duplicates": "error",
-    
     "react/no-unused-prop-types": "warn",
     "react/no-unused-state": "warn",
-    
     "no-console": ["error", { "allow": ["warn", "error"] }],
-    
     "react/jsx-no-undef": "error",
     "no-undef": "error"
   },
