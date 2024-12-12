@@ -9,8 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Space } from "lucide-react";
-import { BiBorderRadius } from "react-icons/bi";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
