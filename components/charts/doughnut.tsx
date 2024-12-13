@@ -62,12 +62,13 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
         right: 20, // Adds padding on the right
       },
     },
+    maintainAspectRatio: false,
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="relative">
-        <Doughnut data={data} className={`h-[${border ? 12 : 13 }vh]`} options={options} />
+        <Doughnut data={data} className={`h-[${border? 12:14}vh]`} options={options} />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
             className={`text-3xl font-extrabold ${
@@ -83,7 +84,7 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
       </div>
       <div className="mt-4 flex flex-col items-center">
         {chartData.map((item, index) => (
-          <div key={index} className="flex items-center mb-2">
+          <div key={index} className="flex items-center mb-[6px]">
             <span
               className="w-4 h-4 mr-2"
               style={{ backgroundColor: item.color }}

@@ -9,7 +9,8 @@ export default function Home() {
 
 
   return (
-    <div className={`flex flex-1 w-full p-8 flex-col`}>
+    <div className='flex flex-1 flex-col space-y-4'>
+      <div className={`flex flex-1 w-full p-8 flex-col`}>
       <div className="flex flex-row p-4 justify-start">
         {filters.map((filter, index) => (
           <FilterMenu 
@@ -68,6 +69,11 @@ export default function Home() {
           ))}
         </ul>
       </div>
+      </div>
+      <div className='flex flex-1 justify-center relative'>
+        
+      </div>
     </div>
+
   )
 }
