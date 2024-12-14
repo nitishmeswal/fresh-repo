@@ -26,7 +26,7 @@ function AiModels() {
       id: 2,
       name: 'AI Model Name',
       image: model2,
-      whishlist: false,
+      whishlist: true,
       type: 'Free',
       framework: 'Figma'
     },
@@ -87,9 +87,9 @@ function AiModels() {
           <div key={model.id} className="model-card">
             <div className="model-image">
               <Image src={model.image} alt={model.name} />
-              <button className="favorite-btn">
+              <button className="favorite-btn bg-transparent hover:bg-black/25" 
+                      onClick={() => model.whishlist = !model.whishlist}>
                 <FiHeart
-                onClick={() => model.whishlist = !model.whishlist}
                 fill={model.whishlist ? '#FF0000' : 'none'}
                 color={model.whishlist ? '#FF0000' : '#000000'}
                 />

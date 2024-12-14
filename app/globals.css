@@ -376,7 +376,7 @@ body {
 }
 
 .post-card {
-  background-color: var(--card-background);
+  /* background-color: var(--card-background); */
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -602,7 +602,7 @@ body {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
   border: none;
   border-radius: 50%;
   width: 36px;

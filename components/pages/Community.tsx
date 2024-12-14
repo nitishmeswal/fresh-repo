@@ -1,14 +1,27 @@
+'use client';
+
 import React from 'react';
 import { FiHeart, FiMessageCircle, FiBookmark } from 'react-icons/fi';
+import post1 from '@/public/pages/post-1.png';
+import post2 from '@/public/pages/post-2.png';
+import post3 from '@/public/pages/post-3.png';
+import post4 from '@/public/pages/post-4.png';
+import post5 from '@/public/pages/post-5.png';
+import user1 from '@/public/pages/user1.png';
+import user2 from '@/public/pages/user2.png';
+import user3 from '@/public/pages/user3.png';
+import Image from 'next/image';
+import { useTheme } from 'next-themes';
 
 function Community() {
+  const { theme } = useTheme();
   const posts = [
     {
       id: 1,
       title: 'Blockchain developer best practices on innovation chain',
       author: {
         name: 'Peret Grey',
-        avatar: '/images/avatars/avatar1.jpg',
+        avatar: user1,
         role: '1 week ago'
       },
       stats: {
@@ -17,14 +30,14 @@ function Community() {
         comments: '56'
       },
       tags: ['#BTC', 'Block', 'Web3'],
-      graph: '/images/posts/graph1.png'
+      graph: post1
     },
     {
       id: 2,
       title: 'The 4-step SEO framework that led to a 1000% increase in traffic. Let\'s talk about blogging and SEO...',
       author: {
         name: 'Ali Juby',
-        avatar: '/images/avatars/avatar2.jpg',
+        avatar: user2,
         role: '3 days ago'
       },
       stats: {
@@ -32,14 +45,15 @@ function Community() {
         likes: '10,571',
         comments: '184'
       },
-      tags: ['SEO', 'Blogging', 'Traffic']
+      tags: ['SEO', 'Blogging', 'Traffic'],
+      graph: post2
     },
     {
       id: 3,
       title: 'OnePay - Online Payment Processing Web App - Download from ui8.net',
       author: {
         name: 'Mamunul Haque',
-        avatar: '/images/avatars/avatar3.jpg',
+        avatar: user3,
         role: '1 week ago'
       },
       stats: {
@@ -47,7 +61,56 @@ function Community() {
         likes: '29,751',
         comments: '209'
       },
-      tags: ['payment', 'webapp', 'ui']
+      tags: ['payment', 'webapp', 'ui'],
+      graph: post3
+    },
+    {
+      id: 4,
+      title: 'OnePay - Online Payment Processing Web App - Download from ui8.net',
+      author: {
+        name: 'Mamunul Haque',
+        avatar: user1,
+        role: '1 week ago'
+      },
+      stats: {
+        views: '670,606',
+        likes: '29,751',
+        comments: '209'
+      },
+      tags: ['payment', 'webapp', 'ui'],
+      graph: post4
+    },
+    {
+      id: 5,
+      title: 'OnePay - Online Payment Processing Web App - Download from ui8.net',
+      author: {
+        name: 'Mamunul Haque',
+        avatar: user1,
+        role: '1 week ago'
+      },
+      stats: {
+        views: '670,606',
+        likes: '29,751',
+        comments: '209'
+      },
+      tags: ['payment', 'webapp', 'ui'],
+      graph: post5
+    },
+    {
+      id: 6,
+      title: 'OnePay - Online Payment Processing Web App - Download from ui8.net',
+      author: {
+        name: 'Mamunul Haque',
+        avatar: user3,
+        role: '1 week ago'
+      },
+      stats: {
+        views: '670,606',
+        likes: '29,751',
+        comments: '209'
+      },
+      tags: ['payment', 'webapp', 'ui'],
+      graph: post5
     }
   ];
 
@@ -85,34 +148,37 @@ function Community() {
   ];
 
   return (
-    <div className="community-container">
-      <div className="posts-section">
+    <div className="community-container h-screen overflow-hidden ">
+      <div className="posts-section overflow-y-auto ">
         {posts.map(post => (
-          <div key={post.id} className="post-card">
+          <div key={post.id} className="post-card bg-gray-950">
             <div className="post-content">
               {post.graph && (
                 <div className="post-graph">
-                  <img src={post.graph} alt="Statistics" />
+                  <Image src={post.graph} alt="Statistics" />
                 </div>
               )}
               <div className="post-info">
-                <div className="post-header">
-                  <img src={post.author.avatar} alt={post.author.name} className="author-avatar" />
-                  <div className="author-info">
-                    <h3>{post.author.name}</h3>
-                    <span>{post.author.role}</span>
-                  </div>
-                </div>
-                <h2 className="post-title">{post.title}</h2>
-                <div className="post-tags">
+                <h2 className={`post-title ${theme === 'light' ? 'text-white' : 'text-black'}`}>{post.title}</h2>
+                <div className={`post-tags ${theme === 'light' ? ' text-green-400' : ' text-green-600'}`} >
                   {post.tags.map(tag => (
                     <span key={tag} className="tag">{tag}</span>
                   ))}
                 </div>
+                <div className="post-header">
+                  <Image src={post.author.avatar} alt={post.author.name} className="author-avatar" />
+                  <div className="author-info">
+                    <h3 className={`post-title ${theme === 'light' ? 'text-white' : 'text-black'}`}>{post.author.name}</h3>
+                    <div className={`${theme === 'light' ? ' text-green-400' : ' text-green-600'}`}>
+
+                    <span >{post.author.role}</span>
+                    </div>
+                  </div>
+                </div>
                 <div className="post-stats">
-                  <span>{post.stats.views} Views</span>
-                  <span>{post.stats.likes} Likes</span>
-                  <span>{post.stats.comments} comments</span>
+                  <span className={` ${theme === 'light' ? ' text-green-400' : ' text-green-600'}`}>{post.stats.views} Views</span>
+                  <span className={` ${theme === 'light' ? ' text-green-400' : ' text-green-600'}`}>{post.stats.likes} Likes</span>
+                  <span className={` ${theme === 'light' ? ' text-green-400' : ' text-green-600'}`}>{post.stats.comments} comments</span>
                 </div>
               </div>
             </div>
