@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 
 import { Moon, Sun, LogOut, Settings, User, LogIn } from 'lucide-react'; // implement the logout and login signUp module here.
 import { LoginModal } from "@/components/modals/loginModals";
-
+import logoNight from "@/public/logo-night.svg";
 import logo from "../public/logo.svg";
 import search from "../public/search.svg";
 import bell from "../public/bell.svg";
@@ -62,7 +62,11 @@ const Header = () => {
         <div className="flex flex-row justify-between w-full items-center">
           <div id="logo" className="flex flex-wrap justify-center mr-10 items-center">
             <Link href="/">
-              <Image src={logo} alt="logo" height={30} />
+            {
+              theme === 'dark'
+                ? <Image src={logoNight} alt="logo" className="w-56"/>
+                : <Image src={logo} alt="logo" />
+            }
             </Link>
           </div>
 

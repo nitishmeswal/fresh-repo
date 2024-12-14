@@ -22,7 +22,8 @@ const Home = () => {
         {GPUData.map((gpu, index) => (
           <div key={index} className="mb-4">
             <div className="flex p-6 rounded-lg my-4 dark:bg-gray-100 bg-gray-950 justify-center w-full">
-              <div className="flex flex-1 flex-col dark:bg-gray-200 bg-gray-850 rounded-lg items-center px-5 py-4 w-full shadow-md dark:shadow-none">
+              <div className="flex flex-1 flex-col dark:bg-gray-200 bg-gray-850 rounded-lg
+                               items-center px-5 py-4 w-full shadow-md dark:shadow-none">
                 {/* GPU Header */}
                 <div className="flex flex-row justify-between w-full">
                   <div className="flex items-center px-4">

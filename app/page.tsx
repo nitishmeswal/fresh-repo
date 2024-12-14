@@ -3,6 +3,7 @@ import React from 'react';
 import { FilterMenu } from "@/components/FilterMenu"
 import { filters, mainServices } from "@/utils/constant"
 import { useTheme } from "next-themes";
+import { WorldMap } from '@/components/ui/world-map';
 
 export default function Home() {
   const { theme } = useTheme();
@@ -71,7 +72,7 @@ export default function Home() {
       </div>
       </div>
       <div className='flex flex-1 justify-center relative'>
-        
+        {/* <WorldMap /> */}
       </div>
     </div>
 

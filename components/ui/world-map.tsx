@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import DottedMap from "dotted-map";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-
+  
 interface MapProps {
   dots?: Array<{
     start: { lat: number; lng: number; label?: string };
@@ -25,9 +25,9 @@ export function WorldMap({
 
   const svgMap = map.getSVG({
     radius: 0.22,
-    color: theme === "dark" ? "#FFFFFF40" : "#00000040",
+    color: theme === "light" ? "#FFFFFF40" : "#00000040",
     shape: "circle",
-    backgroundColor: theme === "dark" ? "black" : "white",
+    backgroundColor: theme === "light" ? "black" : "white",
   });
 
   const projectPoint = (lat: number, lng: number) => {

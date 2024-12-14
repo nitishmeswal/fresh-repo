@@ -40,7 +40,7 @@ function Earnings() {
           <div className="circular-progress-container">
             <CircularProgressbar
               value={100}
-              text={jobStats.total}
+              text={jobStats.total.toString()}
               styles={buildStyles({
                 textColor: 'white',
                 pathColor: '#0066FF',
@@ -107,7 +107,7 @@ function Earnings() {
                 <div className="progress-container">
                   <CircularProgressbar
                     value={item.percentage}
-                    text={item.value}
+                    text={item.value.toString()}
                     styles={buildStyles({
                       textColor: 'white',
                       pathColor: index === 0 ? '#FF4444' : '#00FF88',
