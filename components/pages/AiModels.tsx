@@ -12,12 +12,13 @@ import { useTheme } from 'next-themes';
 
 function AiModels() {
   const { theme } = useTheme();
-  const [like, setLike] = React.useState(false);
+  // const [like, setLike] = React.useState(false);
   const models = [
     {
       id: 1,
       name: 'AI Model Name',
       image: model1,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -25,6 +26,7 @@ function AiModels() {
       id: 2,
       name: 'AI Model Name',
       image: model2,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -32,6 +34,7 @@ function AiModels() {
       id: 3,
       name: 'AI Model Name',
       image: model3,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -39,6 +42,7 @@ function AiModels() {
       id: 4,
       name: 'AI Model Name',
       image: model4,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -46,6 +50,7 @@ function AiModels() {
       id: 5,
       name: 'AI Model Name',
       image: model5,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -53,6 +58,7 @@ function AiModels() {
       id: 6,
       name: 'AI Model Name',
       image: model6,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -60,6 +66,7 @@ function AiModels() {
       id: 7,
       name: 'AI Model Name',
       image: model5,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     },
@@ -67,6 +74,7 @@ function AiModels() {
       id: 8,
       name: 'AI Model Name',
       image: model6,
+      whishlist: false,
       type: 'Free',
       framework: 'Figma'
     }
@@ -81,9 +89,9 @@ function AiModels() {
               <Image src={model.image} alt={model.name} />
               <button className="favorite-btn">
                 <FiHeart
-                onClick={() => setLike(!like)}
-                fill={like ? '#FF0000' : 'none'}
-                color={like ? '#FF0000' : '#000000'}
+                onClick={() => model.whishlist = !model.whishlist}
+                fill={model.whishlist ? '#FF0000' : 'none'}
+                color={model.whishlist ? '#FF0000' : '#000000'}
                 />
               </button>
             </div>
