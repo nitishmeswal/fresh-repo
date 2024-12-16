@@ -2,7 +2,6 @@ import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import 'react-circular-progressbar/dist/styles.css';
-
 function Earnings() {
   const jobStats = {
     total: 64,

@@ -3,7 +3,7 @@ import React from 'react';
 import { FilterMenu } from "@/components/FilterMenu"
 import { filters, mainServices } from "@/utils/constant"
 import { useTheme } from "next-themes";
-import { WorldMap } from '@/components/ui/world-map';
+import WorldMap from '@/components/icons/world-map';
 
 export default function Home() {
   const { theme } = useTheme();
