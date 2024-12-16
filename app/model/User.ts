@@ -15,13 +15,26 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
+    required: [false],
   },
   provider: {
     type: String,
   },
   providerId: {
     type: String,
+  },
+  image: {
+    type: String,
+  },
+  birthday: {
+    type: Date,
+  },
+  location: {
+    type: String,
+  },
+  gender: {
+    type: String,
+    enum: ['male','femal','other']
   },
   createdAt: {
     type: Date,
@@ -43,9 +56,12 @@ export interface UserType  {
   id: string;
   name:string
   email: string;
-  // image?: string;
+  image?: string;
   // role: 'user' | 'admin' | 'superadmin';
   // subscriptions: Subscription[];
+  birthday?: Date;
+  location?: string;
+  gender?: string;
   password: string;
   provider?: string;
   providerId?: string;

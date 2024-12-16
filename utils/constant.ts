@@ -184,6 +184,7 @@ import bronze from '@/public/pages/bronze.svg';
 import silver from '@/public/pages/silver.svg';
 import gold from '@/public/pages/gold.svg';
 import profile from '@/public/pages/big-profile.png';
+import { nan } from "zod";
 
 export const accountSummary = {
     name: 'Samantha Jeffery',
@@ -350,13 +351,19 @@ export  const posts = [
   export const dashboardDta = [
     {
       name: 'Total Nodes',
-      value: '12',
+      value: 12,
     },
     {
       name: "Total GPUs",
-      value: "415",
+      value: 415,
     },
     {
-      name: 
+      name: "Total Rental Duration",
+      value: 27000,
+    },
+    {
+      nanme: "Average Rental Cost",
+      value: 12.99,
     }
   ]
+  

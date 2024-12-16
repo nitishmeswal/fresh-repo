@@ -104,6 +104,9 @@ export const authConfig: NextAuthOptions = {
             session.user.id = token.id
             if (session.user && token.email) {
                 session.user.email = token.email
+                session.user.name = token.name
+                session.user.image = token.picture; 
+
             }
         }
       return session
@@ -113,64 +116,57 @@ export const authConfig: NextAuthOptions = {
         token.id = user.id
         token.name = user.name
         token.email = user.email
+        token.picture = user.image;
+
       }
       return token
     },
-
-    // async signIn({ user, account }) {
-    //   try {
-    //     await dbConnect();
-
-    //     const existingUser = await User.findOne({ email: user.email });
-
-    //     if (existingUser) {
-    //       // Update existing user
-    //       const providerExists = existingUser.providers.some(
-    //         (p:any) => p.provider === account?.provider && p.providerId === account?.id
-    //       );
-
-    //       if (!providerExists) {
-    //         existingUser.providers.push({
-    //           provider: account?.provider,
-    //           providerId: account?.id,
-    //           name: user.name,
-    //           image: user.image,
-    //           email: user.email,
-    //         });
-    //       }
-
-    //       existingUser.name = user.name || existingUser.name;
-    //       existingUser.image = user.image || existingUser.image;
-
-    //       await existingUser.save();
-    //     } else {
-    //       // Create new user
-    //       await User.create({
-    //         email: user.email,
-    //         name: user.name,
-    //         image: user.image,
-    //         providers: [
-    //           {
-    //             provider: account?.provider,
-    //             providerId: account?.id,
-    //             name: user.name,
-    //             image: user.image,
-    //             email: user.email,
-    //           },
-    //         ],
-    //         roles: ['user'], // Default role
-    //       });
-    //     }
-
-    //     return true;
-    //   } catch (error) {
-    //     console.error("Error during sign in:", error);
-    //     return false;
-    //   }
-    // },
+      async signIn({ user, account, profile }) {
+        try {
+          await dbConnect();
+    
+          // @ts-ignore
+          const image = profile?.picture || user?.image || null;
+    
+          // Check if the user already exists in the database
+          let existingUser = await User.findOne({ email: user.email });
+    
+          if (existingUser) {
+            // Update existing user details, including the provider image if it's new
+            if (!existingUser.provider || !existingUser.providerId) {
+              existingUser.provider = account?.provider;
+              existingUser.providerId = account?.providerAccountId || account?.id;
+            }
+    
+            // Update image only if it's not already set or has changed
+            if (!existingUser.image && image) {
+              existingUser.image = image;
+            }
+    
+            await existingUser.save();
+          } else {
+            // Create a new user with the provider information
+            await User.create({
+              id: user.id || account?.id,
+              name: user.name,
+              email: user.email,
+              image: image, // Save the image to the database
+              provider: account?.provider,
+              providerId: account?.providerAccountId || account?.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              status: "active",
+            });
+          }
+    
+          // Allow sign-in
+          return true;
+        } catch (error) {
+          console.error("Error in signIn callback:", error);
+          return false;
+        }
+      },
   },
-  
-
   session: {
     strategy: "jwt" as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days

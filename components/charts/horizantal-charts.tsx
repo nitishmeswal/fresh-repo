@@ -78,7 +78,10 @@ const EarningStatistics = () => {
 
   return (
     <div style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px" }}>
-      <Bar data={data} options={options} />
+    
+      <Bar data={data}
+      // @ts-ignore
+      options={options} />
     </div>
   );
 };

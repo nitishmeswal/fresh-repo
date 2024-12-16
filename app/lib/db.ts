@@ -16,7 +16,7 @@ async function dbConnect() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGODB_URI as string);
+    cached.promise = mongoose.connect("mongodb+srv://dattaraj:neurolove@neurolov.8utoi.mongodb.net/?retryWrites=true&w=majority&appName=Neurolov");
   }
   cached.conn = await cached.promise;
   return cached.conn;
