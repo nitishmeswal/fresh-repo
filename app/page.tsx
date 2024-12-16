@@ -71,8 +71,10 @@ export default function Home() {
         </ul>
       </div>
       </div>
-      <div className='flex flex-1 justify-center relative'>
-        {/* <WorldMap /> */}
+      <div className={ `flex flex-1 justify-center relative 
+                      ${theme === 'light' ? 'bg-white' : ' bg-black' }`}>
+        <WorldMap />
+
       </div>
     </div>
 

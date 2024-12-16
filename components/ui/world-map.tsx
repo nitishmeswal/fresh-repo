@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import DottedMap from "dotted-map";
 import Image from "next/image";
@@ -30,6 +30,13 @@ export function WorldMap({
     backgroundColor: theme === "light" ? "black" : "white",
   });
 
+  useMemo(() => {
+    return dots.map((dot) => ({
+      startPoint: projectPoint(dot.start.lat, dot.start.lng),
+      endPoint: projectPoint(dot.end.lat, dot.end.lng),
+    }));
+  }, [dots]);
+
   const projectPoint = (lat: number, lng: number) => {
     const x = (lng + 180) * (800 / 360);
     const y = (90 - lat) * (400 / 180);
@@ -46,10 +53,11 @@ export function WorldMap({
   };
 
   return (
-    <div className="w-full aspect-[2/1] dark:bg-black bg-white rounded-lg  relative font-sans">
+    <div className="w-full aspect-[2/1] dark:bg-black bg-white rounded-lg p-2 relative font-sans">
       <Image
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
-        className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%,transparent)] pointer-events-none select-none"
+        priority
+        className="h-full w-full pointer-events-none select-none overflow-hidden"
         alt="world map"
         height="495"
         width="1056"
@@ -65,24 +73,14 @@ export function WorldMap({
           const endPoint = projectPoint(dot.end.lat, dot.end.lng);
           return (
             <g key={`path-group-${i}`}>
-              <motion.path
-                d={createCurvedPath(startPoint, endPoint)}
-                fill="none"
-                stroke="url(#path-gradient)"
-                strokeWidth="1"
-                initial={{
-                  pathLength: 0,
-                }}
-                animate={{
-                  pathLength: 1,
-                }}
-                transition={{
-                  duration: 1,
-                  delay: 0.5 * i,
-                  ease: "easeOut",
-                }}
-                key={`start-upper-${i}`}
-              ></motion.path>
+              <path
+                  d={createCurvedPath(startPoint, endPoint)}
+                  style={{
+                    strokeDasharray: 1000, // Adjust based on path length
+                    strokeDashoffset: 1000,
+                    animation: `draw 1s ease-out ${0.5 * i}s forwards`,
+                  }}
+></path>
             </g>
           );
         })}

@@ -32,6 +32,11 @@ export default {
 			green: {
 				400: '#00FFBF'
 			},
+			slate: {
+				200: '#a5c9e8',
+				500: '#97989D',
+				600: '#2C353D',
+			},
 			background: 'hsl(var(--background))',
 			foreground: 'hsl(var(--foreground))',
 			card: {
@@ -87,6 +92,9 @@ export default {
 			lg: 'var(--radius)',
 			md: 'calc(var(--radius) - 2px)',
 			sm: 'calc(var(--radius) - 4px)'
+		},
+		fontSize: {
+			xs : '12px'
 		},
 		  fontFamily: {
 			// Use the CSS variable for Inter
