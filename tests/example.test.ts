@@ -8,11 +8,7 @@ const perfectString = (str: string): string => {
         const current = str[i];
         
         if (current === "{" || current === "[" || current === "(" || current === "<" || current === '"' || current === "'") {
-            if ((current === '"' || current === "'") && checker[checker.length - 1] === current) {
-                checker.pop(); 
-            } else {
                 checker.push(current);
-            }
         }
         else if (
             (current === "}" && checker[checker.length - 1] === "{") ||
@@ -48,7 +44,6 @@ describe("perfectString", ()=> {
             const handleClick = () => {
               router.push('/');
             };
-            
             return (
               <div className="min-h-screen dark:bg-white bg-black dark:text-black text-white flex flex-col items-center justify-center p-4">
                 <div className="text-center">

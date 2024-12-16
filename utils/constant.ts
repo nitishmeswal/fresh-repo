@@ -345,3 +345,18 @@ export  const posts = [
       }
     }
   ];
+
+
+  export const dashboardDta = [
+    {
+      name: 'Total Nodes',
+      value: '12',
+    },
+    {
+      name: "Total GPUs",
+      value: "415",
+    },
+    {
+      name: 
+    }
+  ]
