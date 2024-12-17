@@ -25,9 +25,21 @@ export const gpuSchema = new mongoose.Schema({
     host: { type: String, required: true },
     location: { type: String, required: true },
     imgSrc: { type: String, required: true },
-    computeMode: { type: Number, required: true },
+    computeMode: { 
+        type: Number, 
+        required: true, 
+        enum: [0, 1, 2],
+        message: (props:any) => `${props.value} is not a valid compute mode!`
+    },    
     cores: { type: Number, default: 0 },
-    gpuMemory: { type: String, default: "0 GB" },
+    gpuMemory: { 
+        type: String, 
+        default: "0 GB", 
+        validate: {
+            validator: (value:any) => /^\d+(\.\d+)?\sGB$/.test(value),
+            message: (props: any)=> `${props.value} is not a valid memory format! Use like "16 GB"`
+        }
+    },
     maxCudaVersion: { type: String, required: true },
     cpuModel: { type: String, required: true },
     totalMemory: { type: String, default: "0 GB" },
@@ -35,9 +47,9 @@ export const gpuSchema = new mongoose.Schema({
     storageSize: { type: String, default: "0 GB" },
     motherboard: { type: String, required: true },
     smClock: { type: String, required: true },
-    rentPrice: { type: String, required: true },
-});
+    rentPrice: { type: Number, required: true },
+},{ timestamps: true });
 
-const CpuModel = mongoose.model("CpuModel", gpuSchema);
+const GpuModel = mongoose.model("CpuModel", gpuSchema);
 
-export { CpuModel };
+export { GpuModel };

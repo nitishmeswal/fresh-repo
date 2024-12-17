@@ -7,8 +7,7 @@ import User from '@/app/model/User';
 import { z } from 'zod'; 
 
 const registrationSchema = z.object({
-  firstname: z.string().min(2, { message: "First name must be at least 2 characters" }),
-  lastname: z.string().min(2, { message: "Last name must be at least 2 characters" }),
+  name: z.string().min(2, { message: "First name must be at least 2 characters" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string()
     .min(8, { message: "Password must be at least 8 characters" })
@@ -20,6 +19,7 @@ const registrationSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    console.log('Registration body:', body);
     const validatedData = registrationSchema.parse(body);
 
     await dbConnect();
@@ -35,11 +35,11 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
     const user = await User.create({
-      firstname: validatedData.firstname,
-      lastname: validatedData.lastname,
+      name: validatedData.name,
       email: validatedData.email,
       password: hashedPassword,
       isVerified: false,
+      
       registeredAt: new Date()
     });
 

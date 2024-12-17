@@ -16,6 +16,7 @@ import loggedIn from "../public/loggedin.svg";
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLImageElement>(null);
 

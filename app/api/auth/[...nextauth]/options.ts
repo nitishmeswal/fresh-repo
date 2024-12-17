@@ -63,6 +63,7 @@ export const authConfig: NextAuthOptions = {
           }).select('+password')
 
           if (!user) {
+            console.log('No user found with this email')
             throw new Error('No user found with this email')
           }
 
@@ -72,9 +73,11 @@ export const authConfig: NextAuthOptions = {
           )
 
           if (!isPasswordValid) {
+            console.log('Incorrect password')
             throw new Error('Invalid password')
           }
 
+            console.log('User authenticated:', user)
           return {
             id: user._id.toString(),
             email: user.email,
@@ -150,6 +153,7 @@ export const authConfig: NextAuthOptions = {
               id: user.id || account?.id,
               name: user.name,
               email: user.email,
+              isVerified: true,
               image: image, // Save the image to the database
               provider: account?.provider,
               providerId: account?.providerAccountId || account?.id,

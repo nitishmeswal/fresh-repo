@@ -46,13 +46,23 @@ const EarningStatistics = () => {
   };
 
   const options = {
+    layouts:{
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 10,
+        right: 10,
+      }
+    },
     responsive: true,
-    indexAxis: "y",
+    indexAxis: "y", // Horizontal bars
     plugins: {
       legend: {
+        display: true,
         position: "top",
         labels: {
           color: "white",
+          font: { size: 12 },
         },
       },
       title: {
@@ -74,12 +84,13 @@ const EarningStatistics = () => {
         ticks: { color: "white" },
       },
     },
+    maintainAspectRatio: false, // Adjusts for responsiveness
   };
 
   return (
     <div style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px" }}>
     
-      <Bar data={data}
+      <Bar data={data} className="h-[50vh]"
       // @ts-ignore
       options={options} />
     </div>

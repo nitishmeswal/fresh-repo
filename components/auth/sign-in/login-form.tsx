@@ -33,7 +33,7 @@ export const LoginForm: React.FC<FieldValues> = () => {
 
       if (callback?.ok) {
         toast.success("Logged in successfully")
-        router.push("/dashboard")
+        router.push("/")
         router.refresh()
       } else if (callback?.error) {
         toast.error(callback.error)
@@ -63,43 +63,3 @@ export const LoginForm: React.FC<FieldValues> = () => {
   </form>
   )
 }
-
-    // <form 
-    //   onSubmit={handleSubmit(handleOnSubmit)}
-    //   className="space-y-6"
-    // >
-    //   <div className={`space-y-4 `}>
-    //     <Input
-    //       id="email"
-    //       label="Email Address"
-    //       type="email"
-    //       disabled={isLoading}
-    //       register={register}
-    //       errors={errors}
-    //       required
-    //     />
-
-    //     <Input
-    //       id="password"
-    //       label="Password"
-    //       type="password"
-    //       disabled={isLoading}
-    //       register={register}
-    //       errors={errors}
-    //       required
-    //     />
-    //   </div>
-
-    //   <div>
-    //     <Button 
-    //       type="submit" 
-    //       className={`
-    //         w-full
-    //         ${hoverButtonStyle.primary}
-    //       `}
-    //       disabled={isLoading}
-    //     >
-    //       {isLoading ? 'Logging in...' : 'Continue'}
-    //     </Button>
-    //   </div>
-    // </form>

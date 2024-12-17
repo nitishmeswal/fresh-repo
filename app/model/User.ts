@@ -13,6 +13,10 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide a email'],
     unique: true,
   },
+  isVeerified: {
+    type: Boolean,
+    default: false,
+  },
   password: {
     type: String,
     required: [false],
@@ -56,6 +60,7 @@ export interface UserType  {
   id: string;
   name:string
   email: string;
+  isVeerified: boolean;
   image?: string;
   // role: 'user' | 'admin' | 'superadmin';
   // subscriptions: Subscription[];

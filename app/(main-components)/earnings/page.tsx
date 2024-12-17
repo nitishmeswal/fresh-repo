@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import React from 'react'
 import { ChartData } from 'chart.js';
 import { chartData, trafficData } from '@/utils/constant';
+import EarningStatistics from '@/components/charts/horizantal-charts';
 const Home = () => {
   const { theme } = useTheme();
 
@@ -67,6 +68,7 @@ const Home = () => {
             </li>
           </ul>
       <div className="flex justify-end flex-col py-4 transition-all duration-300">
+        <EarningStatistics/>
       </div>
     </div>
   )
