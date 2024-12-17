@@ -85,15 +85,24 @@ export const AIModelData = [
 export const mainServices: {name:string, description:string}[] = [
   {
     name: "Rent GPU",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat quam, bibendum nec gravida at"
-  },
+    description:
+            `Access high-performance GPU computing on demand. Choose from our network 
+             of 200+ verified GPU nodes. Pay only for what you use, starting at $0.30 
+             per GPU hour - up to 80% cheaper than traditional cloud providers.`
+            },
   {
     name: "Deploy Model",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat quam, bibendum nec gravida at",
-  },
+    description: 
+            `Deploy and scale AI models with just a few clicks. Choose from our pre-built
+             models or deploy your custom models. Zero setup time, 
+             instant deployment, and seamless integration with popular ML frameworks.`
+    },
   {
     name: "Start Earning",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat quam, bibendum nec gravida at"
+    description: 
+            `Turn your idle GPU power into passive income through our browser-based mining 
+             platform. No downloads required - just connect through your browser. Join our 
+             network of providers earning rewards while supporting the AI revolution.`
   }
 ]
 
