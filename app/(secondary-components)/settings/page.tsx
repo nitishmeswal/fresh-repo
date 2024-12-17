@@ -5,7 +5,7 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <div className=' w-full pt-10 px-12 rounded-2xl'>
+    <div className=' w-full pt-10 px-12 '>
       <UserSetting/>
     </div>
   )
