@@ -102,6 +102,7 @@ export default {
 			
 			// Optional: Add specific font weights/styles
 			'inter': ["var(--font-inter)", "system-ui", "sans-serif"],
+			
 		  },
 	}
   },

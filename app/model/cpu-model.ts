@@ -20,7 +20,7 @@ const gpuModel = z.object({
     rentPrice: z.string(),
 });
 
-const cpuSchema = new mongoose.Schema({
+export const gpuSchema = new mongoose.Schema({
     gpuModel: { type: String, required: true, minlength: 8 },
     host: { type: String, required: true },
     location: { type: String, required: true },
@@ -38,6 +38,6 @@ const cpuSchema = new mongoose.Schema({
     rentPrice: { type: String, required: true },
 });
 
-const CpuModel = mongoose.model("CpuModel", cpuSchema);
+const CpuModel = mongoose.model("CpuModel", gpuSchema);
 
 export { CpuModel };
