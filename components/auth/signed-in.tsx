@@ -7,13 +7,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Loader, LogIn, LogOut, Settings, User } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const Signed = () => {
     const { data: session, status } = useSession();
@@ -69,13 +67,17 @@ const Signed = () => {
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger className="outline-none relative float-right flex flex-1 flex-shrink">
                         <div ref={buttonRef} className="flex gap-4 items-center cursor-pointer">
-                            <Avatar className="hover:opacity-75 transition ">
+                            <Avatar className="hover:opacity-75 transition w-12 h-12 ">
                                 <AvatarImage
                                     src={session?.user?.image || undefined}
-                                    className="hover:opacity-75 transition"
+                                    className="hover:opacity-75 transition "
                                 />
-                                <AvatarFallback className="bg-sky-900 text-white">
-                                    {avatarFallback}
+                                <AvatarFallback className={`${theme === 'dark' ? 'bg-gray-100 text-gray-800' : ' bg-gray-800 text-green-100'} text-white`}>
+                                    { status === "authenticated" ? 
+                                    avatarFallback : 
+                                    <User className={`${theme === 'dark' ? 'text-black' : 'text-white'} w-6 h-6`} />
+                                    
+                                    }
                                 </AvatarFallback>
                             </Avatar>
                         </div>
@@ -111,14 +113,14 @@ const Signed = () => {
                                         dropdownItems.map((item, index) => (
                                           <DropdownMenuItem
                                               key={index}
-                                              className="h-10 flex items-center cursor-pointer"
+                                              className="h-10 flex items-center cursor-pointer text-md"
                                               onClick={() => {
                                                   item.onClick();
                                                   setShowDropdown(false);
                                               }}
                                           >
                                               {item.icon}
-                                              <span>{item.text}</span>
+                                              <span className="">{item.text}</span>
                                           </DropdownMenuItem>
                                       ))
                                 )

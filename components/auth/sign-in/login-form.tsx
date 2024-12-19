@@ -59,7 +59,7 @@ export const LoginForm: React.FC<FieldValues> = () => {
       <Label>Password</Label>
       <Input type="password" placeholder="Enter your password" required />
     </div>
-    <Button type="submit" onClick={() => signIn("credentials")}>Sign In</Button>
+    <Button className="w-full" type="submit" onClick={() => signIn("credentials")}>Sign In</Button>
   </form>
   )
 }

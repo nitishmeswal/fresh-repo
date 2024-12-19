@@ -11,7 +11,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-white bg-black dark:text-black text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-white dark:bg-black dark:text-black text-white flex flex-col items-center justify-center p-4">
       <div className="text-center">
         <h1 className="text-6xl font-bold dark:texttext-gray-800 -gray-200 mb-4">404</h1>
         <h2 className="text-3xl font-semibold dark:text-gray-700 text-gray-300 mb-6">
@@ -22,7 +22,7 @@ export default function NotFound() {
         </p>
         <Button 
           onClick={handleClick} 
-          className="dark:bg-black dark:text-white bg-white text-black dark:hover:bg-gray-800 hover:bg-gray-200"
+          className="bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
         >
           Back To Dashboard
         </Button>

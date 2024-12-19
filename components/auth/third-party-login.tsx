@@ -48,8 +48,8 @@ export const SocialLogin: React.FC<{
 
   const getButtonStyles = (theme: string | undefined) => ({
     outline: theme === "dark"
-      ? 'border-gray-700 hover:bg-gray-700 text-black'
-      : 'border-gray-300 hover:bg-gray-200 text-white'
+      ? 'border-gray-700 hover:bg-gray-700 text-white'
+      : 'border-gray-300 hover:bg-gray-200 text-black'
   })
 
   const handleSocialLogin = async (provider: SocialProvider) => {
@@ -81,7 +81,7 @@ export const SocialLogin: React.FC<{
   const buttonStyles = getButtonStyles(theme)
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 ">
       {SOCIAL_LOGIN_PROVIDERS.map(({ provider, icon: Icon, label }) => (
         <Button 
           key={provider}
@@ -94,7 +94,7 @@ export const SocialLogin: React.FC<{
             ${buttonStyles.outline}
           `}
         >
-          <Icon className="mr-2 h-5 w-5" />
+          <Icon className="mr-2 h-5 w-5 " />
           {label}
         </Button>
       ))}

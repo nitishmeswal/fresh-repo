@@ -21,6 +21,7 @@ requiredEnvVars.forEach(env => {
   }
 });
  
+
 export const authConfig: NextAuthOptions = {
   providers: [
     GoogleProvider({

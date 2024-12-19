@@ -214,7 +214,7 @@ const WalletPage = () => {
   const formatCardNumber = (value: string) => {
     const number = value.replace(/\D/g, '');
     const groups = number.match(/.{1,4}/g) || [];
-    return groups.join(' ').substr(0, 19); // 16 digits + 3 spaces
+    return groups.join(' ').substr(0, 19); 
   };
 
   const formatExpiryDate = (value: string) => {
@@ -626,8 +626,6 @@ const WalletPage = () => {
             </div>
           </Card>
         </div>
-
-        {/* Middle - Payment Method and Card */}
         <div className="w-[420px] space-y-6">
           <Card className="bg-white/50 dark:bg-zinc-900/50 border-gray-200 dark:border-zinc-800/50 backdrop-blur-xl">
             <div className="p-6">

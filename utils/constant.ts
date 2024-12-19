@@ -28,6 +28,11 @@ export const FeatureOptions = [
       icon: "/connect-to-earn.svg",
       href: "/connect-to-earn",
     },
+    {
+      label: "Wallet",
+      icon: "/wallet.svg",
+      href: "/wallet",
+    }
   ];
 
 export const SettingsOptions = [
@@ -194,6 +199,7 @@ import silver from '@/public/pages/silver.svg';
 import gold from '@/public/pages/gold.svg';
 import profile from '@/public/pages/big-profile.png';
 import { nan } from "zod";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 export const accountSummary = {
     name: 'Samantha Jeffery',
@@ -376,3 +382,31 @@ export  const posts = [
     }
   ]
   
+
+export const footer = [
+  {
+    name: "GitHub",
+    href: "htpps://github.com",
+    icon: "/github.svg",
+  },
+  {
+    name: "Twitter",
+    href: "https://twitter.com",
+    icon: "/twitter.svg",
+  },
+  {
+    name: "LinkedIn",
+    href: "https://linkedin.com",
+    icon: "/linkedin.svg",
+  },
+  {
+    name: "Discord",
+    href: "https://discord.com",
+    icon: "/discord.svg",
+  },
+  {
+    name: "Telegram",
+    href: "https://telegram.com",
+    icon: "/telegram.svg",
+  }
+]

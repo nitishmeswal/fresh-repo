@@ -29,45 +29,29 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full sm:w-96 mx-auto mt-10">
-    <CardHeader>
-      <CardTitle>Sign In</CardTitle>
-    </CardHeader>
-    <CardContent className="grid gap-4">
-    <SocialLogin 
-            isLoading={isLoading}
-            onLoginStart={handleSocialLoginStart}
-            onLoginSuccess={handleSocialLoginSuccess}
-            onLoginError={handleSocialLoginError}
-          />
-      <Divider />
-      <LoginForm />
-    </CardContent>
-    <CardFooter>
-      <p className="text-sm">
-        Don&apos;t have an account? <Link href="/sign-up" className="underline">Sign up</Link>
-      </p>
-    </CardFooter>
-  </Card>
+    <div className="flex flex-col items-center justify-center h-screen -mt-20">
+      <Card className="w-full sm:w-96 mx-auto mt-10 ">
+        <CardHeader>
+          <CardTitle>Sign In</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <SocialLogin 
+                  isLoading={isLoading}
+                  onLoginStart={handleSocialLoginStart}
+                  onLoginSuccess={handleSocialLoginSuccess}
+                  onLoginError={handleSocialLoginError}
+                />
+          <Divider />
+          <LoginForm />
+        </CardContent>
+        <CardFooter>
+          <p className="text-sm">
+            Don&apos;t have an account? <Link href="/sign-up" className="underline w-full">Sign up</Link>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
-          // <div className="text-center">
-          //   <p className={`
-          //     text-sm 
-          //     ${subtextColor}
-          //   `}>
-          //     Don&apos;t have an account?{" "}
-          //     <Link 
-          //       href="/sign-up" 
-          //       className={`
-          //         font-semibold 
-          //         ${theme === 'light' 
-          //           ? 'text-blue-600 hover:text-blue-500' 
-          //           : 'text-blue-500 hover:text-blue-600'}
-          //       `}
-          //     >
-          //       Sign Up
-          //     </Link>
-          //   </p>
-          // </div>
+
           

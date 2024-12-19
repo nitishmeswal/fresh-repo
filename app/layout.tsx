@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import SessionProvider from "@/components/sessionProvider";
 import { ThemeProvider } from "next-themes";
 import CustomSidebar from "@/components/sidebar";
+import Footer from "@/components/footer/main";
 const inter = localFont({
   src: "./fonts/Inter_Regular.ttf",
   variable: "--font-inter",
@@ -60,7 +61,10 @@ export default function RootLayout({
                   <main className={`flex-1 bg-white dark:bg-black`}>
                     {children}
                   </main>
+                  <div>
+                  </div>
                 </div>
+                  <Footer/>
               </div>
             </SidebarProvider>
           </ThemeProvider>
