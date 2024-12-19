@@ -80,7 +80,7 @@ const Signed = () => {
                                     }
                                 </AvatarFallback>
                             </Avatar>
-                        </div>Ava
+                        </div>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent ref={dropdownRef} align="center" side="bottom" className="w-50">

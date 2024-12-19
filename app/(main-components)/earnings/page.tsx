@@ -3,9 +3,9 @@
 import DoughnutChart from '@/components/charts/doughnut';
 import { useTheme } from 'next-themes';
 import React from 'react'
-import { ChartData } from 'chart.js';
 import { chartData, trafficData } from '@/utils/constant';
-import EarningStatistics from '@/components/charts/horizantal-charts';
+import Chart from '@/components/charts/stats-chart';
+import OverdueWorkCard from '@/components/charts/overdue-work';
 const Home = () => {
   const { theme } = useTheme();
 
@@ -65,10 +65,16 @@ const Home = () => {
                 }`}
                 >
               Connect to earn
+              <div className=' flex flex-1 justify-center p-2 items-center'>
+                <OverdueWorkCard 
+                  // chartData={trafficData} 
+                  // border={true}
+                  />
+              </div>
             </li>
           </ul>
-      <div className="flex justify-end flex-col py-4 transition-all duration-300">
-        <EarningStatistics/>
+          <div className="flex justify-end flex-col py-4 transition-all duration-300">
+        <Chart/>
       </div>
     </div>
   )

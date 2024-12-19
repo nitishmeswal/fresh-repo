@@ -1,9 +1,10 @@
 import React from "react";
-import EarningStatistics from "@/components/charts/horizantal-charts";
+// import EarningStatistics from "@/components/charts/horizantal-charts";
+import Chart from "@/components/charts/stats-chart";
 
 export default {
   title: "Components/EarningStatistics",
-  component: EarningStatistics,
+  component: Chart,
   parameters: {
     backgrounds: {
       default: "dark",
@@ -12,7 +13,7 @@ export default {
   },
 };
 
-const Template = (args:any) => <EarningStatistics {...args} />;
+const Template = (args:any) => <Chart {...args} />;
 
 export const Default = Template.bind({});
 
