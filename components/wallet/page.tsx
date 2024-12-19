@@ -567,8 +567,8 @@ const WalletPage = () => {
         {/* Left side - Wallet Connection */}
         <div className="flex-1">
           <Card className="bg-white/50 dark:bg-zinc-900/50 border-gray-200 dark:border-zinc-800/50 backdrop-blur-xl h-full">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="py-6 px-2">
+              <div className="flex items-center justify-between mb-4 w-full">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Connect your wallet</h2>
                 <button className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                   <Image src="/close.svg" alt="Close" width={24} height={24} />
