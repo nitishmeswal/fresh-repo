@@ -7,6 +7,7 @@ import mapLight from '@/public/pages/map-light.svg';
 import mapDark from '@/public/pages/map-dark.svg';
 // import WorldMap from '@/components/icons/world-map';
 import Image from 'next/image';
+import MapData from '@/components/map-data';
 
 export default function Home() {
   const { theme } = useTheme();
@@ -74,17 +75,24 @@ export default function Home() {
         </ul>
       </div>
       </div>
-      <div className={ `flex flex-1 justify-center relative w-full px-12 pb-8`}>
-        {
-          theme === "dark" 
-            ? <Image src={mapDark} alt="map" className=' w-full' />
-            : <Image src={mapLight} alt="map" className=' w-full'/>
-        }
-        <div className=' top-2 left-2 flex flex-col bg-white/10'
-         >
-          
-         </div>
-      </div>
+      <div className={`flex flex-1 justify-center relative w-full px-12 pb-8`}>
+  {/* Conditional rendering for map image based on theme */}
+  {theme === "dark" ? (
+    <Image src={mapDark} alt="map" className="w-full" />
+  ) : (
+    <Image src={mapLight} alt="map" className="w-full" />
+  )}
+
+  {/* MapData component positioned on the map */}
+  <div
+    className="absolute top-6 left-8 w-full h-full flex  pointer-events-none"
+  >
+    <div className=" p-4 ml-10 rounded-lg pointer-events-auto">
+      <MapData />
+    </div>
+  </div>
+</div>
+
     </div>
 
   )

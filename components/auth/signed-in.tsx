@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -80,7 +80,7 @@ const Signed = () => {
                                     }
                                 </AvatarFallback>
                             </Avatar>
-                        </div>
+                        </div>Ava
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent ref={dropdownRef} align="center" side="bottom" className="w-50">

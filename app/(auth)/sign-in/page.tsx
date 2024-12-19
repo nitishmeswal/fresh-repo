@@ -45,8 +45,8 @@ export default function LoginPage() {
           <LoginForm />
         </CardContent>
         <CardFooter>
-          <p className="text-sm">
-            Don&apos;t have an account? <Link href="/sign-up" className="underline w-full">Sign up</Link>
+          <p className="text-sm texgr">
+            Don&apos;t have an account? <Link href="/sign-up" className="underline">Sign up</Link>
           </p>
         </CardFooter>
       </Card>

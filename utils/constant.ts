@@ -377,7 +377,7 @@ export  const posts = [
       value: 27000,
     },
     {
-      nanme: "Average Rental Cost",
+      name: "Average Rental Cost",
       value: 12.99,
     }
   ]
