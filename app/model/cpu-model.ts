@@ -47,7 +47,7 @@ export const gpuSchema = new mongoose.Schema({
     storageSize: { type: String, default: "0 GB" },
     motherboard: { type: String, required: true },
     smClock: { type: String, required: true },
-    rentPrice: { type: Number, required: true },
+    rentPrice: { type: String, required: true },
 },{ timestamps: true });
 
 const GpuModel = mongoose.model("CpuModel", gpuSchema);

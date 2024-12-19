@@ -57,7 +57,7 @@ export default function RootLayout({
                     <CustomSidebar />
                   </div>
                   <div className="h-full w-0  dark:w-[0.5px] opacity-0 dark:opacity-100 dark:bg-black"></div>
-                  <main className={`flex-1 bg-black dark:bg-white`}>
+                  <main className={`flex-1 bg-white dark:bg-black`}>
                     {children}
                   </main>
                 </div>

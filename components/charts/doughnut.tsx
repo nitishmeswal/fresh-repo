@@ -35,11 +35,11 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
         label: "Number of Items",
         data: chartData.map((item) => item.value),
         backgroundColor: chartData.map((item) => item.color),
-        borderColor: theme === "light" ? "#28292b" : "white",
+        borderColor: theme === "dark" ? "#28292b" : "white",
         borderWidth: 0,
         borderRadius: border? 10 : 0,
         spacing: 5,
-        hoverBorderColor: theme === "light" ? "#28292b" : "white",
+        hoverBorderColor: theme === "dark" ? "#28292b" : "white",
       },
     ],
   };
@@ -72,7 +72,9 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
             className={`text-3xl font-extrabold ${
-              theme === "dark" ? "text-black" : "text-white"
+              theme === "dark" 
+              ? "text-white"
+              : "text-black" 
             }`}
           >
             {totalVisitors.toLocaleString()}
@@ -91,7 +93,9 @@ const DoughnutChart: React.FC<DoughnutChartProps> = ({ chartData, border }) => {
             ></span>
             <span
               className={`text-sm ${
-                theme === "dark" ? "text-gray-950" : "text-gray-100"
+                theme === "dark" 
+                ? "text-gray-100"
+                : "text-gray-950" 
               }`}
             >
               {item.activity}

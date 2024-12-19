@@ -5,7 +5,7 @@ import { filters, GPUData } from '@/utils/constant';
 
 const Home = () => {
   return (
-    <div className="flex flex-1 w-full h-screen py-8 px-4 flex-col overflow-hidden dark:bg-white bg-black2">
+    <div className="flex flex-1 w-full h-screen py-8 px-4 flex-col overflow-hidden  bg-black2">
       {/* Fixed filter menu at the top */}
       <div className="flex flex-row p-4 justify-start shrink-0">
         {filters.map((filter, index) => (
@@ -21,8 +21,8 @@ const Home = () => {
       <div className="w-full px-8 overflow-y-auto space-y-4 flex-grow">
         {GPUData.map((gpu, index) => (
           <div key={index} className="mb-4">
-            <div className="flex p-6 rounded-lg my-4 dark:bg-gray-100 bg-gray-950 justify-center w-full">
-              <div className="flex flex-1 flex-col dark:bg-gray-200 bg-gray-850 rounded-lg
+            <div className="flex p-6 rounded-lg my-4 bg-gray-100 dark:bg-gray-950 justify-center w-full">
+              <div className="flex flex-1 flex-col bg-gray-200 dark:bg-gray-850 rounded-lg
                                items-center px-5 py-4 w-full shadow-md dark:shadow-none">
                 {/* GPU Header */}
                 <div className="flex flex-row justify-between w-full">
@@ -34,17 +34,17 @@ const Home = () => {
                       height={124}
                     />
                     <div className="flex flex-col justify-start px-6">
-                      <h1 className="text-xl font-medium dark:text-gray-900 text-white">{gpu.gpuModel}</h1>
-                      <p className="text-md dark:text-gray-600 text-gray-650 space-y-4">{gpu.host}</p>
-                      <p className="text-sm dark:text-gray-700 text-white font-medium mt-2 group-hover:text-gray-800 dark:group-hover:text-[#D8D8D8]">
+                      <h1 className="text-xl font-medium text-gray-900 dark:text-white">{gpu.gpuModel}</h1>
+                      <p className="text-md text-gray-600 dark:text-gray-650 space-y-4">{gpu.host}</p>
+                      <p className="text-sm text-gray-700 dark:text-white font-medium mt-2 group-hover:text-gray-800 dark:group-hover:text-[#D8D8D8]">
                         {gpu.location}
                       </p>
                     </div>
                   </div>
                   <div className="flex justify-center items-center px-6 py-4 mb-4">
                     <button className="flex justify-center items-center h-fit rounded-full text-[15px] font-normal py-1 px-4 
-                      dark:text-white dark:bg-gray-950 dark:hover:bg-blue-600 
-                      text-gray-950 bg-gray-100 hover:bg-blue-600 
+                      text-white bg-gray-950 dark:hover:bg-blue-600 
+                      dark:text-gray-950 dark:bg-gray-100 hover:bg-blue-600 
                       transition duration-200">
                       Rent {gpu.rentPrice}
                     </button>
@@ -69,8 +69,8 @@ const Home = () => {
                       { label: "SM CLOCK", value: gpu.smClock },
                     ].map((item, itemIndex) => (
                       <div key={itemIndex} className="flex flex-col">
-                        <h1 className="text-sm dark:text-gray-500 text-gray-450 uppercase">{item.label}</h1>
-                        <p className="text-sm dark:text-gray-900 text-[#D0D0D0] mt-1">{item.value}</p>
+                        <h1 className="text-sm text-gray-500 dark:text-gray-450 uppercase">{item.label}</h1>
+                        <p className="text-sm text-gray-900 dark:text-[#D0D0D0] mt-1">{item.value}</p>
                       </div>
                     ))}
                   </div>

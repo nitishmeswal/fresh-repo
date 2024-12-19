@@ -67,6 +67,7 @@ export async function POST(req: Request) {
     }
 
     if (error instanceof Error && error.message.includes('duplicate key')) {
+      console.error('Error creating user:', error.message);
       return NextResponse.json(
         { error: 'Email already exists' },
         { status: 400 }

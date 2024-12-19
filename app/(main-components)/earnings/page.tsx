@@ -19,7 +19,7 @@ const Home = () => {
                 flex-col p-4 w-76 
                 mx-2 space-y-2 
                 rounded-2xl 
-                ${theme === 'light' 
+                ${theme === "dark" 
                   ? 'bg-gray-850 text-gray-100 hover:bg-blue-600' 
                   : 'bg-gray-100 text-gray-850 hover:bg-blue-500'
                 }`}
@@ -40,7 +40,7 @@ const Home = () => {
                 flex-col p-4 w-76 
                 mx-2 space-y-2 
                 rounded-2xl 
-                ${theme === 'light' 
+                ${theme === "dark" 
                 ? 'bg-gray-850 text-gray-100 hover:bg-blue-600' 
                   : 'bg-gray-100 text-gray-850 hover:bg-blue-600'
                 }`}
@@ -59,7 +59,7 @@ const Home = () => {
                 flex-col p-4 w-76 
                 mx-2 space-y-2 
                 rounded-2xl 
-                ${theme === 'light' 
+                ${theme === "dark" 
                 ? 'bg-gray-850 text-gray-100 hover:bg-blue-600' 
                   : 'bg-gray-100 text-gray-850 hover:bg-blue-600'
                 }`}

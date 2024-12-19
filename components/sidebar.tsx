@@ -78,7 +78,7 @@ const CustomSidebar = () => {
             (currentTab === "" && option.href.substring(1) === "")
               ?  "bg-blue-600 text-white"
                 : 
-              theme === "light"
+              theme === "dark"
               ? "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-gray-100"
               : "bg-transparent text-gray-700 hover:bg-gray-200 hover:text-gray-900"
           } flex items-center px-3 py-2 rounded-full hover:cursor-pointer`}
@@ -104,7 +104,7 @@ const CustomSidebar = () => {
   return (
     <div
       className={`px-6 pt-[26px] h-full font-inter ${
-        theme === "light"
+        theme === "dark"
           ? "bg-gray-950 text-gray-100"
           : "bg-gray-100 text-gray-800"
       }`}
@@ -112,7 +112,7 @@ const CustomSidebar = () => {
       <aside
         id="default-sidebar"
         className={`flex flex-col w-fit h-screen transition-transform sm:translate-x-0 ml-1 ${
-          theme === "light" ? "bg-gray-950 text-gray-100" : "bg-gray-100 text-gray-800"
+          theme === "dark" ? "bg-gray-950 text-gray-100" : "bg-gray-100 text-gray-800"
         }`}
         aria-label="Sidebar"
       >
@@ -123,7 +123,9 @@ const CustomSidebar = () => {
             <div className="py-6">
               <div
                 className={`flex w-full h-[1px] ${
-                  theme === "dark" ? "bg-gray-150/20" : "bg-gray-300"
+                  theme === "dark" 
+                  ? "bg-gray-300"
+                  : "bg-gray-150/20"
                 }`}
               ></div>
             </div>

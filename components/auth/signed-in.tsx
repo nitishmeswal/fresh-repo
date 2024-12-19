@@ -1,150 +1,133 @@
-"use client"
+"use client";
 
-import { Loader, LogIn, LogOut, Settings, User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
-import { useTheme } from 'next-themes';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-const [showDropdown, setShowDropdown] = useState<boolean>(false);
-const { theme, setTheme } = useTheme();
-const dropdownRef = useRef<HTMLDivElement>(null);
-const buttonRef = useRef<HTMLImageElement>(null);
-// import loggedIn from "../public/loggedin.svg";
-
-const router = useRouter();
-const {data:session, status} = useSession();
-
-const avatarFallback = session?.user?.name?.charAt(0).toUpperCase();
-const userIamge = session?.user?.image;
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Loader, LogIn, LogOut, Settings, User } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Signed = () => {
-
-    const handleSignOut = async ()=> {
-
-        await signOut({
-            redirect: false,
-        });
-        router.push("/")
-    }
-    if(status === "loading") return (
-            <Loader className="size-6 mr-4 mt-4 float-right animate-spin" />
-        )
+    const { data: session, status } = useSession();
+    const [showDropdown, setShowDropdown] = useState(false);
+    const { theme } = useTheme();
+    const router = useRouter()
     
+    const  image = session?.user?.image
+    process.env.NODE_ENV === 'development' && console.log(image)
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLDivElement>(null);
 
+    const avatarFallback = session?.user?.name?.charAt(0).toUpperCase();
+    
+    // Sign-out handler
+    const handleSignOut = async () => {
+        await signOut({ redirect: false });
+        router.push("/");
+    };
 
     const handleClickOutside = useCallback((event: MouseEvent) => {
         if (
-          dropdownRef.current && 
-          buttonRef.current && 
-          !dropdownRef.current.contains(event.target as Node) &&
-          !buttonRef.current.contains(event.target as Node)
+            dropdownRef.current &&
+            buttonRef.current &&
+            !dropdownRef.current.contains(event.target as Node) &&
+            !buttonRef.current.contains(event.target as Node)
         ) {
-          setShowDropdown(false);
+            setShowDropdown(false);
         }
-      }, []);
-    
-      useEffect(() => {
+    }, []);
+
+    useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, [handleClickOutside]);
+    }, [handleClickOutside]);
 
-      const dropdownItems = [
-        { 
-          icon: <User className="mr-2 h-4 w-4" />, 
-          text: "Profile", 
-          onClick: () => {} 
-        },
-        { 
-          icon: <Settings className="mr-2 h-4 w-4" />, 
-          text: "Settings", 
-          onClick: () => {} 
-        },
-      ];
+    // Dropdown menu options
+    const dropdownItems = [
+        { icon: <User className="mr-2 h-4 w-4" />, text: "Profile", onClick: () => {} },
+        { icon: <Settings className="mr-2 h-4 w-4" />, text: "Settings", onClick: () => {} },
+        { icon: <LogIn className="mr-2 h-4 w-4" />, text: "Sign In", onClick: () => router.push("/sign-in") },
+    ];
 
+    if (status === "loading") {
+        return <Loader className="size-6 mr-4 mt-4 float-right animate-spin" />;
+    }
 
-  return (
-    <div className="relative">
-    <Image
-      ref={buttonRef}
-      src={userIamge || avatarFallback! }
-      alt="loggedIn"
-      className="w-15 cursor-pointer"
-      onClick={() => setShowDropdown((prev) => !prev)} 
-    />
-    {showDropdown && (
-      <div
-        ref={dropdownRef}
-        className={`absolute top-full right-0 mt-2 w-60 rounded-lg shadow-lg z-50 ${
-          theme === 'dark' 
-            ? "bg-gray-100 text-gray-900" 
-            : "bg-gray-950 text-gray-100"
-        }`}
-      >
-        <div
-          className={`px-4 py-3 border-b ${
-            theme === 'dark' 
-              ? "border-gray-300 text-gray-800" 
-              : "border-gray-700 text-gray-100"
-          } text-center font-semibold`}
-        >
-          Welcome to Neurolov
-        </div>
+    return (
+        <nav>
 
-        <div className="py-1">
-          { status === 'authenticated' ? 
-          <div
-              className={`px-4 py-2 flex items-center cursor-pointer hover:${
-                theme === 'dark' 
-                  ? "bg-gray-200" 
-                  : "bg-gray-800"
-              }`}
-              onClick={() => {
-                handleSignOut();
-                setShowDropdown(false);
-              }}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Signout</span>
-            </div>
-             : dropdownItems.map((item, index) => (
-            <div
-              key={index}
-              className={`px-4 py-2 flex items-center cursor-pointer hover:${
-                theme === 'dark' 
-                  ? "bg-gray-200" 
-                  : "bg-gray-800"
-              }`}
-              onClick={() => {
-                item.onClick();
-                setShowDropdown(false);
-              }}
-            >
-              {item.icon}
-              <span>{item.text}</span>
-            </div>
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger className="outline-none relative float-right flex flex-1 flex-shrink">
+                        <div ref={buttonRef} className="flex gap-4 items-center cursor-pointer">
+                            <Avatar className="hover:opacity-75 transition ">
+                                <AvatarImage
+                                    src={session?.user?.image || undefined}
+                                    className="hover:opacity-75 transition"
+                                />
+                                <AvatarFallback className="bg-sky-900 text-white">
+                                    {avatarFallback}
+                                </AvatarFallback>
+                            </Avatar>
+                        </div>
+                    </DropdownMenuTrigger>
 
-          ))}
-          {
-              <a href={`sign-in`} className={`w-full px-4 py-2 flex items-center flex-row cursor-pointer hover:${
-              theme === 'dark' 
-                ? "bg-gray-200" 
-                : "bg-gray-800"
-            }`}>
-                <LogIn className="mr-2 h-4 w-4" />
-                <span>
-                  Sign In
-                </span>
-              </a>
-          }
-        </div>
-      </div>
-    )}
-  </div>
-  )
-}
+                    <DropdownMenuContent ref={dropdownRef} align="center" side="bottom" className="w-50">
+                        <div
+                            className={`px-4 py-3 border-b ${
+                                theme === "dark" 
+                                ? "border-gray-700 text-gray-100"
+                                : "border-gray-300 text-gray-800" 
+                            } text-center font-semibold`}
+                        >
+                            Welcome to Neurolov
+                        </div>
+                        {
+                            status === "authenticated" ? 
+                            (
 
-export default Signed
+                                <div className="py-1">
+                            <DropdownMenuItem
+                                className="h-10 flex items-center cursor-pointer"
+                                onClick={() => {
+                                    handleSignOut();
+                                    setShowDropdown(false);
+                                }}
+                                >
+                                <LogOut className="mr-2 h-4 w-4" />
+                                <span>Sign Out</span>
+                            </DropdownMenuItem>
+                        </div>
+                                ) : (
+                                        dropdownItems.map((item, index) => (
+                                          <DropdownMenuItem
+                                              key={index}
+                                              className="h-10 flex items-center cursor-pointer"
+                                              onClick={() => {
+                                                  item.onClick();
+                                                  setShowDropdown(false);
+                                              }}
+                                          >
+                                              {item.icon}
+                                              <span>{item.text}</span>
+                                          </DropdownMenuItem>
+                                      ))
+                                )
+                        }
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+        </nav>
+    );
+};
+
+export default Signed;

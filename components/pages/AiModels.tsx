@@ -98,7 +98,7 @@ function AiModels() {
             <div className="model-info">
                 <div className="model-header">
                 <Image src={modelLogo} alt="Figma" className="framework-icon" />
-                <h3 className={theme === 'light' ? ' text-white' : ' text-black'}>{model.name}</h3>
+                <h3 className={theme === "dark" ? ' text-white' : ' text-black'}>{model.name}</h3>
                 </div>
               <div className="model-meta">
                 <span>{model.type}</span>

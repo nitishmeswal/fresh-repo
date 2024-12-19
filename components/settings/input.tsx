@@ -10,7 +10,7 @@ const InputUS = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">
         type={type}
         className={cn(
           `w-full p-3 rounded-full focus:outline-none ${
-            theme === "light"
+            theme === "dark"
               ? "border-[#686868] border-[1px] text-white/50 bg-gray-950"
               : "border-gray-900 bg-slate-300 text-gray-900"
           }`,

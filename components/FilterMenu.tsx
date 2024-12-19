@@ -30,7 +30,9 @@ export function FilterMenu({ name, filters}: {name: string, filters: string[]}) 
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between dark:text-gray-950 text-gray-350 font-medium text-lg dark:bg-gray-350 bg-gray-950 group border-0 rounded-full "
+          className="w-[200px] justify-between text-gray-950 dark:text-gray-350 
+                    font-medium text-lg bg-gray-350 dark:bg-gray-950 group border-0 
+                    rounded-full "
         >
           {value
             ? filters.find((filter) => filter === value)
@@ -52,7 +54,10 @@ export function FilterMenu({ name, filters}: {name: string, filters: string[]}) 
                   setValue(currentValue === value ? "" : currentValue)
                   setOpen(false)
                   }}
-                  className="flex items-center h-9 border-b-2 dark:border-gray-350 border-gray-950 dark:text-gray-950 text-gray-350 font-medium text-lg dark:bg-gray-350 bg-gray-950 group dark:hover:bg-gray-350/50 hover:bg-gray-950/50 border-0 dark:hover:text-gray-950 hover:text-gray-200"
+                  className="flex items-center h-9 border-b-2 border-gray-350 dark:border-gray-950 
+                          text-gray-950 dark:text-gray-350 font-medium text-lg bg-gray-350 
+                          dark:bg-gray-950 group dark:hover:bg-gray-350/50 hover:bg-gray-950/50 
+                          border-0 dark:hover:text-gray-950 hover:text-gray-200"
                 >
                   {filter}
                   <Check

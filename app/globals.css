@@ -529,6 +529,7 @@ body {
   background: #1E1E1E;
   border-radius: 8px;
   min-width: 50px;
+  height: fit-content;
 }
 
 .month {

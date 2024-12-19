@@ -13,6 +13,12 @@ export async function migrateUsers() {
     await User.deleteMany({});
     console.log('Deleted all users');
 
+    // Step 2: Create new users
+    await User.create({
+        name: 'Alice',
+        email: 'johndoe@hotmail.com',
+        password:   "dsfdlfkwnslk@knsdknfsnflk]dfs"
+    }).then(() => console.log('User created successfully'));
   } catch (error) {
     console.error('Migration failed:', error);
   } finally {

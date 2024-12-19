@@ -16,9 +16,15 @@ async function dbConnect() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect("mongodb+srv://dattara  j:neurolove@neurolov.8utoi.mongodb.net/?retryWrites=true&w=majority&appName=Neurolov");
+    cached.promise = mongoose.connect(process.env.MONGODB_URI as string, {
+      // @ts-ignore
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   }
+
   cached.conn = await cached.promise;
+  console.log('Connected to MongoDB');
   return cached.conn;
 }
 

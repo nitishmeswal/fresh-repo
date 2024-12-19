@@ -54,7 +54,7 @@ const UserSetting = () => {
   return (
     <form 
       onSubmit={handleSubmit(onSubmit)}
-      className={`px-8 pt-10 ${neus.variable} space-y-8 mx-auto rounded-full ${theme === 'light' ? 'text-white bg-gray-950' : 'bg-gray-400/20 text-gray-850'} p-8 rounded-lg shadow-md`}
+      className={`px-8 pt-10 ${neus.variable} space-y-8 mx-auto rounded-full ${theme === "dark" ? 'text-white bg-gray-950' : 'bg-gray-400/20 text-gray-850'} p-8 rounded-lg shadow-md`}
     >
       {/* Header */}
       <h2 className="text-2xl font-bold">Profile Settings</h2>
@@ -181,7 +181,7 @@ const UserSetting = () => {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={` rounded-full bg-green-400 hover:bg-green-300 ${theme === 'light' ? ' text-black' : 'text-white'} px-12 py-6  font-bold text-md`}
+          className={` rounded-full bg-green-400 hover:bg-green-300 ${theme === "dark" ? ' text-black' : 'text-white'} px-12 py-6  font-bold text-md`}
         >
           {isSubmitting ? "SAVING..." : "SAVE CHANGES"}
         </Button>

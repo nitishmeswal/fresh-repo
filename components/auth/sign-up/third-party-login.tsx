@@ -19,21 +19,21 @@ export const SocialSignInButtons: React.FC<{
   };
 
   const getButtonClasses = (baseClasses: string) => 
-    `${baseClasses} ${theme === 'light' 
+    `${baseClasses} ${theme === "dark" 
       ? 'border-gray-700 hover:bg-gray-700 text-black' 
       : 'border-gray-300 hover:bg-gray-200 text-white'}`;
 
   return (
     <>
       <div className="flex items-center flex-col justify-center my-4">
-        <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
+        <hr className={`w-full border-t ${theme === "dark" ? 'border-gray-700' : 'border-gray-300'}`} />
         <span className={`
           px-3 
-          ${theme === 'light' ? 'text-gray-450 bg-gray-850' : 'text-gray-600 bg-gray-100'}
+          ${theme === "dark" ? 'text-gray-450 bg-gray-850' : 'text-gray-600 bg-gray-100'}
         `}>
           Or continue with
         </span>
-        <hr className={`w-full border-t ${theme === 'light' ? 'border-gray-700' : 'border-gray-300'}`} />
+        <hr className={`w-full border-t ${theme === "dark" ? 'border-gray-700' : 'border-gray-300'}`} />
       </div>
       
       <div className="grid grid-cols-2 gap-4">

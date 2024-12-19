@@ -47,7 +47,7 @@ export const SocialLogin: React.FC<{
   const { theme } = useTheme()
 
   const getButtonStyles = (theme: string | undefined) => ({
-    outline: theme === 'light'
+    outline: theme === "dark"
       ? 'border-gray-700 hover:bg-gray-700 text-black'
       : 'border-gray-300 hover:bg-gray-200 text-white'
   })

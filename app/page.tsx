@@ -3,14 +3,17 @@ import React from 'react';
 import { FilterMenu } from "@/components/FilterMenu"
 import { filters, mainServices } from "@/utils/constant"
 import { useTheme } from "next-themes";
-import WorldMap from '@/components/icons/world-map';
+import mapLight from '@/public/pages/map-light.svg';
+import mapDark from '@/public/pages/map-dark.svg';
+// import WorldMap from '@/components/icons/world-map';
+import Image from 'next/image';
 
 export default function Home() {
   const { theme } = useTheme();
 
 
   return (
-    <div className='flex flex-1 flex-col space-y-4'>
+    <div className='flex flex-1 flex-col '>
       <div className={`flex flex-1 w-full p-8 flex-col`}>
       <div className="flex flex-row p-4 justify-start">
         {filters.map((filter, index) => (
@@ -32,7 +35,7 @@ export default function Home() {
                 flex-col p-4 w-76 
                 mx-4 space-y-2 
                 rounded-2xl 
-                ${theme === 'light' 
+                ${theme === "dark" 
                   ? 'bg-gray-850 hover:bg-blue-600' 
                   : 'bg-gray-100 hover:bg-blue-500'
                 }`}
@@ -42,7 +45,7 @@ export default function Home() {
                   fill-foreground
                   text-[24px] 
                   font-semibold 
-                  ${theme === 'light' 
+                  ${theme === "dark" 
                     ? 'text-white border-gray-700' 
                     : 'text-black border-gray-300'}
                 `}>
@@ -50,7 +53,7 @@ export default function Home() {
                 </h1>
                 <p className={`
                   text-[11px] 
-                  ${theme === 'light' 
+                  ${theme === "dark" 
                     ? 'text-gray-450 group-hover:text-[#D8D8D8]' 
                     : 'text-gray-600 group-hover:text-gray-800'}
                 `}>
@@ -60,7 +63,7 @@ export default function Home() {
               <button className={`
                 border w-fit rounded-full 
                 flex justify-start px-4 
-                ${theme === 'light' 
+                ${theme === "dark" 
                   ? 'text-white border-gray-700' 
                   : 'text-black border-gray-300'}
               `}>
@@ -71,8 +74,12 @@ export default function Home() {
         </ul>
       </div>
       </div>
-      <div className={ `flex flex-1 justify-center relative w-full`}>
-        <WorldMap />
+      <div className={ `flex flex-1 justify-center relative w-full px-12 pb-8`}>
+        {
+          theme === "dark" 
+            ? <Image src={mapDark} alt="map" className=' w-full' />
+            : <Image src={mapLight} alt="map" className=' w-full'/>
+        }
         <div className=' top-2 left-2 flex flex-col bg-white/10'
          >
           

@@ -2,7 +2,7 @@ import React from 'react'
 
 const WorldMap = () => {
   return (
-    <svg width="1021" height="535" viewBox="0 0 1021 535" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="1050" height="535" viewBox="0 0 1021 535" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="1021" height="535" rx="19.02" fill="#28292B"/>
 <rect width="803" height="525" transform="translate(208 5)" fill="#28292B"/>
 <path d="M603.326 288.35C604.724 288.35 605.857 287.217 605.857 285.82C605.857 284.422 604.724 283.29 603.326 283.29C601.929 283.29 600.796 284.422 600.796 285.82C600.796 287.217 601.929 288.35 603.326 288.35Z" fill="#110D0D"/>

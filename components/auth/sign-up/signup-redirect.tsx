@@ -9,14 +9,14 @@ const SignUpRedirect = () => {
     <div className="text-center">
         <p className={`
           text-sm 
-          ${theme === 'light' ? 'text-gray-450' : 'text-gray-600'}
+          ${theme === "dark" ? 'text-gray-450' : 'text-gray-600'}
         `}>
           Already have an account?{" "}
           <Link
             href="/sign-in" 
             className={`
               font-semibold 
-              ${theme === 'light' 
+              ${theme === "dark" 
                 ? 'text-blue-600 hover:text-blue-500' 
                 : 'text-blue-500 hover:text-blue-600'}
             `}
