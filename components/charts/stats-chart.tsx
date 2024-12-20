@@ -45,7 +45,7 @@ const Chart = () => {
         <div className=" flex flex-1 flex-row items-center space-x-4">
          <h2 className=" font-semibold">Earning Statistics</h2>
           <select className="bg-white/15 px-2 py-1 rounded-md text-xs">
-            <option>Week</option>
+            <option className="bg-gray-150 dark:bg-white/20">Week</option>
             <option>Month</option>
          </select>
         </div>

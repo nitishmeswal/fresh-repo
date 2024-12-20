@@ -54,8 +54,12 @@ export const SignupForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await axios.post("/api/register", data);
-
+      await axios.post("/api/register", data).then((response) => {
+        if (response.status === 201) {
+          toast.success("Registration successful");
+          router.push("/sign-in");
+        }
+      });
       const signInResponse = await signIn("credentials", {
         redirect: false,
         email: data.email,

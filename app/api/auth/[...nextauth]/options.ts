@@ -77,7 +77,6 @@ export const authConfig: NextAuthOptions = {
             console.log('Incorrect password')
             throw new Error('Invalid password')
           }
-
             console.log('User authenticated:', user)
           return {
             id: user._id.toString(),
