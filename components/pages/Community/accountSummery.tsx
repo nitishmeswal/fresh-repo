@@ -64,7 +64,7 @@ const AccountSummary: React.FC<AccountSummaryProps> = ({ accountSummary, theme }
             <Image src={badge.image} alt={badge.type} className="w-8 h-8" />
           </div>
           <span className={
-            theme === "dark" ? 'text-black' : 'text-white'
+            theme === "dark" ? 'text-white' : 'text-black'
           }>
             {badge.type}
           </span>

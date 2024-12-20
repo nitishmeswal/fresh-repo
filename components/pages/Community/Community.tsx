@@ -34,7 +34,7 @@ const Community: React.FC = () => {
               }`}>
                 Meetups
               </h3>
-              <button className={`text-sm ${
+              <button className={`text-sm hover:underline hover:transition-all duration-500 ${
                 theme === "dark" ? 'text-white' : 'text-black'
               }`}>
                 View all
