@@ -36,9 +36,7 @@ const OverdueWorkCard = () => {
   };
 
   return (
-    <div className=" text-white p-6 rounded-lg w-full max-w-md space-y-6">
-      {/* Title */}
-      <h3 className="text-lg font-semibold">Overdue Work</h3>
+    <div className=" text-white px-6 pt-4 rounded-lg w-full max-w-md space-y-6">
 
       {/* Overdue Work Section */}
       <div className="flex items-center justify-between">
@@ -50,7 +48,7 @@ const OverdueWorkCard = () => {
           </div>
         </div>
         {/* Details */}
-        <div>
+        <div className={` ml-4`}>
           <h4 className="text-3xl font-bold">06</h4>
           <p className="text-sm">Overdue work</p>
           <p className="text-xs text-gray-400">More than <span className="text-blue-400">32 jobs</span> in progress</p>
@@ -67,7 +65,7 @@ const OverdueWorkCard = () => {
           </div>
         </div>
         {/* Details */}
-        <div>
+        <div className={` ml-4`}>
           <h4 className="text-3xl font-bold text-green-400">19</h4>
           <p className="text-sm">Work finished late</p>
           <p className="text-xs text-gray-400">More than <span className="text-blue-400">32 jobs</span> in progress</p>

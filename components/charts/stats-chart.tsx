@@ -72,7 +72,7 @@ const Chart = () => {
     </div>
 
       {/* Chart */}
-      <div className="space-y-10">
+      <div className="space-y-16">
         {data.map((row, idx) => (
           <div key={idx} className="flex items-center gap-4">
             {/* Date */}
