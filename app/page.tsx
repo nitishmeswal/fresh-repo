@@ -14,7 +14,7 @@ export default function Home() {
 
 
   return (
-    <div className='flex flex-1 flex-col '>
+    <div className='flex flex-1 flex-col overflow-hidden '>
       <div className={`flex flex-1 w-full p-8 flex-col`}>
       <div className="flex flex-row p-4 justify-start">
         {filters.map((filter, index) => (
@@ -85,7 +85,7 @@ export default function Home() {
 
   {/* MapData component positioned on the map */}
   <div
-    className="absolute top-6 left-8 w-full h-full flex  pointer-events-none"
+    className="absolute top-2 left-8 w-full h-full flex  pointer-events-none"
   >
     <div className=" p-4 ml-10 rounded-lg pointer-events-auto">
       <MapData />

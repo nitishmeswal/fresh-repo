@@ -1,4 +1,4 @@
-import Community from '@/components/pages/Community';
+import Community from '@/components/pages/Community/Community';
 import React from 'react'
 import { FiBookmark, FiHeart, FiMessageCircle } from 'react-icons/fi';
 
