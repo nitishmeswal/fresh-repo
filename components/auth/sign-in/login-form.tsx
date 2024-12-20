@@ -57,7 +57,7 @@ export const LoginForm: React.FC = () => {
           placeholder="Enter your email"
           {...register("email", { required: "Email is required" })}
         />
-        {errors.email && <p className="text-red-500">{errors.email.message?.toString()}</p>} // need a fixed solution here
+        {errors.email && <p className="text-red-500">{errors.email.message?.toString()}</p>} 
       </div>
       <div className="space-y-2">
         <Label>Password</Label>
