@@ -97,7 +97,6 @@ function Earnings() {
           </div>
         </div>
 
-        {/* Overdue Work */}
         <div className="stat-card">
           <h3>Overdue work</h3>
           <div className="overdue-stats">

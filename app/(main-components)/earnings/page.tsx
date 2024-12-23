@@ -2,12 +2,20 @@
 
 import DoughnutChart from '@/components/charts/doughnut';
 import { useTheme } from 'next-themes';
-import React from 'react'
-import { chartData, trafficData } from '@/utils/constant';
+import React, { useEffect, useState } from 'react'
+import { chartData, trafficData } from '@/constants/values';
 import Chart from '@/components/charts/stats-chart';
 import OverdueWorkCard from '@/components/charts/overdue-work';
+import { Loader } from 'lucide-react';
 const Home = () => {
   const { theme } = useTheme();
+  const [ load, setLoad ] = useState(false);
+
+  useEffect(()=> {
+    setLoad(true);
+  })
+
+  if(!load) return <Loader></Loader>;
 
   return (
     <div className={`flex flex-1 w-full p-8 flex-col`}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { footer } from '@/utils/constant'
+import { footer } from '@/constants/values'
 const Footer = () => {
   return (
     <div className={` py-4 flex flex-row flex-shrink flex-1 justify-between `}>

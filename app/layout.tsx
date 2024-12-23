@@ -2,19 +2,15 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import SessionProvider from "@/components/sessionProvider";
 import { ThemeProvider } from "next-themes";
 import CustomSidebar from "@/components/sidebar";
-import Footer from "@/components/footer/main";
 const inter = localFont({
   src: "./fonts/Inter_Regular.ttf",
   variable: "--font-inter",
   display: 'swap',
   weight: "400",
 });
-
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -41,11 +37,11 @@ export default function RootLayout({
         <SessionProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
-            <SidebarProvider>
+            {/* <SidebarProvider> */}
               <div className="flex flex-col w-full">
                 {/* Header is always at the top */}
                 <nav className="flex w-full">
@@ -65,7 +61,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-            </SidebarProvider>
+            {/* </SidebarProvider> */}
           </ThemeProvider>
         </SessionProvider>
       </body>

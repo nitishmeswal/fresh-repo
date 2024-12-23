@@ -20,7 +20,7 @@ const Signed = () => {
     const router = useRouter()
     
     const  image = session?.user?.image
-    process.env.NODE_ENV === 'development' && console.log(image)
+    // process.env.NODE_ENV === 'development' && console.log(image)
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +69,7 @@ const Signed = () => {
                         <div ref={buttonRef} className="flex gap-4 items-center cursor-pointer">
                             <Avatar className="hover:opacity-75 transition w-12 h-12 ">
                                 <AvatarImage
-                                    src={session?.user?.image || undefined}
+                                    src={image! || undefined}
                                     className="hover:opacity-75 transition "
                                 />
                                 <AvatarFallback className={`${theme === 'dark' ? 'bg-gray-800 text-gray-800' : ' bg-gray-800 text-green-100'} text-white`}>

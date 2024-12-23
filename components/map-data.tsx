@@ -1,7 +1,7 @@
 
 
 import React from 'react'
-import { dashboardDta } from '@/utils/constant'
+import { dashboardDta } from '@/constants/values'
 import MapSkel from './map-skeleton'
 const MapData = () => {
   return (

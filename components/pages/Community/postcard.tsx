@@ -31,10 +31,11 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, theme }) => (
-  <div className={`mr-4 p-6 rounded-xl flex justify-between ${
+  <div className={`mr-4 p-6 rounded-xl flex justify-between 
+    ${
     theme === "dark" ? 'bg-gray-950' : 'bg-gray-100'
   }`}>
-    <div className="flex gap-6">
+    <div className="flex gap-6 ">
       {post.graph && (
         <div className="w-[100px] h-[100px] bg-[#1E1E1E] rounded-lg overflow-hidden">
           <Image src={post.graph} alt="Statistics" className="w-full h-full object-cover" />

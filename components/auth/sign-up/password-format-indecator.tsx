@@ -1,4 +1,4 @@
-import { PasswordStrength } from "@/types/auth";
+import { PasswordStrength } from "@/types/wallet-auth";
 
 interface PasswordStrengthIndicatorProps {
     strength: PasswordStrength;

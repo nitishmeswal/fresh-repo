@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import PostCard from './postcard';
 import MeetupCard from './meetup';
 import AccountSummary from './accountSummery';
-import { accountSummary, meetups, posts } from '@/utils/constant';
+import { accountSummary, meetups, posts } from '@/constants/values';
 
 const Community: React.FC = () => {
   const { theme } = useTheme();

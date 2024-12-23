@@ -3,16 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Moon, Sun} from 'lucide-react'; // implement the logout and login signUp module here.
+import { Loader, Moon, Sun} from 'lucide-react'; // implement the logout and login signUp module here.
 // import { LoginModal } from "./modals/loginModals";
 import logoNight from "@/public/logo-night.svg";
 import logo from "../public/logo.svg";
 import search from "../public/search.svg";
 import bell from "../public/bell.svg";
 import Signed from "./auth/signed-in";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
+  const [ load, setLoad ] = useState(false);
+
+  useEffect(()=> {
+    setLoad(true);
+  })
+  
+  if(!load) return <Loader></Loader>;
 
   return (
     <>
@@ -76,7 +84,10 @@ const Header = () => {
               className="flex border-none rounded p-2 bg-transparent absolute right-2" 
               onClick={() => {
                 // localStorage.setItem('theme', theme || "dark")
-                setTheme(theme === "dark" ? 'light' : "dark")}
+                console.log("current theme is", theme)
+                setTheme(theme === "dark" ? 'light' : "dark")
+                
+              }
               }
             >
               {theme === "dark" ? (

@@ -4,19 +4,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { FeatureOptions, SettingsOptions } from "@/utils/constant";
+import { FeatureOptions, SettingsOptions } from "@/constants/values";
+import { Loader } from "lucide-react";
 
 const CustomSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
   const [currentTab, setCurrentTab] = useState("");
+  const [load, setLoad] = useState(false);
 
-  // console.log("current theme ", theme);
   useEffect(() => {
-    const activeTab = pathname.split("/")[1] || "dashboard"; // Default to 'dashboard'
-    setCurrentTab(activeTab);
-  }, [pathname]); // Update on route change
+    setLoad(true);
+  }, []);
+
+  if (!load) return <Loader></Loader>;
 
   const handleTabSwitch = (tab: string) => {
     setCurrentTab(tab); // Update state locally

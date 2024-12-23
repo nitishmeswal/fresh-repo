@@ -1,4 +1,4 @@
-import { PasswordStrength } from "@/types/auth";
+import { PasswordStrength } from "@/types/wallet-auth";
 
 export const validatePasswordStrength = (password: string): PasswordStrength => ({
     length: password.length >= 8,

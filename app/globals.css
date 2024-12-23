@@ -1067,10 +1067,10 @@ iframe {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 2rem;
+  gap: 1rem;
   padding: 2rem;
   min-height: calc(100vh - 4rem);
-  background: linear-gradient(to bottom, #EEEBFF, #030012);
+  /* background: linear-gradient(to bottom, #EEEBFF, #030012); */
 }
 
 .dark .wallet-container {

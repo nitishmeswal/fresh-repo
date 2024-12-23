@@ -2,8 +2,7 @@
 
 import { FilterMenu } from '@/components/FilterMenu';
 import AiModels from '@/components/pages/AiModels';
-import { AIModelData } from '@/utils/constant';
-import { useTheme } from 'next-themes';
+import { AIModelData } from '@/constants/values';
 import React from 'react'
 
 const Home = () => {

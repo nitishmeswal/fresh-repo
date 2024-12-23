@@ -39,8 +39,9 @@ const data = [
 ];
 
 const Chart = () => {
+
   return (
-    <div className="p-4 bg-gray-850 text-white rounded-lg space-y-10">
+    <div className="p-4 bg-gray-100 dark:bg-gray-850 text-black dark:text-white rounded-lg space-y-10">
       <div className="flex flex-row justify-between items-center">
         <div className=" flex flex-1 flex-row items-center space-x-4">
          <h2 className=" font-semibold">Earning Statistics</h2>
@@ -75,10 +76,8 @@ const Chart = () => {
       <div className="space-y-16">
         {data.map((row, idx) => (
           <div key={idx} className="flex items-center gap-4">
-            {/* Date */}
             <div className="w-28 text-sm text-gray-400">{row.date}</div>
-            {/* Bars */}
-            <div className="flex-1 flex items-center space-x-1  ">
+            <div className="flex-1 flex items-center space-x-1">
               {row.bars.map((bar, index) => (
                 <div
                   key={index}
