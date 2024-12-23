@@ -5,6 +5,7 @@ import { filters, mainServices } from "@/constants/values"
 import { useTheme } from "next-themes";
 import mapLight from '@/public/pages/map-light.svg';
 import mapDark from '@/public/pages/map-dark.png';
+import mapNight from '@/public/pages/map-night.png';
 import Image from 'next/image';
 import MapData from '@/components/map-data';
 
@@ -76,23 +77,22 @@ export default function Home() {
 
       {/* MAP SECTION */}
       <div className="relative flex justify-center w-full px-12 pb-8 overflow-hidden">
-        <div className="relative w-full h-[600px]">
-          {/* Map Image */}
+         <div className="relative w-full h-[600px]">
           <Image 
-            src={theme === "dark" ? mapDark : mapLight} 
+            src={mapNight} 
             alt="map" 
             layout="fill"
-            objectFit="contain" // Ensures the image scales properly
-            className="w-full h-full"
+            objectFit="contain"
+            className="w-full h-[360px]"
           />
 
           {/* MapData Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-full max-w-4xl pointer-events-auto">
               <MapData />
             </div>
-          </div>
-        </div>
+          </div> */}
+        </div> 
       </div>
     </div>
   )
