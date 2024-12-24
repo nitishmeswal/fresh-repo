@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FilterMenu } from "@/components/FilterMenu"
 import { filters, mainServices } from "@/constants/values"
 import { useTheme } from "next-themes";
@@ -8,9 +8,17 @@ import mapDark from '@/public/pages/map-dark.png';
 import mapNight from '@/public/pages/map-night.png';
 import Image from 'next/image';
 import MapData from '@/components/map-data';
+import { Loader } from 'lucide-react';
 
 export default function Home() {
+  const [loading, setLoading] = React.useState(true);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    setLoading(false);
+  },[])
+
+  if(loading) return <Loader></Loader>
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
@@ -24,8 +32,8 @@ export default function Home() {
             />
           ))}
         </div>
-        <div className="flex justify-end flex-col py-4 transition-all duration-300">
-          <ul className="flex flex-row justify-between">
+        <div className="flex justify-end flex-col space-y-4 transition-all duration-300">
+          <ul className="flex flex-row justify-between ">
             {mainServices.map((service, index) => (
               <li 
                 key={index} 
@@ -75,8 +83,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* MAP SECTION */}
-      <div className="relative flex justify-center w-full px-12 pb-8 overflow-hidden">
+      <div className="relative flex justify-center w-full px-12 overflow-hidden">
          <div className="relative w-full h-[600px]">
           <Image 
             src={mapNight} 
