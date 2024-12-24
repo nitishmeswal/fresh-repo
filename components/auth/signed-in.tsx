@@ -72,7 +72,7 @@ const Signed = () => {
                                     src={image! || undefined}
                                     className="hover:opacity-75 transition "
                                 />
-                                <AvatarFallback className={`${theme === 'dark' ? 'bg-gray-800 text-gray-800' : ' bg-gray-800 text-green-100'} text-white`}>
+                                <AvatarFallback className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : ' bg-gray-300 text-green-900'}`}>
                                     { status === "authenticated" ? 
                                     avatarFallback : 
                                     <User className={`${theme === 'dark' ? 'text-black' : 'text-white'} w-6 h-6`} />

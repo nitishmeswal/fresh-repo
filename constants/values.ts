@@ -156,7 +156,7 @@ export const GPUData: GPUDataType[] = [
     gpuModel: "1x NVIDIA GeForce RTX 3090",
     host: "Cc23fb45-1276-497a-8349-259659fa6b80",
     location: "Kanayannur Kerala IN (Asia/Kolkata)",
-    imgSrc: "",
+    imgSrc: "s",
     computeMode: 0,
     cores: 10496,
     gpuMemory: "0 GB",
