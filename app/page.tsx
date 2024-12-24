@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
-      <div className="flex flex-1 w-full p-8 flex-col">
+      <div className="flex flex-1 w-full px-8 pt-8 flex-col">
         <div className="flex flex-row p-4 justify-start">
           {filters.map((filter, index) => (
             <FilterMenu 
