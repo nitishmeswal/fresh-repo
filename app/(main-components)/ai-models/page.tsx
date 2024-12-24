@@ -6,6 +6,15 @@ import { AIModelData } from '@/constants/values';
 import React from 'react'
 
 const Home = () => {
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className={`flex flex-1 w-full p-4 flex-col overflow-hidden`}>
       <div className="flex flex-row p-4 justify-start">

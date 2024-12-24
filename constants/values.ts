@@ -1,4 +1,3 @@
-import rtx3090 from "@/public/RTX 3090 vector model_1.png";
 import { Brain, Zap, Bot, Video, MessageSquare, Box, Activity, Music, Image as ImageIcon } from 'lucide-react';
 import { StaticImageData } from 'next/image';
 import model1 from'@/public/pages/ai-models/model 1.png'
@@ -140,7 +139,7 @@ export const GPUData: GPUDataType[] = [
     gpuModel: "1x NVIDIA GeForce RTX 3090",
     host: "Cc23fb45-1276-497a-8349-259659fa6b80",
     location: "Kanayannur Kerala IN (Asia/Kolkata)",
-    imgSrc: rtx3090,
+    imgSrc: "",
     computeMode: 0,
     cores: 10496,
     gpuMemory: "0 GB",
@@ -157,7 +156,7 @@ export const GPUData: GPUDataType[] = [
     gpuModel: "1x NVIDIA GeForce RTX 3090",
     host: "Cc23fb45-1276-497a-8349-259659fa6b80",
     location: "Kanayannur Kerala IN (Asia/Kolkata)",
-    imgSrc: rtx3090,
+    imgSrc: "",
     computeMode: 0,
     cores: 10496,
     gpuMemory: "0 GB",

@@ -50,7 +50,7 @@ export default function RootLayout({
                 <div className="h-[1px] w-full bg-gray-250"></div>
                 {/* Sidebar and content */}
                 <div className="flex flex-row flex-1">
-                  <div className="bg-gray-950/10 h-full">
+                  <div className="bg-gray-950/10 max-h-full">
                     <CustomSidebar />
                   </div>
                   <div className="h-full w-0  dark:w-[0.5px] opacity-0 dark:opacity-100 dark:bg-black"></div>
