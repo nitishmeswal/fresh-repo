@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import Link from "next/link";
+import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,7 +113,6 @@ export const SignupForm: React.FC = () => {
             {errors.name.message}
           </span>
         )}
-
 
         <Input
           {...register("password")}

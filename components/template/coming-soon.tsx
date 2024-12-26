@@ -21,12 +21,15 @@ const ComingSoon = () => {
           Under construction!
         </h2>
         <div className={`text-stone-600 text-md space-y-4 font-medium dark:text-gray-200`}>
-          <p>We're Currently in launching our Beta Version!</p>
+          <p>🚀 Launching Soon – Experience the Future of AI!</p>
           <p>
-            Join us on our journey to revolutionize the AI industry with cutting-edge GPU renting and AI-based services. 
-            Our platform is designed to empower enterprises with the computational 
-            power they need to innovate and excel.
-            Stay tuned for exciting updates and be a part of the future of AI technology!
+          We are excited to announce the upcoming launch of our Beta Version!
+          </p>
+          <br />
+          <p>
+          Join us as we transform the AI landscape with advanced GPU renting and AI-driven solutions. Our platform empowers enterprises by providing unparalleled computational resources, enabling innovation and accelerating growth.
+
+Stay connected for groundbreaking updates and become part of the next generation of AI technology.
           </p>
           <p>
             If there is anything you would like to share with us, feel free to reach out!

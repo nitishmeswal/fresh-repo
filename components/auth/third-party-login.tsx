@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "next-themes"
+import { useRouter } from "next/navigation";
 
 export enum SocialProvider {
   Google = 'google',
@@ -47,6 +48,7 @@ export const SocialLogin: React.FC<{
   onLoginError 
 }) => {
   const { theme } = useTheme()
+  const router = useRouter()
 
   const getButtonStyles = (theme: string | undefined) => ({
     outline: theme === "dark"
@@ -61,10 +63,11 @@ export const SocialLogin: React.FC<{
       onLoginStart?.()
 
       const response = await signIn(provider, { 
-        redirect: false 
+        redirect: false,
       })
 
       if (response?.ok) {
+        router.push('/')
         toast.success(`Logged in with ${provider}`)
         onLoginSuccess?.()
       } else {
