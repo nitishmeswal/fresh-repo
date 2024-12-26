@@ -9,7 +9,7 @@ const ComingSoon = () => {
   const route = useRouter()
   return (
     <div className="flex justify-center items-center">
-      <div className="  space-y-4 flex flex-col items-center max-w-lg p-4 text-center text-stone-600 text-md">
+      <div className="  space-y-4 flex flex-col items-center max-w-lg text-center text-stone-600 text-md">
         <Image
           alt="Coming soon illustration"
           width="0"
@@ -25,7 +25,6 @@ const ComingSoon = () => {
           <p>
           We are excited to announce the upcoming launch of our Beta Version!
           </p>
-          <br />
           <p>
           Join us as we transform the AI landscape with advanced GPU renting and AI-driven solutions. 
           Our platform empowers enterprises by providing unparalleled computational resources, and readily available AI models,
