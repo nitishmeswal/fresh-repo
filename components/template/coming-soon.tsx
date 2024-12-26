@@ -27,9 +27,10 @@ const ComingSoon = () => {
           </p>
           <br />
           <p>
-          Join us as we transform the AI landscape with advanced GPU renting and AI-driven solutions. Our platform empowers enterprises by providing unparalleled computational resources, enabling innovation and accelerating growth.
-
-Stay connected for groundbreaking updates and become part of the next generation of AI technology.
+          Join us as we transform the AI landscape with advanced GPU renting and AI-driven solutions. 
+          Our platform empowers enterprises by providing unparalleled computational resources, and readily available AI models,
+          enabling innovation and accelerating growth.
+          Stay connected for updates and become part of the AI technology.
           </p>
           <p>
             If there is anything you would like to share with us, feel free to reach out!
