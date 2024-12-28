@@ -54,7 +54,7 @@ const Signed = () => {
     const dropdownItems = [
         { icon: <User className="mr-2 h-4 w-4" />, text: "Profile", onClick: () => {} },
         { icon: <Settings className="mr-2 h-4 w-4" />, text: "Settings", onClick: () => {} },
-        { icon: <LogIn className="mr-2 h-4 w-4" />, text: "Sign In", onClick: () => router.push("/sign-in") },
+        { icon: <LogIn className="mr-2 h-4 w-4" />, text: "Sign In", onClick: () => router.push("/auth/sign-in") },
     ];
 
     if (status === "loading") {
