@@ -1,4 +1,4 @@
-import { Brain, Zap, Bot, Video, MessageSquare, Box, Activity, Music, Image as ImageIcon } from 'lucide-react';
+import { Brain, Zap, Bot, Video, MessageSquare, Box, Activity, Music, Image as ImageIcon, Clock } from 'lucide-react';
 import { StaticImageData } from 'next/image';
 import model1 from'@/public/pages/ai-models/model 1.png'
 import model2 from'@/public/pages/ai-models/model 2.png'
@@ -139,7 +139,7 @@ export const GPUData: GPUDataType[] = [
     gpuModel: "1x NVIDIA GeForce RTX 3090",
     host: "Cc23fb45-1276-497a-8349-259659fa6b80",
     location: "Kanayannur Kerala IN (Asia/Kolkata)",
-    imgSrc: "",
+    imgSrc: "/gpu marketplace/rtx3090.png",
     computeMode: 0,
     cores: 10496,
     gpuMemory: "0 GB",
@@ -153,10 +153,10 @@ export const GPUData: GPUDataType[] = [
     rentPrice: "1001 $NLOV/Hr",
   },
   {
-    gpuModel: "1x NVIDIA GeForce RTX 3090",
+    gpuModel: "1x NVIDIA GeForce RTX 4090",
     host: "Cc23fb45-1276-497a-8349-259659fa6b80",
     location: "Kanayannur Kerala IN (Asia/Kolkata)",
-    imgSrc: "s",
+    imgSrc: "/gpu marketplace/rtx4090.png",
     computeMode: 0,
     cores: 10496,
     gpuMemory: "0 GB",
@@ -611,113 +611,201 @@ export interface AIModel {
   id: string;
   name: string;
   description: string;
-  image: StaticImageData
+  // image: StaticImageData
   icon: any;
+  price: number;
   type: string;
-  framework: string;
-  recommended: boolean;
-  pricePerHour: number;
+  tags: string[];
+  // framework: string;
+  // recommended: boolean;
+  // pricePerHour: number;
 }
 
-export const models: AIModel[] = [
+// export const models: AIModel[] = [
+//   {
+//     id: 'flux-image',
+//     name: 'Flux Image Gen',
+//     description: 'High-performance image generation and manipulation',
+
+//     image: model1,
+//     icon: ImageIcon,
+//     type: 'Premium',
+//     framework: 'PyTorch',
+//     recommended: true,
+//     pricePerHour: 2.5
+//   },
+//   {
+//     id: 'fastapi',
+//     name: 'Fast API',
+//     description: 'High-speed API development and deployment',
+//     image: model2,
+//     icon: Zap,
+//     type: 'Standard',
+//     framework: 'Python',
+//     recommended: false,
+//     pricePerHour: 1.0
+//   },
+//   {
+//     id: 'super-agents',
+//     name: 'AI Super Agents',
+//     description: 'Advanced autonomous AI agents',
+//     image: model3,
+//     icon: Bot,
+//     type: 'Premium',
+//     framework: 'TensorFlow',
+//     recommended: true,
+//     pricePerHour: 3.0
+//   },
+//   {
+//     id: 'deepfake',
+//     name: 'Deepfake',
+//     description: 'Advanced video synthesis and manipulation',
+//     image: model4,
+//     icon: Video,
+//     type: 'Premium',
+//     framework: 'PyTorch',
+//     recommended: false,
+//     pricePerHour: 2.0
+//   },
+//   {
+//     id: 'pytorch',
+//     name: 'PyTorch',
+//     description: 'Deep learning and neural network training',
+//     image: model5,
+//     icon: Brain,
+//     type: 'Standard',
+//     framework: 'PyTorch',
+//     recommended: true,
+//     pricePerHour: 1.5
+//   },
+//   {
+//     id: 'llm-server',
+//     name: 'LLM Server',
+//     description: 'Large Language Model hosting and inference',
+//     image: model6,
+//     icon: MessageSquare,
+//     type: 'Premium',
+//     framework: 'TensorFlow',
+//     recommended: true,
+//     pricePerHour: 4.0
+//   },
+//   {
+//     id: '3d-server',
+//     name: '3D Server',
+//     description: '3D model generation and rendering',
+//     image: model1,
+//     icon: Box,
+//     type: 'Premium',
+//     framework: 'PyTorch',
+//     recommended: false,
+//     pricePerHour: 2.5
+//   },
+//   {
+//     id: 'realtime',
+//     name: 'Realtime',
+//     description: 'Real-time AI processing and inference',
+//     image: model1,
+//     icon: Activity,
+//     type: 'Standard',
+//     framework: 'TensorFlow',
+//     recommended: false,
+//     pricePerHour: 1.0
+//   },
+//   {
+//     id: 'audio-server',
+//     name: 'Audio Server',
+//     description: 'Audio processing and synthesis',
+//     image: model1,
+//     icon: Music,
+//     type: 'Premium',
+//     framework: 'PyTorch',
+//     recommended: false,
+//     pricePerHour: 2.0
+//   }
+// ];
+
+
+
+export const models : AIModel[] = [
   {
-    id: 'flux-image',
+    id: '1',
     name: 'Flux Image Gen',
     description: 'High-performance image generation and manipulation',
-
-    image: model1,
     icon: ImageIcon,
-    type: 'Premium',
-    framework: 'PyTorch',
-    recommended: true,
-    pricePerHour: 2.5
+    price: 8,
+    type: 'image',
+    tags: ['Premium', 'Fast']
   },
   {
-    id: 'fastapi',
+    id: '2',
     name: 'Fast API',
     description: 'High-speed API development and deployment',
-    image: model2,
     icon: Zap,
-    type: 'Standard',
-    framework: 'Python',
-    recommended: false,
-    pricePerHour: 1.0
+    price: 5,
+    type: 'api',
+    tags: ['Fast', 'Efficient']
   },
   {
-    id: 'super-agents',
+    id: '3',
     name: 'AI Super Agents',
-    description: 'Advanced autonomous AI agents',
-    image: model3,
-    icon: Bot,
-    type: 'Premium',
-    framework: 'TensorFlow',
-    recommended: true,
-    pricePerHour: 3.0
+    description: 'Advanced autonomous AI agents for complex tasks',
+    icon: Brain,
+    price: 12,
+    type: 'agent',
+    tags: ['Premium', 'Advanced']
   },
   {
-    id: 'deepfake',
+    id: '4',
     name: 'Deepfake',
     description: 'Advanced video synthesis and manipulation',
-    image: model4,
     icon: Video,
-    type: 'Premium',
-    framework: 'PyTorch',
-    recommended: false,
-    pricePerHour: 2.0
+    price: 15,
+    type: 'video',
+    tags: ['Premium', 'High-Quality']
   },
   {
-    id: 'pytorch',
+    id: '5',
     name: 'PyTorch',
     description: 'Deep learning and neural network training',
-    image: model5,
     icon: Brain,
-    type: 'Standard',
-    framework: 'PyTorch',
-    recommended: true,
-    pricePerHour: 1.5
+    price: 10,
+    type: 'ml',
+    tags: ['Open Source', 'Flexible']
   },
   {
-    id: 'llm-server',
+    id: '6',
     name: 'LLM Server',
     description: 'Large Language Model hosting and inference',
-    image: model6,
     icon: MessageSquare,
-    type: 'Premium',
-    framework: 'TensorFlow',
-    recommended: true,
-    pricePerHour: 4.0
+    price: 20,
+    type: 'text',
+    tags: ['Premium', 'Scalable']
   },
   {
-    id: '3d-server',
+    id: '7',
     name: '3D Server',
     description: '3D model generation and rendering',
-    image: model1,
     icon: Box,
-    type: 'Premium',
-    framework: 'PyTorch',
-    recommended: false,
-    pricePerHour: 2.5
+    price: 18,
+    type: '3d',
+    tags: ['Premium', 'High-Performance']
   },
   {
-    id: 'realtime',
+    id: '8',
     name: 'Realtime',
     description: 'Real-time AI processing and inference',
-    image: model1,
-    icon: Activity,
-    type: 'Standard',
-    framework: 'TensorFlow',
-    recommended: false,
-    pricePerHour: 1.0
+    icon: Clock,
+    price: 25,
+    type: 'realtime',
+    tags: ['Premium', 'Low-Latency']
   },
   {
-    id: 'audio-server',
+    id: '9',
     name: 'Audio Server',
-    description: 'Audio processing and synthesis',
-    image: model1,
+    description: 'Audio processing and generation',
     icon: Music,
-    type: 'Premium',
-    framework: 'PyTorch',
-    recommended: false,
-    pricePerHour: 2.0
+    price: 15,
+    type: 'audio',
+    tags: ['Premium', 'High-Fidelity']
   }
 ];

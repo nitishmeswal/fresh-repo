@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import SessionProvider from "@/components/sessionProvider";
 import { ThemeProvider } from "next-themes";
 import CustomSidebar from "@/components/sidebar";
+import { CartProvider } from "@/context/useCart";
 const inter = localFont({
   src: "./fonts/Inter_Regular.ttf",
   variable: "--font-inter",
@@ -41,6 +42,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <CartProvider>
+
             {/* <SidebarProvider> */}
               <div className="flex flex-col w-full">
                 {/* Header is always at the top */}
@@ -62,6 +65,7 @@ export default function RootLayout({
                 </div>
               </div>
             {/* </SidebarProvider> */}
+            </CartProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

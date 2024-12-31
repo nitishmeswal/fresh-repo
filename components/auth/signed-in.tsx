@@ -65,12 +65,13 @@ const Signed = () => {
         <nav>
 
                 <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger className="outline-none relative float-right flex flex-1 flex-shrink">
+                    <DropdownMenuTrigger className="outline-none relative float-right flex  flex-1 flex-shrink">
                         <div ref={buttonRef} className="flex gap-4 items-center cursor-pointer">
-                            <Avatar className="hover:opacity-75 transition w-12 h-12 ">
+                            <Avatar className="hover:opacity-75 transition w-12 h-12  border-blue-500 ">
                                 <AvatarImage
                                     src={image! || undefined}
-                                    className="hover:opacity-75 transition "
+                                    className="hover:opacity-75 transition border-2 "
+
                                 />
                                 <AvatarFallback className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : ' bg-gray-300 text-green-900'}`}>
                                     { status === "authenticated" ? 
