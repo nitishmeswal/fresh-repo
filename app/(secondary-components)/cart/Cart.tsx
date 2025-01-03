@@ -26,7 +26,7 @@ export const Cart = () => {
               </div>
               <button
               // @ts-ignore
-                onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: type })}
+                onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: type })} // removing the Item from the cart  might not work right now
                 className="text-red-500 hover:text-red-700 p-1"
               >
                 <Trash2 size={16} />

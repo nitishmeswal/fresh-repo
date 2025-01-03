@@ -11,11 +11,13 @@ import bell from "../public/bell.svg";
 import Signed from "./auth/signed-in";
 import { useEffect, useState } from "react";
 import { useCart } from '@/context/useCart';
+import CheckoutModal from "./modals/checkoutModal";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [ load, setLoad ] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { state } = useCart();
 
   const totalItems = (state.gpu ? 1 : 0) + (state.aiModel ? 1 : 0);
@@ -145,7 +147,7 @@ const Header = () => {
                           <button 
                             onClick={() => {
                               if (state.gpu && state.aiModel) {
-                                // Add compatibility check logic here
+                                 setShowModal(true)
                                 const isCompatible = true; // Replace with actual check
                                 if (isCompatible) {
                                   alert('Compatible! Proceeding to checkout...');
@@ -188,6 +190,13 @@ const Header = () => {
       </div>
 
       {/* <LoginModal /> */}
+      {showModal && (
+        <CheckoutModal
+          state={state}
+          totalPrice={totalPrice}
+          onClose={() => setShowModal(false)}  // Close modal
+        />
+      )}
     </>
 
   );
