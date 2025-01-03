@@ -1,142 +1,20 @@
 'use client';
 import React, { useState } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import { FilterMenu } from '@/components/FilterMenu';
-import { Heart, Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, X, Upload, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FilterMenu } from '@/components/FilterMenu';
+import { Heart, Box, X, Upload } from 'lucide-react';
 import { DockerConfigForm } from '@/components/pages/AiModel/CustomModel/DockerConfigForm';
 import { ResourceConfigForm } from '@/components/pages/AiModel/CustomModel/ResourceConfigForm';
 import { ModelAnalysis } from '@/components/pages/AiModel/CustomModel/ModelAnalysis';
-import { deployModel, analyzeModel } from '@/service/model.service';
+import { deployModel, analyzeModel } from '@/services/model.service';
 // import { AddToCartButton } from '@/app/(secondary-components)/cart/AddToCartButton';
-
-const filterOptions = {
-  generation: {
-    name: "Generation",
-    filters: ["Text", "Image", "Video", "3D", "Audio", "Real-time"]
-  },
-  type: {
-    name: "Type",
-    filters: ["Open Source", "Closed Source"]
-  },
-  sort: {
-    name: "Sort by",
-    filters: ["Newest", "Price: Low to High", "Price: High to Low"]
-  }
-};
-
-const containerOptions = [
-  {
-    id: 'basic',
-    name: 'Basic',
-    gpuUsage: '10%',
-    price: 50,
-    description: 'Suitable for small-scale inference and testing'
-  },
-  {
-    id: 'standard',
-    name: 'Standard',
-    gpuUsage: '25%',
-    price: 100,
-    description: 'Ideal for medium workloads and development'
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
-    gpuUsage: '40%',
-    price: 150,
-    description: 'Best for production and high-performance needs'
-  }
-];
-
-const models = [
-  {
-    id: '1',
-    name: 'Flux Image Gen',
-    description: 'High-performance image generation and manipulation',
-    icon: ImageIcon,
-    price: 8,
-    type: 'image',
-    tags: ['Premium', 'Fast']
-  },
-  {
-    id: '2',
-    name: 'Fast API',
-    description: 'High-speed API development and deployment',
-    icon: Zap,
-    price: 5,
-    type: 'api',
-    tags: ['Fast', 'Efficient']
-  },
-  {
-    id: '3',
-    name: 'AI Super Agents',
-    description: 'Advanced autonomous AI agents for complex tasks',
-    icon: Brain,
-    price: 12,
-    type: 'agent',
-    tags: ['Premium', 'Advanced']
-  },
-  {
-    id: '4',
-    name: 'Deepfake',
-    description: 'Advanced video synthesis and manipulation',
-    icon: Video,
-    price: 15,
-    type: 'video',
-    tags: ['Premium', 'High-Quality']
-  },
-  {
-    id: '5',
-    name: 'PyTorch',
-    description: 'Deep learning and neural network training',
-    icon: Brain,
-    price: 10,
-    type: 'ml',
-    tags: ['Open Source', 'Flexible']
-  },
-  {
-    id: '6',
-    name: 'LLM Server',
-    description: 'Large Language Model hosting and inference',
-    icon: MessageSquare,
-    price: 20,
-    type: 'text',
-    tags: ['Premium', 'Scalable']
-  },
-  {
-    id: '7',
-    name: '3D Server',
-    description: '3D model generation and rendering',
-    icon: Box,
-    price: 18,
-    type: '3d',
-    tags: ['Premium', 'High-Performance']
-  },
-  {
-    id: '8',
-    name: 'Realtime',
-    description: 'Real-time AI processing and inference',
-    icon: Clock,
-    price: 25,
-    type: 'realtime',
-    tags: ['Premium', 'Low-Latency']
-  },
-  {
-    id: '9',
-    name: 'Audio Server',
-    description: 'Audio processing and generation',
-    icon: Music,
-    price: 15,
-    type: 'audio',
-    tags: ['Premium', 'High-Fidelity']
-  }
-];
+import { AIModel, models } from '@/constants/values';
 
 export default function AiModelsPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCustomModelModal, setShowCustomModelModal] = useState(false);
   const [showContainerModal, setShowContainerModal] = useState(false);
-  const [customModelFile, setCustomModelFile] = useState(null);
+  const [customModelFile, setCustomModelFile] = useState<File | null>(null);
   const [containerName, setContainerName] = useState('');
   const [resourceAllocation, setResourceAllocation] = useState('2 vCPU / 4GB RAM');
   const [deploymentStep, setDeploymentStep] = useState('upload');
@@ -151,6 +29,9 @@ export default function AiModelsPage() {
     cpu: 1,
     memory: 2,
     gpu: 0,
+    gpuMemory: 0,
+    cpuLimit: 2,
+    networkTier: 'standard',
     autoScaling: false,
     monitoring: true
   });
@@ -165,10 +46,10 @@ export default function AiModelsPage() {
     usd: 1000000,
     nlov: 999999,
   });
-  const [selectedModel, setSelectedModel] = useState(null);
+  const [selectedModel, setSelectedModel] = useState<AIModel | null>(null);
   const [useNLOVDiscount, setUseNLOVDiscount] = useState(false);
 
-  const calculatePrice = (basePrice) => {
+  const calculatePrice = (basePrice: number) => {Heart
     if (useNLOVDiscount && wallet.nlov >= 100) { 
       return basePrice * 0.7; 
     }
@@ -190,28 +71,29 @@ export default function AiModelsPage() {
     }
   };
 
-  const handleCustomModelUpload = async (event) => {
-    const file = event.target.files[0];
+  async function handleCustomModelUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files ? event.target.files[0] : null;
     console.log('File selected:', file);
     setUploadError('');
-    
+
     if (file) {
       try {
         console.log('Starting file upload process');
         setCustomModelFile(file);
         setDeploymentStep('analyze');
-        
+
         console.log('Analyzing model...');
         const config = await analyzeModel(file);
         console.log('Analysis result:', config);
+        // @ts-ignore
         setModelConfig(config);
-      } catch (error) {
+      } catch (error:any) {
         console.error('Error in model upload:', error);
         setUploadError(error.message);
         setDeploymentStep('upload');
       }
     }
-  };
+  }
 
   const handleModelDeploy = async () => {
     setDeploymentStep('deploy');
@@ -221,9 +103,14 @@ export default function AiModelsPage() {
       ));
 
       const result = await deployModel(
-        customModelFile,
+        customModelFile!,
         modelConfig,
-        resourceConfig
+
+
+        // @ts-ignore
+        resourceConfig,
+        onprogress
+        
       );
 
       setDeploymentSteps(prev => prev.map(step => ({
@@ -241,7 +128,7 @@ export default function AiModelsPage() {
     }
   };
 
-  const handleDeploy = (model) => {
+  const handleDeploy = (model: AIModel) => {
     setSelectedModel(model);
     setShowPaymentModal(true);
   };
@@ -251,7 +138,7 @@ export default function AiModelsPage() {
     setShowPaymentModal(true);
   };
 
-  const handleContainerSubmit = (e) => {
+  const handleContainerSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     handleContainerSelect();
   };
@@ -307,6 +194,9 @@ export default function AiModelsPage() {
             <ModelAnalysis modelConfig={modelConfig} />
             <DockerConfigForm 
               modelConfig={modelConfig}
+
+
+              // @ts-ignore
               onUpdate={setModelConfig}
               onNext={() => setDeploymentStep('configure')}
             />
@@ -317,7 +207,11 @@ export default function AiModelsPage() {
         return (
           <div className="space-y-6">
             <ResourceConfigForm
+
+            // @ts-ignore
               config={resourceConfig}
+
+              // @ts-ignore
               onUpdate={setResourceConfig}
             />
             <div className="flex justify-between">
