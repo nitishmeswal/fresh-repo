@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useCart } from '@/app/context/CartContext';
+import { useCart } from '@/context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 
@@ -25,6 +25,7 @@ export const Cart = () => {
                 <p className="text-sm text-gray-500">${item.price}/{type === 'gpu' ? 'hr' : 'token'}</p>
               </div>
               <button
+              // @ts-ignore
                 onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: type })}
                 className="text-red-500 hover:text-red-700 p-1"
               >
