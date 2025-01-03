@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from 'axios';
+
 // @ts-ignore
 export default function CheckoutModal({ state, totalPrice, onClose }) {
   const [loading, setLoading] = useState(false);
@@ -9,70 +11,69 @@ export default function CheckoutModal({ state, totalPrice, onClose }) {
       return;
     }
 
-    const isCompatible = true; // Replace with actual compatibility check
-    if (!isCompatible) {
-      alert('Selected GPU and AI Model are not compatible');
-      return;
-    }
-
     setLoading(true);
     try {
-      const response = await fetch('https://api.gpulab.ai/container/deploy', {
-        method: 'POST',
-        // @ts-ignore
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': process.env.GPULAB_API_KEY,
-        },
-        body: JSON.stringify({
-        //   model_id: state.model.container_id,
+      const response = await axios.post(
+        "https://api.gpulab.ai/container/deploy",
+        {
           model_id: 194,
           gpu_count: 1,
           gpu_type: "NVIDIA GeForce RTX 3090",
-        //   gpu_type: state.gpu.name,
-        }),
-      });
+        },
+        {
+          headers: {
+            'Content-Type': "application/json",
+            // 'api-key': process.env.GPULAB_API_KEY,
+            'api-key': "7fOCxySH32XdB9hu0n1iKSP2fmqaaY6I"
+          },
+        }
+      );
 
-      const data = await response.json();
-      if (response.ok) {
+      if (response.status === 200) {
         alert('Deployment successful!');
         onClose();
       } else {
-        alert(`Error: ${data.message || 'Failed to deploy'}`);
+        alert(`Error: ${response.data.message || 'Failed to deploy'}`);
       }
     } catch (error) {
-      alert('An error occurred. Please try again.');
-      console.error(error);
+      const errorMsg =
+    //   @ts-ignore
+        error.response?.data?.message || 'An error occurred. Please try again.';
+      alert(errorMsg);
+      console.error('Checkout error:', error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-gray-800 p-6 rounded-lg max-w-lg mx-auto text-white">
-        <h2 className="text-xl font-semibold mb-4">Checkout</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
+      <div className="bg-gray-800 p-8 rounded-lg max-w-md mx-auto text-white">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Checkout</h2>
         {state.gpu && state.aiModel ? (
           <>
-            <div className="border-t border-gray-700 my-2" />
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Total</span>
-              <span className="font-medium">${totalPrice}/hr</span>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-lg font-medium">Total</span>
+              <span className="text-xl font-semibold">${totalPrice}/hr</span>
             </div>
             <button
               onClick={handleCheckout}
               disabled={loading}
-              className={`w-full mt-4 px-4 py-2 rounded-lg transition-colors ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+              className={`w-full px-6 py-3 rounded-lg transition-all ${
+                loading
+                  ? 'bg-gray-600 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              }`}
             >
               {loading ? 'Deploying...' : 'Deploy Now'}
             </button>
           </>
         ) : (
-          <p className="text-red-500">Please select both a GPU and an AI Model</p>
+          <p className="text-red-400">Please select a GPU and AI Model</p>
         )}
         <button
           onClick={onClose}
-          className="w-full mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="w-full mt-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
         >
           Cancel
         </button>
