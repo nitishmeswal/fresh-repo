@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 
 
-const gpuModel = z.object({
+export const gpuModel = z.object({
     gpuModel: z.string().min(8, "Model must have at least 8 characters"),
     host: z.string(),
     location: z.string(),

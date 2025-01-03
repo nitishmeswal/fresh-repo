@@ -13,8 +13,10 @@ const Community: React.FC = () => {
 
   return (
     <div className="w-full pl-4 py-6 ">
-      <div className="flex overflow-hidden h-screen ">
-        <div className="w-[52vw] overflow-y-auto flex flex-col gap-4">
+      {/* <div className="flex overflow-hidden h-screen "> */}
+      <div className="flex  ">
+        {/* <div className="w-[52vw] overflow-y-auto flex flex-col gap-4"> */}
+        <div className="w-[52vw]  flex flex-col gap-4">
           {posts.map(post => (
             <PostCard key={post.id} post={post} theme={theme!} />
           ))}
