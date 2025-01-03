@@ -58,16 +58,17 @@ export const SocialLogin: React.FC<{
 
   const handleSocialLogin = async (provider: SocialProvider) => {
     if (isLoading) return
-
+  
     try {
       onLoginStart?.()
-
+  
       const response = await signIn(provider, { 
         redirect: false,
       })
-
+  
       if (response?.ok) {
         router.push('/')
+        router.refresh()  // Force refresh to ensure redirect works
         toast.success(`Logged in with ${provider}`)
         onLoginSuccess?.()
       } else {
@@ -82,6 +83,7 @@ export const SocialLogin: React.FC<{
       onLoginError?.({ message: errorMessage })
     }
   }
+  
 
   const buttonStyles = getButtonStyles(theme)
 
