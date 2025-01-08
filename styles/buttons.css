@@ -1,0 +1,78 @@
+.custom-button {
+  display: inline-block;
+  border-radius: 7px;
+  border: none;
+  background: linear-gradient(135deg, #1875FF 0%, #4B9FFF 100%);
+  color: white;
+  font-family: inherit;
+  text-align: center;
+  font-size: 13px;
+  box-shadow: 0px 14px 56px -11px #1875FF;
+  width: 12em;  /* Increased width for better text spacing */
+  padding: 1em;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+  overflow: hidden;  /* Prevent text overflow */
+  position: relative;
+}
+
+.custom-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease-out;
+  padding-right: 0;  /* Reset initial padding */
+}
+
+.custom-button span:after {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -40px;  /* Start further away */
+  transition: all 0.2s ease-out;
+  white-space: nowrap;
+  margin-left: 8px;  /* Add space between texts */
+}
+
+.custom-button:hover span {
+  padding-right: 4.5em;  /* Increased space for hover text */
+  transition: all 0.2s ease-out;
+}
+
+.custom-button:hover span:after {
+  opacity: 1;
+  right: -8px;  /* Stop with some space from the main text */
+  transition: all 0.2s ease-out;
+}
+
+.gpu-marketplace span:after {
+  content: 'in 3 steps';
+  transition-delay: 0.05s;  /* Slight delay for first button */
+}
+
+.ai-models span:after {
+  content: 'in 4 steps';
+  transition-delay: 0.05s;  /* More delay for second button */
+}
+
+.connect-earn span:after {
+  content: 'in 4 steps';
+  transition-delay: 0.05s;  /* Most delay for third button */
+}
+
+.gpu-marketplace:hover span,
+.ai-models:hover span,
+.connect-earn:hover span {
+  transition: all 0.2s ease-out;
+}
+
+.custom-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 16px 60px -11px #1875FF;
+  transition: all 0.2s ease-out;
+}
+
+.custom-button:active {
+  transform: translateY(0);
+  transition: all 0.1s ease-out;
+}

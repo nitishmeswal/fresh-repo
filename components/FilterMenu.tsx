@@ -1,78 +1,72 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Check, ChevronDown } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-export function FilterMenu({ name, filters}: {name: string, filters: string[]}) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+interface FilterMenuProps {
+  name: string;
+  filters: string[];
+  onSelect?: (value: string) => void;
+}
 
-  return ( 
-    <div className="flex flex-1 px-4 w-40 justify-start">
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+export function FilterMenu({ name, filters, onSelect }: FilterMenuProps) {
+  const [selected, setSelected] = React.useState(filters[0]);
+
+  const handleSelect = (value: string) => {
+    setSelected(value);
+    onSelect?.(value);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between text-gray-950 dark:text-gray-350 
-                    font-medium text-lg bg-gray-350 dark:bg-gray-950 group border-0 
-                    rounded-full "
+          className="flex items-center gap-2 bg-black/40 border-purple-500/20 hover:border-purple-500/40
+            hover:bg-black/60 transition-all duration-200"
         >
-          {value
-            ? filters.find((filter) => filter === value)
-            : name}
-          <ChevronDown className="" />
+          <span className="text-gray-300">{name}</span>
+          <span className="text-purple-400">{selected.replace(name.split(' ')[1] + ' ', '')}</span>
+          <ChevronDown className="w-4 h-4 text-gray-400" />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[160px] p-0 ">
-        <Command>
-          {/* <CommandInput placeholder="Search filter..." className="h-9" /> */}
-          <CommandList className=" border-0">
-            <CommandEmpty>No filter found.</CommandEmpty>
-            <CommandGroup className=" bg-gray-950 border-0 border-gray-100 dark:border-black">
-              {filters.map((filter) => (
-                <CommandItem
-                  key={filter}
-                  value={filter}
-                  onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue)
-                  setOpen(false)
-                  }}
-                  className="flex items-center h-9 border-b-2 border-gray-350 dark:border-gray-950 
-                          text-gray-950 dark:text-gray-350 font-medium text-lg bg-gray-350 
-                          dark:bg-gray-950 group dark:hover:bg-gray-350/50 hover:bg-gray-950/50 
-                          border-0 dark:hover:text-gray-950 hover:text-gray-200"
-                >
-                  {filter}
-                  <Check
-                  className={cn(
-                    "ml-auto",
-                    value === filter ? "opacity-100" : "opacity-0"
-                  )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-</div>
-  )
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="bg-black/90 border border-purple-500/20 backdrop-blur-xl
+          shadow-xl shadow-purple-500/10"
+      >
+        {filters.map((filter) => (
+          <DropdownMenuItem
+            key={filter}
+            className={`
+              flex items-center gap-2 cursor-pointer transition-all duration-200
+              ${selected === filter
+                ? 'bg-purple-500/20 text-purple-300'
+                : 'text-gray-400 hover:text-purple-300 hover:bg-purple-500/10'
+              }
+            `}
+            onClick={() => handleSelect(filter)}
+          >
+            {filter === selected && (
+              <motion.div
+                layoutId="activeFilter"
+                className="absolute left-0 w-1 h-full bg-purple-500"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+            )}
+            <span className="pl-6">{filter.replace(name.split(' ')[1] + ' ', '')}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }

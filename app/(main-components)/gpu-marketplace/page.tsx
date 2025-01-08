@@ -7,9 +7,9 @@ import { GPU, gpuData } from '@/constants/values';
 import { SortDropdown } from '@/components/pages/gpu-marketplace/sortDropDown';
 import { FilterButton } from '@/components/pages/gpu-marketplace/filterButton';
 import { InfoTooltip } from '@/components/pages/gpu-marketplace/infoToolTip';
-import GpuCard  from '@/components/pages/gpu-marketplace/gpuCard';
+import GpuCard from '@/components/pages/gpu-marketplace/gpuCard';
 import { BuyDialog } from '@/components/pages/gpu-marketplace/buyDialogBox';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Marketplace() {
   const router = useRouter();
@@ -38,44 +38,78 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="flex flex-1 w-full h-screen flex-col bg-white dark:bg-black dark:bg-black2 overflow-y-auto scrollbar-hide px-0">
-      <div className="flex flex-row p-4 justify-between shrink-0 items-center">
-        <div className="flex flex-row items-center gap-2">
-          <SortDropdown onSort={setSortOption} />
-          
-          <FilterButton active={showFiveStar} onClick={() => setShowFiveStar(!showFiveStar)}>
-            <Star className={`h-4 w-4 ${showFiveStar ? 'fill-current' : ''}`} />
-            5★ & above
-          </FilterButton>
+    <div className="flex flex-1 w-full h-screen flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-y-auto scrollbar-hide">
+      {/* Header Section */}
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/50 border-b border-blue-500/20">
+        <div className="flex flex-row p-4 justify-between items-center max-w-7xl mx-auto">
+          <div className="flex flex-row items-center gap-3">
+            <SortDropdown onSort={setSortOption} />
+            
+            <FilterButton 
+              active={showFiveStar} 
+              onClick={() => setShowFiveStar(!showFiveStar)}
+              className="hover:bg-blue-500/10 transition-colors"
+            >
+              <Star className={`h-4 w-4 ${showFiveStar ? 'fill-yellow-500 text-yellow-500' : 'text-blue-400'}`} />
+              5★ & above
+            </FilterButton>
 
-          <FilterButton active={showAssured} onClick={() => setShowAssured(!showAssured)}>
-            <Shield className={`h-4 w-4 ${showAssured ? 'fill-current' : ''}`} />
-            <Lock className="h-3 w-3 absolute top-2 right-2" />
-            Neurolov Assured
-          </FilterButton>
+            <FilterButton 
+              active={showAssured} 
+              onClick={() => setShowAssured(!showAssured)}
+              className="hover:bg-blue-500/10 transition-colors"
+            >
+              <Shield className={`h-4 w-4 ${showAssured ? 'fill-blue-500 text-blue-500' : 'text-blue-400'}`} />
+              <Lock className="h-3 w-3 absolute top-2 right-2" />
+              Neurolov Assured
+            </FilterButton>
 
-          <FilterButton active={false} onClick={() => window.open('https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform', '_blank')}>
-            <Search className="h-4 w-4" />
-            GPU Unavailable?
-          </FilterButton>
+            <FilterButton 
+              active={false} 
+              onClick={() => window.open('https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform', '_blank')}
+              className="hover:bg-blue-500/10 transition-colors"
+            >
+              <Search className="h-4 w-4 text-blue-400" />
+              GPU Unavailable?
+            </FilterButton>
+          </div>
+
+          <div className="flex flex-row items-center gap-2">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              GPU Marketplace
+            </h1>
+            <div className="relative">
+              <span className="px-3 py-1 text-sm font-semibold bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full border border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-pulse">
+                Beta
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-20 blur-xl rounded-full"></div>
+            </div>
+          </div>
+
+          <InfoTooltip />
         </div>
-
-        <InfoTooltip />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-        <AnimatePresence>
-        {gpuData.map((gpu) => (
-
+      {/* Main Content */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex-1 p-6 max-w-7xl mx-auto w-full"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence>
+            {gpuData.map((gpu) => (
               <GpuCard
                 key={gpu.id}
                 gpu={gpu}
                 onSelect={handleGpuSelect}
               />
-        ))}
-        </AnimatePresence>
-      </div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </motion.div>
 
+      {/* Buy Dialog */}
       <BuyDialog
         gpu={selectedGpu}
         open={showBuyDialog}
@@ -84,7 +118,6 @@ export default function Marketplace() {
         useNlov={useNlov}
         onNlovToggle={setUseNlov}
       />
-    
     </div>
   );
 }

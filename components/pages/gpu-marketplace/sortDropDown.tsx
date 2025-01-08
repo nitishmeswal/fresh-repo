@@ -1,3 +1,4 @@
+import React from 'react';
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,42 +7,64 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { motion } from 'framer-motion';
 
 interface SortDropdownProps {
-  onSort: (option: string) => void;
+  onSort: (value: string) => void;
 }
 
-export const SortDropdown = ({ onSort }: SortDropdownProps) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button 
-        variant="outline" 
-        className="w-[200px] justify-between dark:text-gray-350 text-gray-950
-                   font-medium text-lg dark:bg-gray-950 bg-gray-350 group border-0 rounded-full"
-      >
-        Sort by
-        <ChevronDown className="h-4 w-4 opacity-50" />
-      </Button>
-    </DropdownMenuTrigger>
-
-    <DropdownMenuContent className="w-[200px] dark:bg-gray-950 bg-gray-350">
-      {[
-        { id: "price-low-high", label: "Price: Low to High" },
-        { id: "price-high-low", label: "Price: High to Low" },
-        { id: "popularity", label: "Popularity" },
-        { id: "new-listed", label: "New Listed" },
-        { id: "relevance", label: "Relevance" }
-      ].map(option => (
-        <DropdownMenuItem 
-          key={option.id}
-          onClick={() => onSort(option.id)}
-          className="text-gray-950 dark:text-gray-350 font-medium text-lg 
-                     hover:bg-gray-900 dark:hover:bg-gray-300
-                     hover:text-gray-250 dark:hover:text-gray-800"
+export const SortDropdown = ({ onSort }: SortDropdownProps) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="outline" 
+          className="
+            w-[180px] bg-black/40 border-blue-500/20 text-gray-300
+            hover:text-blue-400 hover:border-blue-500/40
+            focus:ring-blue-500/20 focus:border-blue-500/40
+            transition-all duration-300
+            flex items-center justify-between
+          "
         >
-          {option.label}
-        </DropdownMenuItem>
-      ))}
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+          <span>Sort by</span>
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      
+      <DropdownMenuContent className="bg-black/95 border-blue-500/20 backdrop-blur-xl min-w-[180px]">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.2 }}
+        >
+          <DropdownMenuItem 
+            onClick={() => onSort('relevance')}
+            className="text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 focus:bg-blue-500/10 cursor-pointer"
+          >
+            Relevance
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => onSort('price_low')}
+            className="text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 focus:bg-blue-500/10 cursor-pointer"
+          >
+            Price: Low to High
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => onSort('price_high')}
+            className="text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 focus:bg-blue-500/10 cursor-pointer"
+          >
+            Price: High to Low
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => onSort('rating')}
+            className="text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 focus:bg-blue-500/10 cursor-pointer"
+          >
+            Customer Rating
+          </DropdownMenuItem>
+        </motion.div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
