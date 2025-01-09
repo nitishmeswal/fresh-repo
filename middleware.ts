@@ -1,65 +1,44 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-// Define protected routes
-const PROTECTED_ROUTES = [
-  '/dashboard',
-  '/profile',
-  '/settings',
-  '/admin'
-];
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req, res })
 
-// Define public routes that don't require authentication
-const PUBLIC_ROUTES = [
-  '/login',
-  '/register',
-  '/auth/error',
-  '/auth/verify-request',
-  '/'
-];
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
-export async function middleware(request: NextRequest) {
-  const token = await getToken({ 
-    req: request, 
-    secret: process.env.NEXTAUTH_SECRET 
-  });
-  const path = request.nextUrl.pathname;
-
-  // Allow public routes
-  if (PUBLIC_ROUTES.some(route => path.startsWith(route))) {
-    return NextResponse.next();
+  // If there's no session and trying to access protected routes
+  if (!session && (
+    req.nextUrl.pathname.startsWith('/dashboard') ||
+    req.nextUrl.pathname.startsWith('/profile') ||
+    req.nextUrl.pathname.startsWith('/wallet') ||
+    req.nextUrl.pathname.startsWith('/NodeNet')
+  )) {
+    const redirectUrl = new URL('/auth/sign-in', req.url)
+    return NextResponse.redirect(redirectUrl)
   }
 
-  // Protect specific routes
-  if (PROTECTED_ROUTES.some(route => path.startsWith(route))) {
-    if (!token) {
-      // Redirect to login if no token
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // Optional: Add role-based access control
-    // if (token.role !== 'admin' && path.startsWith('/admin')) {
-    //   return NextResponse.redirect(new URL('/unauthorized', request.url));
-    // }
+  // If there's a session and user is on auth pages, redirect to dashboard
+  if (session && (
+    req.nextUrl.pathname.startsWith('/auth/sign-in') ||
+    req.nextUrl.pathname.startsWith('/auth/sign-up')
+  )) {
+    const redirectUrl = new URL('/dashboard', req.url)
+    return NextResponse.redirect(redirectUrl)
   }
 
-  // Allow API routes for authenticated users
-  if (path.startsWith('/api')) {
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' }, 
-        { status: 401 }
-      );
-    }
-  }
-
-  return NextResponse.next();
+  return res
 }
 
-// Configure matcher for middleware
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ]
-};
+    '/dashboard/:path*',
+    '/profile/:path*',
+    '/wallet/:path*',
+    '/NodeNet/:path*',
+    '/auth/:path*'
+  ],
+}

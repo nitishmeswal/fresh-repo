@@ -4,7 +4,7 @@ import React from 'react';
 import WorldMap from '@/components/WorldMap';
 import { Toaster } from 'sonner';
 
-export default function TestPage() {
+export default function NodeNetPage() {
   return (
     <div className="min-h-screen bg-black">
       <Toaster position="top-right" />

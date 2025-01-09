@@ -1,51 +1,22 @@
-"use client"
+"use client";
+
 import { SignupForm } from "@/components/auth/sign-up/signup-form";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { SocialLogin } from "@/components/auth/third-party-login";
-import Divider from "@/components/auth/divider";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SocialLogin from "@/components/auth/third-party-login";
 
 export default function SignupPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  // const { theme } = useTheme()
-
-  const handleSocialLoginStart = () => {
-    setIsLoading(true)
-  }
-
-  const handleSocialLoginSuccess = () => {
-    setIsLoading(false)
-    router.push("/dashboard")
-    router.refresh()
-  }
-
-  const handleSocialLoginError = () => {
-    setIsLoading(false)
-  }
-
   return (
-    <Card className="w-full sm:w-96 mx-auto mt-10">
-    <CardHeader>
-      <CardTitle>Sign In</CardTitle>
-    </CardHeader>
-    <CardContent className="grid gap-4">
-    <SocialLogin 
-            isLoading={isLoading}
-            onLoginStart={handleSocialLoginStart}
-            onLoginSuccess={handleSocialLoginSuccess}
-            onLoginError={handleSocialLoginError}
-          />
-      <Divider />
-      <SignupForm />
-    </CardContent>
-    <CardFooter>
-      <p className="text-sm">
-      Already have an account? <Link href="/sign-in" className="underline">Sign up</Link>
-      </p>
-    </CardFooter>
-  </Card>
+    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-gray-900 to-black p-4">
+      <Card className="w-full max-w-md bg-black/50 backdrop-blur-xl border-white/10">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold tracking-tight">
+            Create an account
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SocialLogin />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

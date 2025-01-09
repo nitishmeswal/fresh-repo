@@ -10,10 +10,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+
 import { GPU } from '@/constants/values';
 import { NlovPaymentOption } from "./nlogPaymentOption";
 import { PricingSummary } from "./pricingSummery";
 import { GpuSpecs } from "./gpu-specs";
+
 interface BuyDialogProps {
   gpu: GPU | null;
   open: boolean;

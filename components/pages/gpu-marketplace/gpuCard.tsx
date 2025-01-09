@@ -53,6 +53,12 @@ const GpuCard = ({ gpu, onSelect }: GPUCardProps) => {
             <p className="text-lg font-medium text-blue-400">${gpu.price.usd}/hr</p>
           </div>
 
+          <div className="mb-4 space-y-1">
+            <p className="text-sm text-gray-400">Cores: {gpu.specs.cores}</p>
+            <p className="text-sm text-gray-400">RT Cores: {gpu.specs.rtCores}</p>
+            <p className="text-sm text-gray-400">Available: {gpu.specs.available}</p>
+          </div>
+
           {/* Rent Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
