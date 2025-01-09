@@ -1,54 +1,39 @@
 # Compute UI
 
-A modern, feature-rich web application for GPU marketplace and AI model deployment platform built with Next.js 14, Supabase, and TypeScript.
+A modern web application for GPU compute management and AI model deployment.
 
-## Features
-
-- 🔐 Secure Authentication with Supabase
-- 💳 Credits System for Platform Usage
-- 🖼️ AI Image Generation
-- 🚀 Custom Model Deployment
-- 💻 GPU Marketplace
-- 🌐 Real-time Updates
-- 🎨 Modern UI with Tailwind CSS
-- 🔄 Responsive Design
-
-## Tech Stack
-
-- **Framework**: Next.js 14
-- **Language**: TypeScript
-- **Auth**: Supabase Auth
-- **Database**: Supabase
-- **Styling**: Tailwind CSS
-- **Components**: Radix UI
-- **State Management**: React Context
-- **Animations**: Framer Motion
+## Technologies Used
+- Next.js 13+ with App Router
+- TypeScript
+- Tailwind CSS
+- Supabase for Authentication
+- Radix UI Components
 
 ## Getting Started
 
-1. Clone the repository:
-```bash
-git clone https://github.com/nitishmeswal/computeui.git
-cd computeui
-```
-
-2. Install dependencies:
+First, install dependencies:
 ```bash
 pnpm install
 ```
 
-3. Create a `.env.local` file and add your environment variables:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-4. Run the development server:
+Then, run the development server:
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Environment Variables
+
+Create a `.env.local` file with:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## Deployment
+
+This project is configured for deployment on Netlify.
 
 ## Project Structure
 

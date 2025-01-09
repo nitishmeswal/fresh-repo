@@ -1,11 +1,17 @@
 [build]
-  command = "pnpm run build"
+  command = "npx pnpm install --no-frozen-lockfile && npx pnpm run build"
   publish = ".next"
 
 [build.environment]
   NEXT_USE_NETLIFY_EDGE = "true"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
+  NPM_FLAGS = "--no-frozen-lockfile"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
