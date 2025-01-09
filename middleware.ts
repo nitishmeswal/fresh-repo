@@ -2,32 +2,46 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// List of protected routes that require authentication
+const protectedPaths = [
+  '/dashboard',
+  '/gpu-marketplace',
+  '/ai-models',
+  '/earnings',
+  '/connect-to-earn',
+  '/wallet',
+  '/community',
+  '/settings',
+  '/info',
+  '/profile',
+  '/NodeNet'
+]
+
+// Public paths that don't require authentication
+const publicPaths = ['/', '/auth/callback']
+
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req, res })
+  const { pathname } = req.nextUrl
+
+  // Check if the current path is protected
+  const isProtectedPath = protectedPaths.some(path => 
+    pathname === path || pathname.startsWith(`${path}/`)
+  )
 
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // If there's no session and trying to access protected routes
-  if (!session && (
-    req.nextUrl.pathname.startsWith('/dashboard') ||
-    req.nextUrl.pathname.startsWith('/profile') ||
-    req.nextUrl.pathname.startsWith('/wallet') ||
-    req.nextUrl.pathname.startsWith('/NodeNet')
-  )) {
-    const redirectUrl = new URL('/auth/sign-in', req.url)
-    return NextResponse.redirect(redirectUrl)
+  // If logged in and on root (login) page, redirect to dashboard
+  if (session && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
-  // If there's a session and user is on auth pages, redirect to dashboard
-  if (session && (
-    req.nextUrl.pathname.startsWith('/auth/sign-in') ||
-    req.nextUrl.pathname.startsWith('/auth/sign-up')
-  )) {
-    const redirectUrl = new URL('/dashboard', req.url)
-    return NextResponse.redirect(redirectUrl)
+  // For protected paths, redirect to root (login) if not logged in
+  if (isProtectedPath && !session) {
+    return NextResponse.redirect(new URL('/', req.url))
   }
 
   return res
@@ -35,10 +49,18 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
+    '/auth/callback',
     '/dashboard/:path*',
-    '/profile/:path*',
+    '/gpu-marketplace/:path*',
+    '/ai-models/:path*',
+    '/earnings/:path*',
+    '/connect-to-earn/:path*',
     '/wallet/:path*',
-    '/NodeNet/:path*',
-    '/auth/:path*'
-  ],
+    '/community/:path*',
+    '/settings/:path*',
+    '/info/:path*',
+    '/profile/:path*',
+    '/NodeNet/:path*'
+  ]
 }

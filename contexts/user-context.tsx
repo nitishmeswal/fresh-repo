@@ -5,75 +5,36 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 
-interface Profile {
-  id: string;
-  full_name?: string;
-  avatar_url?: string;
-  email?: string;
-}
-
-interface UserWithProfile extends User {
-  profile?: Profile;
-}
-
 interface UserContextType {
-  user: UserWithProfile | null;
+  user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
   refreshUser: () => Promise<void>;
-  signOut: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType>({
   user: null,
   loading: true,
+  isAuthenticated: false,
   refreshUser: async () => {},
-  signOut: async () => {},
 });
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserWithProfile | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
   const refreshUser = async () => {
     try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (authUser) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .single();
-
-        if (profile) {
-          setUser({ ...authUser, profile });
-        } else {
-          setUser(authUser);
-        }
-      } else {
-        setUser(null);
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setIsAuthenticated(!!user);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error refreshing user:', error);
       setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      setUser(null);
-      router.push('/login');
-      router.refresh();
-    } catch (error) {
-      console.error('Error signing out:', error);
-      throw error;
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
@@ -82,23 +43,42 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     refreshUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
-        router.push('/login');
-        router.refresh();
-      } else {
-        await refreshUser();
+        setIsAuthenticated(false);
+        router.push('/');
+      } else if (session?.user) {
+        setUser(session.user);
+        setIsAuthenticated(true);
+        
+        // Update user profile in database
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: session.user.id,
+            email: session.user.email,
+            full_name: session.user.user_metadata.full_name,
+            avatar_url: session.user.user_metadata.avatar_url,
+            last_sign_in: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'id'
+          });
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+        }
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, router]);
 
   return (
-    <UserContext.Provider value={{ user, loading, refreshUser, signOut }}>
+    <UserContext.Provider value={{ user, loading, isAuthenticated, refreshUser }}>
       {children}
     </UserContext.Provider>
   );
@@ -106,7 +86,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
 export function useUser() {
   const context = useContext(UserContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;

@@ -10,7 +10,11 @@ export function WelcomeCreditsDialog() {
   useEffect(() => {
     // Show dialog only for users with exactly 300 credits (new users)
     if (credits === 300) {
-      setOpen(true)
+      const timer = setTimeout(() => {
+        setOpen(true)
+      }, 2000)
+      
+      return () => clearTimeout(timer)
     }
   }, [credits])
 

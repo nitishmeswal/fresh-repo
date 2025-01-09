@@ -27,8 +27,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import styles from '@/styles/marketplace.module.css';
-
 import { GPU, gpuData } from '@/constants/values';
+import { useToast } from "@/components/ui/use-toast";
 
 const Home = () => {
   const router = useRouter();
@@ -40,6 +40,7 @@ const Home = () => {
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [useNlov, setUseNlov] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const { toast } = useToast();
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -51,10 +52,8 @@ const Home = () => {
   }
 
   const handleGpuSelect = (gpu: GPU) => {
-
     setSelectedGpu(gpu);
     setShowBuyDialog(true);
-    // router.push(`/gpu-marketplace/${gpu.id}`);
   };
 
   const handleBuy = () => {
@@ -84,24 +83,23 @@ const Home = () => {
       <div className="flex flex-row p-4 justify-between shrink-0 items-center">
         <div className="flex flex-row items-center gap-2">
           <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
-            className="w-[200px] justify-between dark:text-gray-350 text-gray-950
-                       font-medium text-lg dark:bg-gray-950 bg-gray-350 group border-0 rounded-full"
-          >
-            Sort by
-            <ChevronDown className="h-4 w-4 opacity-50" />
-          </Button>
-        </DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-[200px] justify-between dark:text-gray-350 text-gray-950
+                           font-medium text-lg dark:bg-gray-950 bg-gray-350 group border-0 rounded-full"
+              >
+                Sort by
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-[200px] dark:bg-gray-950 bg-gray-350">
               <DropdownMenuItem 
                 onClick={() => setSortOption("price-low-high")}
                 className="text-gray-950 dark:text-gray-350 font-medium text-lg 
                            hover:bg-gray-900 dark:hover:bg-gray-300
-                           hover:text-gray-250 dark:hover:text-gray-800
-                           "
+                           hover:text-gray-250 dark:hover:text-gray-800"
               >
                 Price: Low to High
               </DropdownMenuItem>
@@ -109,8 +107,7 @@ const Home = () => {
                 onClick={() => setSortOption("price-high-low")}
                 className="text-gray-950 dark:text-gray-350 font-medium text-lg 
                         hover:bg-gray-900 dark:hover:bg-gray-300
-                        hover:text-gray-250 dark:hover:text-gray-800
-                        "
+                        hover:text-gray-250 dark:hover:text-gray-800"
               >
                 Price: High to Low
               </DropdownMenuItem>
@@ -118,8 +115,7 @@ const Home = () => {
                 onClick={() => setSortOption("popularity")}
                 className="text-gray-950 dark:text-gray-350 font-medium text-lg 
                            hover:bg-gray-900 dark:hover:bg-gray-300 
-                           hover:text-gray-250 dark:hover:text-gray-800
-                           "
+                           hover:text-gray-250 dark:hover:text-gray-800"
               >
                 Popularity
               </DropdownMenuItem>
@@ -127,8 +123,7 @@ const Home = () => {
                 onClick={() => setSortOption("new-listed")}
                 className="text-gray-950 dark:text-gray-350 font-medium text-lg 
                            hover:bg-gray-900 dark:hover:bg-gray-300
-                           hover:text-gray-250 dark:hover:text-gray-800
-                           "
+                           hover:text-gray-250 dark:hover:text-gray-800"
               >
                 New Listed
               </DropdownMenuItem>
@@ -136,8 +131,7 @@ const Home = () => {
                 onClick={() => setSortOption("relevance")}
                 className="text-gray-950 dark:text-gray-350 font-medium text-lg 
                            hover:bg-gray-900 dark:hover:bg-gray-300
-                           hover:text-gray-250 dark:hover:text-gray-800
-                           "
+                           hover:text-gray-250 dark:hover:text-gray-800"
               >
                 Relevance
               </DropdownMenuItem>
@@ -259,14 +253,13 @@ const Home = () => {
         </TooltipProvider>
       </div>
 
-
       {/* GPU Grid */}
       <div className={styles.gpuGrid}>
         {gpuData.map((gpu) => (
           <div
             key={gpu.id}
-            className={`${styles.gpuCard} pb-12 ${!gpu.available ? styles.comingSoon : ''}`}
-            onClick={() => gpu.available && handleGpuSelect(gpu)}
+            className={`${styles.gpuCard} pb-12 ${styles.comingSoon}`}
+            onClick={() => handleGpuSelect(gpu)}
           >
             <div className={styles.gpuTitle}>
               {gpu.name}
@@ -280,18 +273,13 @@ const Home = () => {
                 className={styles.gpuImage}
                 priority
               />
-              {!gpu.available && (
-                <div className={styles.comingSoonOverlay}>
-                  Coming Soon
-                </div>
-              )}
             </div>
             <div className={styles.gpuInfo}>
               <div className={styles.priceTag}>
                 From ${gpu.price.usd}/hr
               </div>
               <button className={styles.selectButton}>
-                {gpu.available ? 'Buy GPU' : 'Coming Soon'}
+                View Details
               </button>
             </div>
           </div>
@@ -306,10 +294,7 @@ const Home = () => {
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold mb-4 bg-gradient-to-r 
                         from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                Buy {selectedGpu.name}
-                <div className="text-base font-medium text-gray-300 mt-2">
-                  {selectedGpu.specs.available} unit{selectedGpu.specs.available !== 1 ? 's' : ''} available
-                </div>
+                {selectedGpu.name}
               </DialogTitle>
               <DialogDescription className="space-y-4">
                 <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-6 rounded-xl
@@ -384,6 +369,12 @@ const Home = () => {
                     </div>
                   )}
                 </div>
+
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mt-4">
+                  <p className="text-blue-400 text-center font-medium">
+                    🚀 GPU Marketplace coming in Version 2.0! Stay tuned for the launch.
+                  </p>
+                </div>
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="mt-6 space-x-3">
@@ -393,19 +384,22 @@ const Home = () => {
                 className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-900 
                          hover:text-white transition-colors"
               >
-                Cancel
+                Close
               </Button>
               <Button
-                onClick={handleBuy}
-                className={`flex-1 transition-all duration-300 ${
-                  useNlov 
-                    ? `bg-gradient-to-r from-blue-600 to-purple-600
-                     hover:from-blue-700 hover:to-purple-700 border-0` 
-                    : 'bg-blue-600 hover:bg-blue-700'
-                } text-white`}
+                onClick={() => {
+                  setShowBuyDialog(false);
+                  toast({
+                    title: "Coming Soon!",
+                    description: "GPU Marketplace will be available in Version 2.0",
+                    variant: "default",
+                  });
+                }}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 
+                         hover:from-blue-700 hover:to-purple-700 text-white"
               >
                 <CreditCard className="w-4 h-4 mr-2" />
-                Pay with {useNlov ? '$NLOV' : 'USD'}
+                Buy Now
               </Button>
             </DialogFooter>
           </DialogContent>

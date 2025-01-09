@@ -1,4 +1,4 @@
-import { supabase } from './supabase-client';
+import { supabase } from './client';
 import { User } from '@supabase/supabase-js';
 
 export const signInWithGoogle = async () => {
@@ -36,15 +36,6 @@ export const getUserProfile = async (userId: string) => {
     .from('user_profiles')
     .select('*')
     .eq('user_id', userId)
-    .single();
-  return { data, error };
-};
-
-export const createUserProfile = async (profile: any) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .insert(profile)
-    .select()
     .single();
   return { data, error };
 };

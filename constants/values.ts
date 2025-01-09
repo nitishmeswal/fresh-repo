@@ -301,31 +301,35 @@ export  const posts = [
 export const footer = [
   {
     name: "GitHub",
-    href: "htpps://github.com",
+    href: "https://github.com/neurolov",
     icon: "/github.svg",
   },
   {
     name: "Twitter",
-    href: "https://twitter.com",
+    href: "https://x.com/neurolov?t=pv9d_FGxA7votvinyouU6Q&s=09",
     icon: "/twitter.svg",
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/company/neurolov-ai/",
     icon: "/linkedin.svg",
   },
   {
     name: "Discord",
-    href: "https://discord.com",
+    href: "https://discord.gg/neurolov",
     icon: "/discord.svg",
   },
   {
-    name: "Telegram",
-    href: "https://telegram.com",
-    icon: "/telegram.svg",
+    name: "Website",
+    href: "https://neurolov.ai",
+    icon: "/website.svg",
+  },
+  {
+    name: "Email",
+    href: "mailto:support@neurolov.ai",
+    icon: "/email.svg",
   }
 ]
-
 
 export interface GPU {
   id: string;
@@ -348,108 +352,107 @@ export interface GPU {
 export const gpuData: GPU[] = [
   {
     id: 'rtx4090',
-    name: 'NVIDIA GeForce RTX 4090',
+    name: 'NVIDIA RTX 4090',
     image: '/gpu-images/RTX-4090.png',
-    available: true,
+    available: false,
     price: {
-      usd: 10.00,
-      nlov: 7.00
+      usd: 10,
+      nlov: 7
     },
     specs: {
-      cores: '16,384 CUDA Cores',
-      tmus: '512 TMUs',
-      rops: '176 ROPs',
-      rtCores: '128 Ray Tracing (RT) cores',
-      available: 4
+      cores: "16384 CUDA Cores",
+      tmus: "512 Texture Units",
+      rops: "176 ROPs",
+      rtCores: "128 RT Cores",
+      available: 0
     }
   },
   {
     id: 'rtx3090ti',
-    name: 'NVIDIA GeForce RTX 3090 Ti',
-    image: '/gpu-images/RTX-3090-ti.png',
+    name: 'NVIDIA RTX 3090 Ti',
+    image: '/gpu-images/RTX-3090ti.png',
     available: false,
     price: {
-      usd: 8.00,
-      nlov: 5.60
+      usd: 8,
+      nlov: 5.6
     },
     specs: {
-      cores: '10,752 CUDA Cores',
-      tmus: '336 TMUs',
-      rops: '112 ROPs',
-      rtCores: '84 Ray Tracing (RT) cores',
+      cores: "10752 CUDA Cores",
+      tmus: "384 Texture Units",
+      rops: "112 ROPs",
+      rtCores: "84 RT Cores",
       available: 0
     }
   },
   {
     id: 'rtx3090',
-    name: 'NVIDIA GeForce RTX 3090',
+    name: 'NVIDIA RTX 3090',
     image: '/gpu-images/RTX-3090.png',
-    available: true,
-    price: {
-      usd: 6.00,
-      nlov: 4.20
-    },
-    specs: {
-      cores: '10,496 CUDA Cores',
-      tmus: '328 TMUs',
-      rops: '112 ROPs',
-      rtCores: '82 Ray Tracing (RT) cores',
-      available: 6
-    }
-  },
-  {
-    id: 'rtx4080',
-    name: 'NVIDIA GeForce RTX 4080',
-    image: '/gpu-images/RTX-4080.png',
     available: false,
     price: {
-      usd: 9.00,
-      nlov: 6.30
+      usd: 6,
+      nlov: 4.2
     },
     specs: {
-      cores: '9,728 CUDA Cores',
-      tmus: '304 TMUs',
-      rops: '112 ROPs',
-      rtCores: '76 Ray Tracing (RT) cores',
-      available: 0
-    }
-  },
-  {
-    id: 'rtx4070ti',
-    name: 'NVIDIA GeForce RTX 4070 Ti',
-    image: '/gpu-images/RTX-4070-Ti.png',
-    available: false,
-    price: {
-      usd: 7.00,
-      nlov: 4.90
-    },
-    specs: {
-      cores: '7,168 CUDA Cores',
-      tmus: '224 TMUs',
-      rops: '80 ROPs',
-      rtCores: '60 Ray Tracing (RT) cores',
+      cores: "10496 CUDA Cores",
+      tmus: "328 Texture Units",
+      rops: "112 ROPs",
+      rtCores: "82 RT Cores",
       available: 0
     }
   },
   {
     id: 'a6000',
     name: 'NVIDIA A6000',
-    image: '/gpu-images/A6000.png',
+    image: '/gpu-images/A-6000.png',
     available: false,
     price: {
-      usd: 12.00,
-      nlov: 8.40
+      usd: 12,
+      nlov: 8.4
     },
     specs: {
-      cores: '10,752 CUDA Cores',
-      tmus: '336 TMUs',
-      rops: '112 ROPs',
-      rtCores: '84 Ray Tracing (RT) cores',
+      cores: "10752 CUDA Cores",
+      tmus: "336 Texture Units",
+      rops: "112 ROPs",
+      rtCores: "84 RT Cores",
+      available: 0
+    }
+  },
+  {
+    id: 'a5000',
+    name: 'NVIDIA A5000',
+    image: '/gpu-images/A-5000.png',
+    available: false,
+    price: {
+      usd: 9,
+      nlov: 6.3
+    },
+    specs: {
+      cores: "8192 CUDA Cores",
+      tmus: "256 Texture Units",
+      rops: "96 ROPs",
+      rtCores: "64 RT Cores",
+      available: 0
+    }
+  },
+  {
+    id: 'a4000',
+    name: 'NVIDIA A4000',
+    image: '/gpu-images/A-4000.png',
+    available: false,
+    price: {
+      usd: 7,
+      nlov: 4.9
+    },
+    specs: {
+      cores: "6144 CUDA Cores",
+      tmus: "192 Texture Units",
+      rops: "64 ROPs",
+      rtCores: "48 RT Cores",
       available: 0
     }
   }
 ];
-
 
 export interface AIModel {
   id: string;

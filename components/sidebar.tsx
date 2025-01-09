@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { FeatureOptions, SettingsOptions } from "@/constants/values";
 import { Loader } from "lucide-react";
 
-const CustomSidebar = () => {
+const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
@@ -92,4 +92,4 @@ const CustomSidebar = () => {
   );
 };
 
-export default CustomSidebar;
+export default Sidebar;
