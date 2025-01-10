@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { isServer }) => {
-    // Fixes npm packages that depend on `fs` module
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -18,12 +17,21 @@ const nextConfig = {
         os: require.resolve('os-browserify'),
         path: require.resolve('path-browserify'),
         'process/browser': require.resolve('process/browser'),
-      }
+      };
+
+      // Polyfill Buffer for the browser
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+          process: 'process/browser',
+        })
+      );
     }
-    return config
+
+    return config;
   },
-  transpilePackages: ['@hyperbolic/sdk'],
+  transpilePackages: ['hyperbolic-sdk'],
   images: {
-    domains: ['api.hyperbolic.xyz'],
-  }
+    domains: ['api.hyperbolic.ai'],
+  },
 }

@@ -48,6 +48,7 @@
     "assert": "^2.1.0",
     "axios": "^1.7.8",
     "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.2.0",
     "class-variance-authority": "^0.7.1",
@@ -89,6 +90,7 @@
     "url": "^0.11.4",
     "viem": "^2.22.4",
     "wagmi": "^2.14.7",
+    "webpack": "^5.90.3",
     "winston": "^3.17.0",
     "zod": "^3.23.8",
     "zustand": "^5.0.1"
