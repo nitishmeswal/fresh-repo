@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import WorldMap from '@/components/WorldMap';
 import { Toaster } from 'sonner';
 
 export default function NodeNetPage() {
