@@ -1,5 +1,3 @@
-
-
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/app/lib/db';
@@ -16,69 +14,13 @@ const registrationSchema = z.object({
     })
 });
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    console.log('Registration body:', body);
-    const validatedData = registrationSchema.parse(body);
-
-    await dbConnect();
-
-    const existingEmail = await User.findOne({ email: validatedData.email });
-    if (existingEmail) {
-      return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      );
-    }
-
-    const hashedPassword = await bcrypt.hash(validatedData.password, 12);
-
-    const user = await User.create({
-      name: validatedData.name,
-      email: validatedData.email,
-      password: hashedPassword,
-      isVerified: false,
-      
-      registeredAt: new Date()
-    });
-
-    const { password, ...userWithoutPassword } = user.toObject();
-
-    return NextResponse.json(
-      { 
-        message: 'User created successfully',
-        user: userWithoutPassword 
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Registration error:', error);
-
-    // Handle validation errors
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          error: 'Validation failed',
-          details: error.errors 
-        },
-        { status: 400 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes('duplicate key')) {
-      console.error('Error creating user:', error.message);
-      return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Error creating user' },
-      { status: 500 }
-    );
-  }
+export async function POST(request: Request) {
+  return new Response(JSON.stringify({ message: "Registration temporarily disabled" }), {
+    status: 503,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }
 
 // Optional: Add rate limiting to prevent brute force attacks
