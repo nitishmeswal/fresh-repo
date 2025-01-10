@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -13,7 +12,7 @@ interface Badge {
 
 interface AccountSummaryData {
   name: string;
-  image: StaticImageData;
+  image: string | StaticImageData;
   rating: number | string;
   badges: Badge[];
 }
