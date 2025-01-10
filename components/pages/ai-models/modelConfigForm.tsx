@@ -72,7 +72,9 @@ export const ModelConfigForm = ({ modelId }: ModelConfigFormProps) => {
                   <span className="text-sm text-blue-400">32</span>
                 </div>
                 <Slider
-                  defaultValue={[32]}
+                  value={[32]}
+                  onValueChange={(value) => {}}
+                  min={1}
                   max={128}
                   step={1}
                   className="[&_[role=slider]]:bg-blue-500"
@@ -85,7 +87,9 @@ export const ModelConfigForm = ({ modelId }: ModelConfigFormProps) => {
                   <span className="text-sm text-blue-400">512</span>
                 </div>
                 <Slider
-                  defaultValue={[512]}
+                  value={[512]}
+                  onValueChange={(value) => {}}
+                  min={128}
                   max={2048}
                   step={64}
                   className="[&_[role=slider]]:bg-blue-500"
@@ -156,7 +160,9 @@ export const ModelConfigForm = ({ modelId }: ModelConfigFormProps) => {
               <span className="text-sm text-blue-400">16 GB</span>
             </div>
             <Slider
-              defaultValue={[16]}
+              value={[16]}
+              onValueChange={(value) => {}}
+              min={1}
               max={32}
               step={1}
               className="[&_[role=slider]]:bg-blue-500"

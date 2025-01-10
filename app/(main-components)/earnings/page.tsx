@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/user-context";
+import { useCredits } from "@/contexts/credits-context"; // Import the useCredits hook
 import { Gift, Ticket, CreditCard, Trophy, Coins, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -73,7 +74,8 @@ function ScratchCard() {
 }
 
 export default function EarningsPage() {
-  const { profile, credits } = useUser();
+  const { user } = useUser();
+  const { credits } = useCredits();
 
   const earningsCards = [
     {

@@ -87,7 +87,13 @@ export interface AIModel {
   type: string;
   tags: string[];
   icon: React.ComponentType<{ className?: string }>;
+  className?: string;
+  iconBg?: string;
   features?: string[];
+  pricing: {
+    base: number;
+    perHour: number;
+  };
   defaultConfig: {
     containerImage: string;
     exposedPorts: number[];

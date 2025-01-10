@@ -43,10 +43,16 @@ const PLAN_DETAILS = {
   }
 };
 
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return 'N/A';
+  return new Date(dateStr).toLocaleDateString();
+};
+
 export default function ProfilePage() {
   const { user, loading: userLoading, refreshUser } = useUser();
   const [editingName, setEditingName] = useState(false);
   const [customName, setCustomName] = useState('');
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [updating, setUpdating] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -56,9 +62,24 @@ export default function ProfilePage() {
       router.push('/login');
     }
     if (user) {
-      setCustomName(user.custom_name || '');
+      fetchProfile();
     }
   }, [user, userLoading, router]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (!error && data) {
+      setProfile(data);
+      setCustomName(data.custom_name || '');
+    }
+  };
 
   const handleUpdateName = async () => {
     if (!user) return;
@@ -70,7 +91,7 @@ export default function ProfilePage() {
         .eq('id', user.id);
 
       if (error) throw error;
-      await refreshUser();
+      await fetchProfile();
       setEditingName(false);
     } catch (error) {
       console.error('Error updating name:', error);
@@ -91,7 +112,7 @@ export default function ProfilePage() {
     return null;
   }
 
-  const planDetails = PLAN_DETAILS[user.billing_plan || 'free'];
+  const planDetails = PLAN_DETAILS[profile?.billing_plan || 'free'];
 
   return (
     <div className="container mx-auto py-10 space-y-8">
@@ -104,11 +125,11 @@ export default function ProfilePage() {
         <CardContent className="space-y-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatar_url} alt={user.full_name} />
-              <AvatarFallback>{user.full_name?.[0]}</AvatarFallback>
+              <AvatarImage src={profile?.avatar_url} alt={profile?.full_name} />
+              <AvatarFallback>{profile?.full_name?.[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-2xl font-bold">{user.full_name}</h2>
+              <h2 className="text-2xl font-bold">{profile?.full_name}</h2>
               <div className="flex items-center space-x-2">
                 {editingName ? (
                   <>
@@ -142,7 +163,7 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <p className="text-gray-400">
-                      {user.custom_name ? `@${user.custom_name}` : 'No custom name set'}
+                      {profile?.custom_name ? `@${profile?.custom_name}` : 'No custom name set'}
                     </p>
                     <Button
                       size="icon"
@@ -154,7 +175,7 @@ export default function ProfilePage() {
                   </>
                 )}
               </div>
-              <p className="text-sm text-gray-400">{user.email}</p>
+              <p className="text-sm text-gray-400">{profile?.email}</p>
             </div>
           </div>
 
@@ -184,7 +205,7 @@ export default function ProfilePage() {
                   <CardDescription>Your compute power</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold">{user.credits}</div>
+                  <div className="text-3xl font-bold">{profile?.credits}</div>
                   <p className="text-sm text-gray-400 mt-2">
                     Available credits for compute tasks
                   </p>
@@ -194,11 +215,11 @@ export default function ProfilePage() {
               <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20">
                 <CardHeader>
                   <CardTitle>Account Status</CardTitle>
-                  <CardDescription>Member since {new Date(user.created_at).toLocaleDateString()}</CardDescription>
+                  <CardDescription>Member since {formatDate(profile?.created_at)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-400">
-                    Last login: {new Date(user.last_sign_in).toLocaleDateString()}
+                    Last login: {formatDate(profile?.last_sign_in)}
                   </p>
                 </CardContent>
               </Card>

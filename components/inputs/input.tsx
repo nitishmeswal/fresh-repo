@@ -30,15 +30,19 @@ export const Input: FC<InputTypes> = ({
 }) => {
    return (
       <div className="relative w-full mb-4">
-         {formatPrice && <BiDollar size={24} className="absolute text-neutral-700 top-5 left-2" />}
+         {formatPrice && (
+            <div className="absolute text-neutral-700 top-5 left-2">
+               <BiDollar size={24} />
+            </div>
+         )}
          <input
             id={id}
             disabled={disabled}
             {...register(id, { required })}
-            placeholder=""
+            placeholder=" "
             type={type}
             className={cn(
-               "peer w-full p-4 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed",
+               "peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed",
                formatPrice ? "pl-9" : "pl-4",
                errors[id]
                   ? "border-rose-500 focus:border-rose-500"
@@ -48,8 +52,7 @@ export const Input: FC<InputTypes> = ({
          <label
             htmlFor={id}
             className={cn(
-               // 1.125rem = 18px
-               "absolute z-10 top-[1.125rem] text-base duration-300 transform -translate-y-4 origin-[0]",
+               "absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0]",
                formatPrice ? "left-9" : "left-4",
                "peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4",
                errors[id] ? "text-rose-500" : "text-zinc-400"

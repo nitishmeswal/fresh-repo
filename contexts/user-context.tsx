@@ -52,22 +52,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setUser(session.user);
         setIsAuthenticated(true);
         
-        // Update user profile in database
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: session.user.id,
-            email: session.user.email,
-            full_name: session.user.user_metadata.full_name,
-            avatar_url: session.user.user_metadata.avatar_url,
-            last_sign_in: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'id'
-          });
+        try {
+          // Update user profile in database with fallbacks for missing metadata
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: session.user.id,
+              email: session.user.email,
+              full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Anonymous',
+              avatar_url: session.user.user_metadata?.avatar_url || null,
+              last_sign_in: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }, {
+              onConflict: 'id'
+            });
 
-        if (profileError) {
-          console.error('Error updating profile:', profileError);
+          if (profileError) {
+            console.error('Error updating profile:', profileError);
+          }
+        } catch (error) {
+          console.error('Error in profile update:', error);
         }
       }
     });
@@ -85,9 +89,5 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useUser() {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
+  return useContext(UserContext);
 }

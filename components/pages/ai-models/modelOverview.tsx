@@ -8,7 +8,7 @@ import {
   Activity,
   Zap,
   Network,
-  HardDisk
+  HardDrive
 } from 'lucide-react';
 
 export const ModelOverview = () => {

@@ -50,6 +50,7 @@ export const ModelPlayground = ({ modelId }: ModelPlaygroundProps) => {
               <Slider
                 value={temperature}
                 onValueChange={setTemperature}
+                min={0}
                 max={1}
                 step={0.1}
                 className="[&_[role=slider]]:bg-blue-500"
@@ -64,6 +65,7 @@ export const ModelPlayground = ({ modelId }: ModelPlaygroundProps) => {
               <Slider
                 value={maxLength}
                 onValueChange={setMaxLength}
+                min={0}
                 max={100}
                 step={1}
                 className="[&_[role=slider]]:bg-blue-500"

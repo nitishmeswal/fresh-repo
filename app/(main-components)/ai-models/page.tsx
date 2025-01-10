@@ -1,27 +1,24 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/contexts/user-context';
+import { useCredits } from '@/contexts/credits-context';
 import { Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, GitBranch, Boxes, Bot, Cpu, X, Loader2, Check, AlertCircle, Activity, Cpu as CpuIcon, MemoryStick, Network, HardDrive, Users, Download, Compass, Filter, CheckCircle, BarChart2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import NextImage from 'next/image';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { AIModel } from '@/services/types';
-import { useCreditsContext } from '@/contexts/credits-context';
-import { FluxImageGenerator } from '@/components/pages/AiModel/FluxImage/FluxImageGenerator';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Progress } from '@/components/ui/progress';
-import { DockerConfig } from '@/components/deployment/DockerConfig';
-import { GPUSelection } from '@/components/deployment/GPUSelection';
-import { NetworkVolume } from '@/components/deployment/NetworkVolume';
-import { DeploymentStatus } from '@/components/pages/AiModel/CustomModel/DeploymentStatus';
-import { ModelMetrics } from '@/components/pages/AiModel/CustomModel/ModelMetrics';
-import { ModelLogs } from '@/components/pages/AiModel/CustomModel/ModelLogs';
-import type { DockerConfigType, GPUSelectionType, NetworkVolumeType } from '@/services/types';
+import NextImage from 'next/image';
+import type { AIModel } from '@/services/types';
 
-const defaultDockerConfig: DockerConfigType = {
+const defaultDockerConfig: any = {
   templateName: '',
   containerImage: '',
   exposedPorts: [],
@@ -76,7 +73,7 @@ const categoryToType = {
   "Custom": "custom"
 };
 
-const models = [
+const models: AIModel[] = [
   {
     id: 'flux-image',
     name: 'Flux Image Gen',
@@ -84,6 +81,11 @@ const models = [
     type: 'image',
     tags: ['Image Generation', 'Fast'],
     icon: ImageIcon,
+    iconBg: 'bg-blue-500/10',
+    pricing: {
+      base: 100,
+      perHour: 50
+    },
     features: [
       'Multiple style support',
       'Real-time image manipulation',
@@ -104,6 +106,11 @@ const models = [
     type: 'api',
     tags: ['Fast', 'API'],
     icon: Zap,
+    iconBg: 'bg-yellow-500/10',
+    pricing: {
+      base: 50,
+      perHour: 25
+    },
     features: [
       'Automatic API documentation',
       'High-performance endpoints',
@@ -124,6 +131,11 @@ const models = [
     type: 'agent',
     tags: ['Agents', 'Automation'],
     icon: Bot,
+    iconBg: 'bg-purple-500/10',
+    pricing: {
+      base: 150,
+      perHour: 75
+    },
     features: [
       'Multi-agent coordination',
       'Task automation',
@@ -144,6 +156,11 @@ const models = [
     type: 'video',
     tags: ['Video', 'AI'],
     icon: Video,
+    iconBg: 'bg-red-500/10',
+    pricing: {
+      base: 200,
+      perHour: 100
+    },
     features: [
       'Face swapping',
       'Video synthesis',
@@ -164,6 +181,11 @@ const models = [
     type: 'server',
     tags: ['PyTorch', 'Server'],
     icon: Brain,
+    iconBg: 'bg-orange-500/10',
+    pricing: {
+      base: 100,
+      perHour: 50
+    },
     features: [
       'Model serving',
       'Dynamic batching',
@@ -184,6 +206,11 @@ const models = [
     type: 'text',
     tags: ['LLM', 'Text'],
     icon: MessageSquare,
+    iconBg: 'bg-green-500/10',
+    pricing: {
+      base: 250,
+      perHour: 125
+    },
     features: [
       'Model quantization',
       'Optimized inference',
@@ -204,6 +231,11 @@ const models = [
     type: '3d',
     tags: ['3D', 'Rendering'],
     icon: Box,
+    iconBg: 'bg-blue-500/10',
+    pricing: {
+      base: 200,
+      perHour: 100
+    },
     features: [
       '3D model generation',
       'Real-time rendering',
@@ -224,6 +256,11 @@ const models = [
     type: 'realtime',
     tags: ['Real-time', 'Streaming'],
     icon: Clock,
+    iconBg: 'bg-red-500/10',
+    pricing: {
+      base: 150,
+      perHour: 75
+    },
     features: [
       'Stream processing',
       'Low latency inference',
@@ -244,6 +281,11 @@ const models = [
     type: 'audio',
     tags: ['Audio', 'Generation'],
     icon: Music,
+    iconBg: 'bg-green-500/10',
+    pricing: {
+      base: 100,
+      perHour: 50
+    },
     features: [
       'Audio generation',
       'Format conversion',
@@ -264,6 +306,11 @@ const models = [
     type: 'custom',
     tags: ['Custom', 'Flexible'],
     icon: Upload,
+    iconBg: 'bg-purple-500/10',
+    pricing: {
+      base: 50,
+      perHour: 25
+    },
     features: [
       'Custom model deployment',
       'Flexible configuration',
@@ -314,7 +361,7 @@ const deploymentSteps: DeploymentStep[] = [
 ];
 
 export default function AIModelsPage() {
-  const { credits } = useCreditsContext();
+  const { credits } = useCredits();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -389,13 +436,13 @@ export default function AIModelsPage() {
   const [selectedModel, setSelectedModel] = useState<AIModel | null>(null);
   const [isDeploying, setIsDeploying] = useState(false);
   const [currentStep, setCurrentStep] = useState<'docker' | 'network' | 'gpu' | 'deployment'>('docker');
-  const [dockerConfig, setDockerConfig] = useState<DockerConfigType>(defaultDockerConfig);
-  const [selectedGpu, setSelectedGpu] = useState<GPUSelectionType | null>(null);
-  const [networkConfig, setNetworkConfig] = useState<NetworkVolumeType | null>(null);
+  const [dockerConfig, setDockerConfig] = useState<any>(defaultDockerConfig);
+  const [selectedGpu, setSelectedGpu] = useState<any | null>(null);
+  const [networkConfig, setNetworkConfig] = useState<any | null>(null);
   const [deploymentStepsState, setDeploymentSteps] = useState<DeploymentStep[]>(deploymentSteps);
   const [showMonitoringView, setShowMonitoringView] = useState(false);
   const [view, setView] = useState<'explore' | 'my-models'>('explore');
-  const [myModels, setMyModels] = useState<Model[]>([]);
+  const [myModels, setMyModels] = useState<AIModel[]>([]);
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   const updateStepStatus = (stepId: string, status: DeploymentStep['status']) => {

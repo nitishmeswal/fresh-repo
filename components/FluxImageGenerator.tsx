@@ -8,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import OpenAI from 'openai';
 import { motion, AnimatePresence } from 'framer-motion';
-import { enhancePrompt, artStyles, type ArtStyle } from '@/utils/promptEngineering';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +19,50 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select, SelectItem } from "@/components/ui/select";
 import { Sparkles, Zap } from 'lucide-react';
+
+interface ArtStyle {
+  name: string;
+  description: string;
+  prompt: string;
+}
+
+const artStyles: ArtStyle[] = [
+  {
+    name: 'Photorealistic',
+    description: 'Highly detailed and realistic images that look like photographs',
+    prompt: 'photorealistic, highly detailed, 8k resolution, professional photography'
+  },
+  {
+    name: 'Anime',
+    description: 'Japanese animation style artwork',
+    prompt: 'anime style, cel shaded, vibrant colors, manga-inspired'
+  },
+  {
+    name: 'Oil Painting',
+    description: 'Classical oil painting style with rich textures',
+    prompt: 'oil painting, textured canvas, rich colors, masterful brushstrokes'
+  },
+  {
+    name: 'Watercolor',
+    description: 'Soft and flowing watercolor painting style',
+    prompt: 'watercolor, soft edges, flowing colors, artistic, painterly'
+  },
+  {
+    name: 'Digital Art',
+    description: 'Modern digital art style with clean lines',
+    prompt: 'digital art, clean lines, modern, professional illustration'
+  },
+  {
+    name: 'Pixel Art',
+    description: '8-bit style pixel art reminiscent of retro games',
+    prompt: 'pixel art, 8-bit style, retro gaming, pixelated'
+  }
+];
+
+const enhancePrompt = (prompt: string, style?: ArtStyle): string => {
+  if (!style) return prompt;
+  return `${prompt}, ${style.prompt}`;
+};
 
 interface GeneratedImage {
   url: string;
@@ -37,7 +80,7 @@ export function FluxImageGenerator() {
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [prompt, setPrompt] = useState('');
   const [imageCount, setImageCount] = useState(1);
-  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>('realistic');
+  const [selectedStyle, setSelectedStyle] = useState<ArtStyle>(artStyles[0]);
 
   // Initialize OpenAI client (masked as Flux Generator)
   const imageGenerator = new OpenAI({
@@ -59,18 +102,7 @@ export function FluxImageGenerator() {
       const newImages: GeneratedImage[] = [];
 
       // Enhance the prompt with selected style and Flux-specific enhancements
-      const enhancedPrompt = enhancePrompt(prompt, {
-        ...artStyles[selectedStyle],
-        prefix: "Create a Flux-powered masterpiece:",
-        suffix: "Ensure high detail and professional quality.",
-        styleModifiers: [
-          "ultra-realistic",
-          "professional grade",
-          "masterful composition",
-          "perfect lighting",
-          "stunning details"
-        ]
-      });
+      const enhancedPrompt = enhancePrompt(prompt, selectedStyle);
 
       for (let i = 0; i < imageCount; i++) {
         try {
@@ -81,7 +113,7 @@ export function FluxImageGenerator() {
             n: 1,
             size: "1024x1024",
             quality: "hd",
-            style: selectedStyle === 'realistic' ? 'natural' : 'vivid',
+            style: selectedStyle.name === 'Photorealistic' ? 'natural' : 'vivid',
           });
 
           if (response.data[0].url) {
@@ -97,7 +129,7 @@ export function FluxImageGenerator() {
             await creditsService.useCredits(cost, "Flux Image Generation", {
               feature: 'flux_image_gen',
               prompt,
-              style: selectedStyle,
+              style: selectedStyle.name,
               timestamp: new Date().toISOString(),
               image_number: i + 1,
               total_images: imageCount,
@@ -165,13 +197,12 @@ export function FluxImageGenerator() {
           <div className="grid gap-2">
             <Label htmlFor="style" className="text-gray-200">Flux Style</Label>
             <Select 
-              value={selectedStyle} 
-              onValueChange={(value) => setSelectedStyle(value as ArtStyle)}
-              placeholder="Select style"
+              value={selectedStyle.name} 
+              onValueChange={(value) => setSelectedStyle(artStyles.find(style => style.name === value) as ArtStyle)}
             >
-              {Object.entries(artStyles).map(([style, _]) => (
-                <SelectItem key={style} value={style}>
-                  {style.charAt(0).toUpperCase() + style.slice(1)} Flux
+              {artStyles.map(style => (
+                <SelectItem key={style.name} value={style.name}>
+                  {style.name}
                 </SelectItem>
               ))}
             </Select>
@@ -193,7 +224,6 @@ export function FluxImageGenerator() {
             <Select 
               value={imageCount.toString()} 
               onValueChange={(value) => setImageCount(parseInt(value))}
-              placeholder="Select count"
             >
               {[1, 2, 3, 4, 5].map(num => (
                 <SelectItem key={num} value={num.toString()}>
@@ -247,7 +277,7 @@ export function FluxImageGenerator() {
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 text-sm rounded-b-lg transform translate-y-full group-hover:translate-y-0 transition-transform">
                     <p className="font-medium">Vision: {image.prompt}</p>
-                    <p className="text-xs text-gray-300 mt-1">Flux Style: {image.style}</p>
+                    <p className="text-xs text-gray-300 mt-1">Flux Style: {image.style?.name}</p>
                     <p className="text-xs text-gray-400">
                       Created: {new Date(image.timestamp).toLocaleString()}
                     </p>

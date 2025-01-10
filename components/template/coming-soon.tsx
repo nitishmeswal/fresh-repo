@@ -1,6 +1,6 @@
 "use client";
 
-import ComingSoonImg from "@/public/under construction.webp";
+import ComingSoonImg from "@/public/under-construction.gif";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";

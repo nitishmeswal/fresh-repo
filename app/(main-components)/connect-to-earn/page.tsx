@@ -106,10 +106,10 @@ export default function ConnectToEarn() {
         </div>
       </div>
 
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-6 space-y-8 relative group">
         {/* Coming Soon Overlay */}
         <motion.div 
-          className="absolute left-[240px] top-0 right-0 bottom-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 z-50"
+          className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 z-50"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
         >
@@ -122,6 +122,22 @@ export default function ConnectToEarn() {
             </h2>
             <p className="text-gray-400 text-lg max-w-md">
               Connect to Earn experience will be live in Version 3.0!
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Hover Overlay */}
+        <motion.div 
+          className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 z-50"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+        >
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              Hover Overlay
+            </h2>
+            <p className="text-gray-400 text-lg max-w-md">
+              This is a hover overlay for the content section.
             </p>
           </div>
         </motion.div>

@@ -40,7 +40,9 @@ export async function POST(request: Request) {
       error: userError,
     } = await supabase.auth.getUser();
 
-    if (userError) throw userError;
+    if (userError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // Start a transaction
     const { data: transaction, error: txError } = await supabase

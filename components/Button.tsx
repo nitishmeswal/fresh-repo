@@ -1,6 +1,5 @@
 import { FC } from "react"
-import { IconType } from "react-icons"
-
+import { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type ButtonTypes = {
@@ -9,7 +8,7 @@ type ButtonTypes = {
    disabled?: boolean
    outline?: boolean
    small?: boolean
-   icon?: IconType
+   icon?: LucideIcon
 }
 
 export const Button: FC<ButtonTypes> = ({
@@ -30,7 +29,7 @@ export const Button: FC<ButtonTypes> = ({
             small ? "py-1 text-sm font-light border" : "py-3 text-base font-semibold border-2"
          )}
       >
-         {Icon && <Icon size={24} className="absolute left-4 top-3" />}
+         {Icon && <Icon className="absolute left-4 top-3 h-6 w-6" />}
          {label}
       </button>
    )

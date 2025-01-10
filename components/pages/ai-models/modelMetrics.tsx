@@ -3,7 +3,11 @@ import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Cpu, MemoryStick, Activity, HardDrive, Network } from 'lucide-react';
 
-export const ModelMetrics = () => {
+interface ModelMetricsProps {
+  modelId: string;
+}
+
+export const ModelMetrics: React.FC<ModelMetricsProps> = ({ modelId }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card className="p-6 bg-black/40 border-blue-500/20">
