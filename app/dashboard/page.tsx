@@ -10,7 +10,6 @@ import { useCredits } from '@/contexts/credits-context';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import styles from './styles.module.css';
-import NodeNetPage from '../NodeNet/page';
 import { WelcomeCreditsDialog } from "@/components/welcome-credits";
 import ProfileDropdown from '@/components/profile-dropdown';
 
@@ -54,7 +53,6 @@ const DashboardPage = () => {
 
         if (data) {
           setProfile(data);
-          console.log('Profile data:', data); // For debugging
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -217,12 +215,18 @@ const DashboardPage = () => {
                 <p className="text-gray-400 mb-4">
                   Join our decentralized compute network. View network status and connected nodes.
                 </p>
-                <button 
-                  onClick={() => router.push('/NodeNet')}
-                  className={styles.revealButton}
-                >
-                  <div className={styles.buttonText}>View Network</div>
-                </button>
+                <div className={styles.tooltipWrapper}>
+                  <button 
+                    className={`${styles.revealButton} ${styles.disabledButton}`}
+                    disabled={true}
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <div className={styles.buttonText}>View Network</div>
+                  </button>
+                  <div className={styles.tooltip}>
+                    Feature currently unavailable
+                  </div>
+                </div>
               </Card>
             </motion.div>
           </div>

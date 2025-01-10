@@ -63,12 +63,12 @@ export default function MoreInfoPage() {
   ];
 
   const socials = [
-    { icon: Github, label: 'GitHub', link: 'https://github.com/compute', color: 'hover:text-gray-400' },
-    { icon: Twitter, label: 'Twitter', link: 'https://twitter.com/compute', color: 'hover:text-blue-400' },
-    { icon: Linkedin, label: 'LinkedIn', link: 'https://linkedin.com/company/compute', color: 'hover:text-blue-600' },
-    { icon: MessageSquare, label: 'Discord', link: 'https://discord.gg/compute', color: 'hover:text-indigo-400' },
-    { icon: Globe, label: 'Website', link: 'https://compute.com', color: 'hover:text-green-400' },
-    { icon: Mail, label: 'Email', link: 'mailto:support@compute.com', color: 'hover:text-red-400' }
+    { icon: Github, label: 'GitHub', link: 'https://github.com/neuroIov', color: 'hover:text-gray-400' },
+    { icon: Twitter, label: 'Twitter', link: 'https://twitter.com/neurolov', color: 'hover:text-blue-400' },
+    { icon: Linkedin, label: 'LinkedIn', link: 'https://www.linkedin.com/company/103657031/', color: 'hover:text-blue-600' },
+    { icon: MessageSquare, label: 'Discord', link: 'https://discord.gg/cyVmj2nnUq', color: 'hover:text-indigo-400' },
+    { icon: Globe, label: 'Website', link: 'https://neurolov.ai', color: 'hover:text-green-400' },
+    { icon: Mail, label: 'Email', link: 'support@neurolov.ai', color: 'hover:text-red-400' }
   ];
 
   return (
@@ -226,7 +226,7 @@ export default function MoreInfoPage() {
               className="px-8 py-3 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = 'mailto:support@compute.com'}
+              onClick={() => window.location.href = 'https://forms.gle/bz1i8id5tPWeWFSv6'}
             >
               Contact Support
             </motion.button>

@@ -90,3 +90,44 @@
   opacity: 1;
   visibility: visible;
 }
+
+.disabledButton {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(to right, #6b7280, #9ca3af) !important;
+}
+
+.disabledButton:hover {
+  background: linear-gradient(to right, #6b7280, #9ca3af) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.disabledButton:before {
+  display: none;
+}
+
+.tooltipWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tooltip {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.tooltipWrapper:hover .tooltip {
+  opacity: 1;
+}

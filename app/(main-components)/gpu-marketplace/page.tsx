@@ -181,7 +181,7 @@ const Home = () => {
                 <Button 
                   className="w-full max-w-md py-6 text-lg font-semibold
                  bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-200"
-                  onClick={() => window.open('https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform', '_blank')}
+                  onClick={() => window.open('https://forms.gle/zrrvHgXGparRsUHN8', '_blank')}
                 >
                   <div className="flex flex-col items-center">
                     <span>List Your GPU Requirements</span>
