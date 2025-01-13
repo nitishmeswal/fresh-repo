@@ -20,7 +20,7 @@ export default function RootPage() {
       if (!loading) {
         if (user) {
           // User is authenticated, redirect to dashboard
-          router.push('/dashboard');
+          router.replace('/(main-components)/dashboard');
         }
       }
     };
@@ -35,13 +35,14 @@ export default function RootPage() {
       await signIn();
     } catch (error) {
       console.error('Error signing in:', error);
-      toast.error('Failed to sign in');
+      toast.error('Failed to sign in. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (loading) {
+  // Show loading state while checking auth
+  if (loading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
@@ -49,12 +50,9 @@ export default function RootPage() {
     );
   }
 
+  // If user is authenticated, show loading while redirecting
   if (user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return null;
   }
 
   return (

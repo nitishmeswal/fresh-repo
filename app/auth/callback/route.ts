@@ -29,21 +29,30 @@ export async function GET(request: Request) {
       if (userError) throw userError;
 
       if (user) {
-        // Update user profile
-        const { error: profileError } = await supabase.from('profiles').upsert({
-          id: user.id,
-          email: user.email,
-          full_name: user.user_metadata.full_name,
-          avatar_url: user.user_metadata.avatar_url,
-          last_sign_in: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'id'
-        });
-        if (profileError) throw profileError;
+        // Ensure profile exists
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!profile) {
+          // Create profile if it doesn't exist
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: user.id,
+                full_name: user.user_metadata.full_name,
+                avatar_url: user.user_metadata.avatar_url,
+                email: user.email,
+              },
+            ]);
+          if (insertError) throw insertError;
+        }
 
         // Set session cookie with strict settings
-        const response = NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
+        const response = NextResponse.redirect(new URL('/(main-components)/dashboard', requestUrl.origin));
         response.cookies.set('sb-session', user.id, {
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

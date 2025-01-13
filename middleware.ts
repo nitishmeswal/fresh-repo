@@ -4,16 +4,16 @@ import type { NextRequest } from 'next/server'
 
 // List of protected routes that require authentication
 const protectedPaths = [
-  '/dashboard',
-  '/gpu-marketplace',
-  '/ai-models',
-  '/earnings',
-  '/connect-to-earn',
+  '/(main-components)/dashboard',
+  '/(main-components)/gpu-marketplace',
+  '/(main-components)/ai-models',
+  '/(main-components)/earnings',
+  '/(main-components)/connect-to-earn',
   '/wallet',
-  '/community',
+  '/(secondary-components)/community',
   '/settings',
   '/info',
-  '/profile',
+  '/auth/profile',
   '/NodeNet'
 ]
 
