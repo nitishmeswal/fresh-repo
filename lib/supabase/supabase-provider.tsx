@@ -2,50 +2,37 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { supabase } from './supabase-client';
-import { getUserProfile } from './auth';
-import type { Tables } from './types';
+import { supabase, getProfile } from './client';
+import type { Database } from '@/types/supabase';
 
-type UserProfile = Tables<'user_profiles'>['Row'];
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface SupabaseContextType {
   user: User | null;
-  profile: UserProfile | null;
+  profile: Profile | null;
   loading: boolean;
+  isAuthenticated: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 const SupabaseContext = createContext<SupabaseContextType>({
   user: null,
   profile: null,
   loading: true,
+  isAuthenticated: false,
+  refreshUser: async () => {},
 });
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        getUserProfile(session.user.id).then(({ data }) => {
-          setProfile(data);
-        });
-      }
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const { data } = await getUserProfile(session.user.id);
-        setProfile(data);
-      } else {
-        setProfile(null);
-      }
+      setIsAuthenticated(!!session?.user);
       setLoading(false);
     });
 
@@ -54,11 +41,25 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  const value = {
+    user,
+    profile,
+    loading,
+    isAuthenticated,
+    refreshUser: async () => {} // Keeping empty function to maintain interface
+  };
+
   return (
-    <SupabaseContext.Provider value={{ user, profile, loading }}>
+    <SupabaseContext.Provider value={value}>
       {children}
     </SupabaseContext.Provider>
   );
 }
 
-export const useSupabase = () => useContext(SupabaseContext);
+export const useSupabase = () => {
+  const context = useContext(SupabaseContext);
+  if (!context) {
+    throw new Error('useSupabase must be used within a SupabaseProvider');
+  }
+  return context;
+};

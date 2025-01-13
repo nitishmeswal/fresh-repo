@@ -22,45 +22,67 @@ const publicPaths = ['/', '/auth/callback']
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  const supabase = createMiddlewareClient({ 
+    req, 
+    res,
+    cookieOptions: {
+      name: 'sb-session',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 1 week
+    }
+  })
+
   const { pathname } = req.nextUrl
 
-  // Check if the current path is protected
-  const isProtectedPath = protectedPaths.some(path => 
-    pathname === path || pathname.startsWith(`${path}/`)
-  )
+  try {
+    // Refresh session if needed
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error) throw error
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    if (session) {
+      // Check session expiry
+      const expiresAt = session.expires_at || 0
+      const now = Math.floor(Date.now() / 1000)
+      
+      if (expiresAt - now < 60 * 60) { // Less than 1 hour left
+        const { error: refreshError } = await supabase.auth.refreshSession()
+        if (refreshError) throw refreshError
+      }
 
-  // If logged in and on root (login) page, redirect to dashboard
-  if (session && pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', req.url))
-  }
+      // Remove the root page redirect from middleware
+      // Let the root page handle its own redirects
+    } else {
+      // For protected paths, redirect to root (login) if not logged in
+      const isProtectedPath = protectedPaths.some(path => 
+        pathname === path || pathname.startsWith(`${path}/`)
+      )
 
-  // For protected paths, redirect to root (login) if not logged in
-  if (isProtectedPath && !session) {
+      if (isProtectedPath) {
+        // Clear any stale cookies
+        res.cookies.delete('sb-session')
+        return NextResponse.redirect(new URL('/', req.url))
+      }
+    }
+
+    return res
+  } catch (error) {
+    console.error('Auth error:', error)
+    // Clear cookies and redirect to login on auth error
+    res.cookies.delete('sb-session')
     return NextResponse.redirect(new URL('/', req.url))
   }
-
-  return res
 }
 
 export const config = {
   matcher: [
-    '/',
-    '/auth/callback',
-    '/dashboard/:path*',
-    '/gpu-marketplace/:path*',
-    '/ai-models/:path*',
-    '/earnings/:path*',
-    '/connect-to-earn/:path*',
-    '/wallet/:path*',
-    '/community/:path*',
-    '/settings/:path*',
-    '/info/:path*',
-    '/profile/:path*',
-    '/NodeNet/:path*'
-  ]
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
 }

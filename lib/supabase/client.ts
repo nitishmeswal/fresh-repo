@@ -1,10 +1,20 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
+import type { Database } from '@/types/supabase';
 
-export const supabase = createClientComponentClient<Database>();
+// Single client instance with strict cookie settings
+export const supabase = createClientComponentClient<Database>({
+  cookieOptions: {
+    name: 'sb-session',  // Unique name for your app
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7 // 1 week
+  }
+});
 
+// Auth functions
 export async function signInWithGoogle() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: `${window.location.origin}/auth/callback`,
@@ -14,34 +24,76 @@ export async function signInWithGoogle() {
       },
     },
   });
+}
 
-  if (error) throw error;
-  return data;
+export async function signInWithGithub() {
+  return supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+      scopes: 'read:user user:email',
+    },
+  });
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  try {
+    // Sign out globally
+    await supabase.auth.signOut({ scope: 'global' });
+    
+    // Clear browser storage
+    if (typeof window !== 'undefined') {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+    }
+  } catch (error) {
+    console.error('Error during sign out:', error);
+    throw error;
+  }
 }
 
-export async function getUserCredits(userId: string) {
+// Profile functions with error handling
+export async function getProfile(userId: string) {
   const { data, error } = await supabase
-    .from('user_credits')
-    .select('credits')
-    .eq('user_id', userId)
-    .single();
-
-  if (error) throw error;
-  return data?.credits ?? 0;
-}
-
-export async function getCreditsHistory(userId: string) {
-  const { data, error } = await supabase
-    .from('credits_history')
+    .from('profiles')
     .select('*')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-
+    .single();
+  
   if (error) throw error;
   return data;
+}
+
+export async function updateProfile(userId: string, data: { full_name?: string; avatar_url?: string }) {
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return profile;
+}
+
+// Session management
+export async function refreshSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  if (!session) throw new Error('No session found');
+  
+  // Refresh the session if it's about to expire
+  const expiresAt = session?.expires_at || 0;
+  const now = Math.floor(Date.now() / 1000);
+  if (expiresAt - now < 60 * 60) { // Less than 1 hour left
+    const { data: { session: newSession }, error: refreshError } = 
+      await supabase.auth.refreshSession();
+    if (refreshError) throw refreshError;
+    return newSession;
+  }
+  
+  return session;
 }
