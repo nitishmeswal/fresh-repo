@@ -15,11 +15,12 @@ const ParticleEffect = ({
   disperseDistance = 2,
 }) => {
   const mountRef = useRef(null);
+  const cleanupRef = useRef(null);
+
   const {
     initializeEffect,
-    cleanupEffect,
+    toggleDisperse,
     handleMouseMove,
-    handleMouseLeave,
   } = useParticleEffect({
     modelPath,
     width,
@@ -33,18 +34,34 @@ const ParticleEffect = ({
 
   useEffect(() => {
     if (!mountRef.current) return;
+
+    // Clear any existing content
+    while (mountRef.current.firstChild) {
+      mountRef.current.removeChild(mountRef.current.firstChild);
+    }
     
-    const cleanup = initializeEffect(mountRef.current);
-    return () => cleanup();
-  }, [initializeEffect]);
+    // Initialize new effect
+    cleanupRef.current = initializeEffect(mountRef.current);
+
+    return () => {
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
+    };
+  }, [initializeEffect, modelPath, width, height]);
 
   return (
     <div 
-      className="particle-effect-container"
+      className="relative w-full h-full"
       ref={mountRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ width: `${width}px`, height: `${height}px` }}
+      onClick={toggleDisperse}
+      style={{ 
+        width: `${width}px`, 
+        height: `${height}px`,
+        cursor: 'pointer'
+      }}
     />
   );
 };

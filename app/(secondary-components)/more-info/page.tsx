@@ -81,7 +81,7 @@ export default function MoreInfoPage() {
       {/* Hero Section */}
       <motion.div variants={itemVariants} className="text-center mb-16">
         <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mb-6">
-          Welcome to Compute
+          Welcome to Neurolov
         </h1>
         <p className="text-xl text-gray-400 max-w-3xl mx-auto">
           The future of decentralized GPU computing is here. Join thousands of users and providers in our revolutionary platform.

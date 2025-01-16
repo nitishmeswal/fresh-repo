@@ -4,93 +4,190 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import PageTransition from "@/components/page-transition";
-import { useSupabase } from '@/lib/supabase/supabase-provider';
-import { signInWithGoogle, signInWithGithub } from '@/lib/supabase/client';
+import { useUser } from '@/lib/hooks/useUser';
+import ParticleEffect from '@/particle-effect/ParticleEffect';
 
 export default function RootPage() {
   const router = useRouter();
-  const { user, loading } = useSupabase();
+  const { user, loading, supabase } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const checkAuthAndRedirect = async () => {
-      if (!loading) {
-        if (user) {
-          // User is authenticated, redirect to dashboard
-          router.replace('/(main-components)/dashboard');
-        }
-      }
-    };
-
-    checkAuthAndRedirect();
+    if (!loading && user) {
+      router.replace('/dashboard');
+    }
   }, [user, loading, router]);
 
-  const handleSignIn = async (provider: 'google' | 'github') => {
+  const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      const signIn = provider === 'google' ? signInWithGoogle : signInWithGithub;
-      await signIn();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
     } catch (error) {
-      console.error('Error signing in:', error);
-      toast.error('Failed to sign in. Please try again.');
+      toast.error('Error signing in with Google');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Show loading state while checking auth
-  if (loading || isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  const handleGithubSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      toast.error('Error signing in with GitHub');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // If user is authenticated, show loading while redirecting
-  if (user) {
-    return null;
-  }
+  if (loading) return null;
 
   return (
     <PageTransition>
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-6 max-w-2xl mx-auto"
-        >
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-blue-400">
-            Welcome to NeuroLov
-          </h1>
-          <p className="text-gray-400 text-lg sm:text-xl max-w-[600px] mx-auto">
-            Join our decentralized compute network and revolutionize AI model training
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Button
-              size="lg"
-              onClick={() => handleSignIn('google')}
-              disabled={isLoading}
-              className="bg-white text-black hover:bg-gray-100 flex items-center gap-2"
+      <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+        {/* Animated gradient orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-gradient-to-r from-[#3B82F6]/30 to-[#8B5CF6]/30 blur-[120px] animate-pulse-slow" />
+          <div className="absolute -bottom-[40%] -right-[20%] w-[70%] h-[70%] rounded-full bg-gradient-to-r from-[#10B981]/30 to-[#3B82F6]/30 blur-[120px] animate-pulse-slower" />
+        </div>
+
+        {/* Glassmorphism overlay */}
+        <div className="absolute inset-0 backdrop-blur-[8px]" />
+
+        {/* Content Container */}
+        <div className="relative z-10 w-full max-w-screen-xl mx-auto px-4">
+          {/* Logo and Particle Effect Container */}
+          <div className="w-[900px] h-[800px] relative -mt-20 mx-auto flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="w-full h-full"
             >
-              <Image src="/google.svg" alt="Google" width={20} height={20} />
-              Sign in with Google
-            </Button>
-            <Button
-              size="lg"
-              onClick={() => handleSignIn('github')}
-              disabled={isLoading}
-              className="bg-[#24292F] hover:bg-[#24292F]/90 flex items-center gap-2"
-            >
-              <Image src="/github.svg" alt="GitHub" width={20} height={20} />
-              Sign in with GitHub
-            </Button>
+              <ParticleEffect
+                modelPath="/logo.glb"
+                width={900}
+                height={800}
+                particleCount={50000}
+                particleSize={0.004}
+                particleColor={0x40A6FF}
+                disperseSpeed={0.1}
+                disperseDistance={3.0}
+              />
+            </motion.div>
           </div>
-        </motion.div>
+
+          {/* Login Container with enhanced animations */}
+          <div className="flex flex-col items-center -mt-40">
+            {/* Brand text with glow effect */}
+            <motion.div
+              className="text-4xl md:text-5xl font-bold relative"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <span className="relative">
+                NEURO<span className="text-[#40A6FF] glow-text">LOV</span>
+              </span>
+            </motion.div>
+
+            {/* Welcome text with staggered animation */}
+            <motion.div
+              className="flex flex-col items-center"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.2
+                  }
+                }
+              }}
+            >
+              <motion.h1
+                className="text-lg font-semibold mt-1 text-gray-200"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+              >
+                Welcome to Compute
+              </motion.h1>
+              <motion.p
+                className="text-gray-400 text-sm mt-0.5 mb-6"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+              >
+                Sign in to access your dashboard
+              </motion.p>
+            </motion.div>
+
+            {/* Auth buttons with hover effects */}
+            <motion.div
+              className="flex flex-col gap-3 w-full max-w-xs"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    delayChildren: 0.6,
+                    staggerChildren: 0.1
+                  }
+                }
+              }}
+            >
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 }
+                }}
+              >
+                <Button
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                  className="w-full py-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Continue with Google
+                </Button>
+              </motion.div>
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 }
+                }}
+              >
+                <Button
+                  onClick={handleGithubSignIn}
+                  disabled={isLoading}
+                  className="w-full py-6 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Continue with GitHub
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </PageTransition>
   );

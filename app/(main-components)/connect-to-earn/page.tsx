@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { GuidelinesDialog } from '@/components/connect-to-earn/GuidelinesDialog';
-import { GPUScanDialog } from '@/components/connect-to-earn/GPUScanDialog';
-import { MiningPlanDialog } from '@/components/connect-to-earn/MiningPlanDialog';
-import { CashoutDialog } from '@/components/connect-to-earn/CashoutDialog';
-import { GPUMonitor } from '@/components/connect-to-earn/GPUMonitor';
-import { EarningsStats } from '@/components/connect-to-earn/EarningsStats';
+import { GuidelinesDialog } from '@/app/(main-components)/connect-to-earn/components/GuidelinesDialog';
+import { GPUScanDialog } from '@/app/(main-components)/connect-to-earn/components/GPUScanDialog';
+import { MiningPlanDialog } from '@/app/(main-components)/connect-to-earn/components/MiningPlanDialog';
+import { CashoutDialog } from '@/app/(main-components)/connect-to-earn/components/CashoutDialog';
+import { GPUMonitor } from '@/app/(main-components)/connect-to-earn/components/GPUMonitor';
+import { EarningsStats } from '@/app/(main-components)/connect-to-earn/components/EarningsStats';
 import { Card } from '@/components/ui/card';
 import { Power, Lock, Cpu, Zap, Coins, Shield, Info } from 'lucide-react';
 import {
@@ -134,10 +134,10 @@ export default function ConnectToEarn() {
         >
           <div className="text-center space-y-4">
             <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Hover Overlay
+              Connect to Earn coming in version 3.0
             </h2>
             <p className="text-gray-400 text-lg max-w-md">
-              This is a hover overlay for the content section.
+              Join our newsletter to be the first to know when Connect to Earn is live
             </p>
           </div>
         </motion.div>

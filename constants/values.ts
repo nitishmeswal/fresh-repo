@@ -5,7 +5,7 @@ export const FeatureOptions = [
     {
       label: "Dashboard",
       icon: "/dashboard.svg",
-      href: "/",
+      href: "/dashboard",
     },
     {
       label: "GPU Marketplace",
@@ -49,7 +49,7 @@ export const SettingsOptions = [
       label: "More info",
       icon: "/info.svg",
       href: "/more-info",
-    },
+    }
   ];
 
 export const filters = []
@@ -162,7 +162,6 @@ export const trafficData = [
     activity: "Organic Search", value: 78, color:"#ffffff"
   }
 ]
-
 
 export const accountSummary = {
     name: 'Samantha Jeffery',
@@ -356,8 +355,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/RTX-4090.png',
     available: false,
     price: {
-      usd: 10,
-      nlov: 7
+      usd: 0.40,
+      nlov: 10
     },
     specs: {
       cores: "16384 CUDA Cores",
@@ -373,8 +372,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/RTX-3090ti.png',
     available: false,
     price: {
-      usd: 8,
-      nlov: 5.6
+      usd: 0.30,
+      nlov: 6
     },
     specs: {
       cores: "10752 CUDA Cores",
@@ -390,8 +389,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/RTX-3090.png',
     available: false,
     price: {
-      usd: 6,
-      nlov: 4.2
+      usd: 0.25,
+      nlov: 4
     },
     specs: {
       cores: "10496 CUDA Cores",
@@ -407,8 +406,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/A-6000.png',
     available: false,
     price: {
-      usd: 12,
-      nlov: 8.4
+      usd: 0.90,
+      nlov: 20
     },
     specs: {
       cores: "10752 CUDA Cores",
@@ -424,8 +423,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/A-5000.png',
     available: false,
     price: {
-      usd: 9,
-      nlov: 6.3
+      usd: 0.80,
+      nlov: 15
     },
     specs: {
       cores: "8192 CUDA Cores",
@@ -441,8 +440,8 @@ export const gpuData: GPU[] = [
     image: '/gpu-images/A-4000.png',
     available: false,
     price: {
-      usd: 7,
-      nlov: 4.9
+      usd: 0.70,
+      nlov: 12
     },
     specs: {
       cores: "6144 CUDA Cores",

@@ -4,8 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/contexts/user-context';
-import { useCredits } from '@/contexts/credits-context';
-import { Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, GitBranch, Boxes, Bot, Cpu, X, Loader2, Check, AlertCircle, Activity, Cpu as CpuIcon, MemoryStick, Network, HardDrive, Users, Download, Compass, Filter, CheckCircle, BarChart2, Terminal } from 'lucide-react';
+import { Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, GitBranch, Boxes, Bot, Cpu, X, Loader2, Check, AlertCircle, Activity, Cpu as CpuIcon, MemoryStick, Network, HardDrive, Users, Download, Compass, Filter, CheckCircle, BarChart2, Terminal, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -82,10 +81,6 @@ const models: AIModel[] = [
     tags: ['Image Generation', 'Fast'],
     icon: ImageIcon,
     iconBg: 'bg-blue-500/10',
-    pricing: {
-      base: 100,
-      perHour: 50
-    },
     features: [
       'Multiple style support',
       'Real-time image manipulation',
@@ -107,10 +102,6 @@ const models: AIModel[] = [
     tags: ['Fast', 'API'],
     icon: Zap,
     iconBg: 'bg-yellow-500/10',
-    pricing: {
-      base: 50,
-      perHour: 25
-    },
     features: [
       'Automatic API documentation',
       'High-performance endpoints',
@@ -132,10 +123,6 @@ const models: AIModel[] = [
     tags: ['Agents', 'Automation'],
     icon: Bot,
     iconBg: 'bg-purple-500/10',
-    pricing: {
-      base: 150,
-      perHour: 75
-    },
     features: [
       'Multi-agent coordination',
       'Task automation',
@@ -157,10 +144,6 @@ const models: AIModel[] = [
     tags: ['Video', 'AI'],
     icon: Video,
     iconBg: 'bg-red-500/10',
-    pricing: {
-      base: 200,
-      perHour: 100
-    },
     features: [
       'Face swapping',
       'Video synthesis',
@@ -182,10 +165,7 @@ const models: AIModel[] = [
     tags: ['PyTorch', 'Server'],
     icon: Brain,
     iconBg: 'bg-orange-500/10',
-    pricing: {
-      base: 100,
-      perHour: 50
-    },
+  
     features: [
       'Model serving',
       'Dynamic batching',
@@ -207,10 +187,7 @@ const models: AIModel[] = [
     tags: ['LLM', 'Text'],
     icon: MessageSquare,
     iconBg: 'bg-green-500/10',
-    pricing: {
-      base: 250,
-      perHour: 125
-    },
+    
     features: [
       'Model quantization',
       'Optimized inference',
@@ -232,10 +209,7 @@ const models: AIModel[] = [
     tags: ['3D', 'Rendering'],
     icon: Box,
     iconBg: 'bg-blue-500/10',
-    pricing: {
-      base: 200,
-      perHour: 100
-    },
+   
     features: [
       '3D model generation',
       'Real-time rendering',
@@ -257,10 +231,7 @@ const models: AIModel[] = [
     tags: ['Real-time', 'Streaming'],
     icon: Clock,
     iconBg: 'bg-red-500/10',
-    pricing: {
-      base: 150,
-      perHour: 75
-    },
+    
     features: [
       'Stream processing',
       'Low latency inference',
@@ -282,10 +253,7 @@ const models: AIModel[] = [
     tags: ['Audio', 'Generation'],
     icon: Music,
     iconBg: 'bg-green-500/10',
-    pricing: {
-      base: 100,
-      perHour: 50
-    },
+    
     features: [
       'Audio generation',
       'Format conversion',
@@ -307,10 +275,7 @@ const models: AIModel[] = [
     tags: ['Custom', 'Flexible'],
     icon: Upload,
     iconBg: 'bg-purple-500/10',
-    pricing: {
-      base: 50,
-      perHour: 25
-    },
+    
     features: [
       'Custom model deployment',
       'Flexible configuration',
@@ -361,7 +326,6 @@ const deploymentSteps: DeploymentStep[] = [
 ];
 
 export default function AIModelsPage() {
-  const { credits } = useCredits();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -371,64 +335,80 @@ export default function AIModelsPage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [inferenceTime, setInferenceTime] = useState<number | null>(null);
+  const [generationCount, setGenerationCount] = useState(0);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  const MAX_GENERATIONS = 5;
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldownTime > 0) {
+      timer = setInterval(() => {
+        setCooldownTime(time => Math.max(0, time - 1));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [cooldownTime]);
 
   const generateImage = async (modelId: string) => {
-    if (isGenerating) return;
+    if (!prompt?.trim()) {
+      setError('Please enter a prompt');
+      return;
+    }
 
-    try {
-      setIsGenerating(true);
-      setError(null);
+    if (generationCount >= MAX_GENERATIONS) {
+      setError("You've reached the maximum number of free generations. Please upgrade to continue.");
+      return;
+    }
 
-      if (!prompt?.trim()) {
-        setError('Please enter a prompt');
-        return;
-      }
+    if (cooldownTime > 0) {
+      setError(`Please wait ${cooldownTime} seconds before generating another image`);
+      return;
+    }
 
-      const response = await fetch('https://api.hyperbolic.xyz/v1/image/generation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuaXRpc2htZXN3YWxAZ21haWwuY29tIiwiaWF0IjoxNzM2NDk4Mzk5fQ.NvMvtg6JrPCIl43h6KP7rDp5n5PedKS2LdjGNnQQiM8'
-        },
-        body: JSON.stringify({
-          'model_name': 'SDXL1.0-base',
-          'prompt': prompt.trim(),
-          'steps': 30,
-          'cfg_scale': 5,
-          'enable_refiner': false,
-          'height': 1024,
-          'width': 1024,
-          'backend': 'auto'
-        }),
-      });
+    setIsGenerating(true);
+    setError(null);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate image');
-      }
+    const response = await fetch('/api/hyperbolic', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: prompt.trim()
+      })
+    });
 
-      const data = await response.json();
-      console.log('Full API Response:', data);
+    const data = await response.json();
+    
+    if (response.status === 429) {
+      setError("Please wait 30 seconds between generations");
+      setCooldownTime(30);
+      setIsGenerating(false);
+      return;
+    }
 
-      if (!data.images || !data.images[0]) {
-        throw new Error('No image data in response');
-      }
+    if (!response.ok) {
+      setError(data.error || 'Failed to generate image');
+      setIsGenerating(false);
+      return;
+    }
 
-      const imageData = data.images[0];
-      console.log('Image data received:', imageData);
-      
-      // Convert the base64 image data to a data URL
-      const imageUrl = `data:image/png;base64,${imageData.image}`;
-      console.log('Generated data URL:', imageUrl);
-
+    if (data.images?.[0]) {
+      const imageUrl = `data:image/png;base64,${data.images[0].image}`;
       setGeneratedImage(imageUrl);
       setInferenceTime(data.inference_time);
+      setGenerationCount(prev => prev + 1);
+      setCooldownTime(30); // Set cooldown after successful generation
+    }
+    setIsGenerating(false);
+  };
 
-    } catch (error) {
-      console.error('Error generating image:', error);
-      setError(error instanceof Error ? error.message : 'Failed to generate image');
-    } finally {
-      setIsGenerating(false);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !isGenerating) {
+      e.preventDefault();
+      generateImage('flux-image');
     }
   };
 
@@ -605,10 +585,11 @@ export default function AIModelsPage() {
                             className="bg-black/30 border-blue-500/20 hover:border-blue-500/40 transition-colors"
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
+                            onKeyDown={handleKeyPress}
                           />
                           <Button 
                             onClick={() => generateImage(model.id)}
-                            disabled={isGenerating}
+                            disabled={isGenerating || generationCount >= MAX_GENERATIONS || cooldownTime > 0 || !prompt?.trim()}
                             className="w-full bg-gradient-to-r from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 text-blue-300"
                           >
                             {isGenerating ? (
@@ -616,10 +597,25 @@ export default function AIModelsPage() {
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                 Generating...
                               </>
+                            ) : generationCount >= MAX_GENERATIONS ? (
+                              <>
+                                <Lock className="w-4 h-4 mr-2" />
+                                Upgrade to Generate More
+                              </>
+                            ) : cooldownTime > 0 ? (
+                              <>
+                                <Clock className="w-4 h-4 mr-2" />
+                                Wait {cooldownTime}s ({MAX_GENERATIONS - generationCount} left)
+                              </>
+                            ) : !prompt?.trim() ? (
+                              <>
+                                <AlertCircle className="w-4 h-4 mr-2" />
+                                Enter a Prompt
+                              </>
                             ) : (
                               <>
                                 <Zap className="w-4 h-4 mr-2" />
-                                Generate Image
+                                Generate Image ({MAX_GENERATIONS - generationCount} left)
                               </>
                             )}
                           </Button>
@@ -654,31 +650,12 @@ export default function AIModelsPage() {
                                     setError('Failed to load the generated image');
                                   }}
                                 />
-                                <motion.div
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.3, delay: 0.4 }}
-                                  className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent"
-                                >
-                                  <div className="flex justify-between items-center text-xs text-blue-400">
-                                    {inferenceTime && (
-                                      <span>Generation time: {inferenceTime.toFixed(2)}s</span>
-                                    )}
-                                    <button 
-                                      onClick={() => {
-                                        const link = document.createElement('a');
-                                        link.href = generatedImage;
-                                        link.download = 'generated-image.png';
-                                        link.click();
-                                      }}
-                                      className="hover:underline flex items-center gap-1 text-blue-300 hover:text-blue-200 transition-colors"
-                                    >
-                                      <Download className="w-3 h-3" />
-                                      Download
-                                    </button>
-                                  </div>
-                                </motion.div>
                               </motion.div>
+                              {inferenceTime && (
+                                <p className="text-sm text-gray-400 mt-2">
+                                  Generated in {inferenceTime.toFixed(2)}s
+                                </p>
+                              )}
                             </motion.div>
                           )}
                         </div>

@@ -18,7 +18,7 @@ export default function NotFound() {
           NOT FOUND
         </h2>
         <p className="dark:text-gray-600 text-gray-400 mb-8">
-          Sorry, we can&apos;t seem to find this page. The page may not exist or an error has occurred.
+          Sorry, we can't seem to find this page. The page may not exist or an error has occurred.
         </p>
         <Button 
           onClick={handleClick} 

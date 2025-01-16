@@ -52,7 +52,7 @@ export async function GET(request: Request) {
         }
 
         // Set session cookie with strict settings
-        const response = NextResponse.redirect(new URL('/(main-components)/dashboard', requestUrl.origin));
+        const response = NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
         response.cookies.set('sb-session', user.id, {
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

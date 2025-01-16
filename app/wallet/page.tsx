@@ -417,7 +417,7 @@ const WalletPage = () => {
   ];
 
   const handleWalletNotListed = () => {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLSfCz8SaLJwiaiu_DIg0WaEVBO7YyQXP7oETbyBJQJq45opVkQ/viewform', '_blank');
+    window.open('https://forms.gle/zrrvHgXGparRsUHN8', '_blank');
   };
 
   const handleConnect = async (walletId: string) => {

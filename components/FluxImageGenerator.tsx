@@ -1,13 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useCreditsContext } from '@/contexts/credits-context';
-import { CreditsService } from '@/lib/services/credits';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
-import OpenAI from 'openai';
-import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
+import { Loader2, Zap } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -16,9 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from '@/components/ui/label';
+import { useUser } from '@/lib/hooks/useUser';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectItem } from "@/components/ui/select";
-import { Sparkles, Zap } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { motion, AnimatePresence } from 'framer-motion';
+import OpenAI from 'openai';
 
 interface ArtStyle {
   name: string;
@@ -29,75 +28,58 @@ interface ArtStyle {
 const artStyles: ArtStyle[] = [
   {
     name: 'Photorealistic',
-    description: 'Highly detailed and realistic images that look like photographs',
-    prompt: 'photorealistic, highly detailed, 8k resolution, professional photography'
+    description: 'Highly detailed and lifelike images',
+    prompt: 'Create a photorealistic image with high detail and natural lighting'
   },
   {
     name: 'Anime',
-    description: 'Japanese animation style artwork',
-    prompt: 'anime style, cel shaded, vibrant colors, manga-inspired'
-  },
-  {
-    name: 'Oil Painting',
-    description: 'Classical oil painting style with rich textures',
-    prompt: 'oil painting, textured canvas, rich colors, masterful brushstrokes'
-  },
-  {
-    name: 'Watercolor',
-    description: 'Soft and flowing watercolor painting style',
-    prompt: 'watercolor, soft edges, flowing colors, artistic, painterly'
+    description: 'Japanese animation style',
+    prompt: 'Create an anime-style illustration with vibrant colors and expressive features'
   },
   {
     name: 'Digital Art',
-    description: 'Modern digital art style with clean lines',
-    prompt: 'digital art, clean lines, modern, professional illustration'
+    description: 'Modern digital illustration style',
+    prompt: 'Create a digital art piece with bold colors and clean lines'
   },
   {
-    name: 'Pixel Art',
-    description: '8-bit style pixel art reminiscent of retro games',
-    prompt: 'pixel art, 8-bit style, retro gaming, pixelated'
+    name: 'Oil Painting',
+    description: 'Classical oil painting style',
+    prompt: 'Create an oil painting with rich textures and classical composition'
   }
 ];
 
-const enhancePrompt = (prompt: string, style?: ArtStyle): string => {
-  if (!style) return prompt;
-  return `${prompt}, ${style.prompt}`;
-};
+function enhancePrompt(prompt: string, style: ArtStyle): string {
+  return `${style.prompt}, specifically: ${prompt}. Ensure high quality, detailed output with professional composition and lighting.`;
+}
 
 interface GeneratedImage {
   url: string;
   prompt: string;
+  enhancedPrompt?: string;
   timestamp: string;
   style?: ArtStyle;
-  enhancedPrompt?: string;
 }
 
-export function FluxImageGenerator() {
-  const { credits, refreshCredits } = useCreditsContext();
-  const creditsService = new CreditsService();
-  const [isOpen, setIsOpen] = useState(false);
+export default function FluxImageGenerator() {
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const [images, setImages] = useState<GeneratedImage[]>([]);
-  const [prompt, setPrompt] = useState('');
   const [imageCount, setImageCount] = useState(1);
+  const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
+  const [prompt, setPrompt] = useState('');
   const [selectedStyle, setSelectedStyle] = useState<ArtStyle>(artStyles[0]);
 
   // Initialize OpenAI client (masked as Flux Generator)
   const imageGenerator = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true
   });
 
   const generateImages = async () => {
+    if (!user) {
+      toast.error('Please sign in to generate images');
+      return;
+    }
+
     try {
-      const cost = await creditsService.getCreditCost('flux_image_gen');
-      const totalCost = cost * imageCount;
-
-      if (credits < totalCost) {
-        toast.error(`Insufficient Flux credits. You need ${totalCost} credits to generate ${imageCount} image${imageCount > 1 ? 's' : ''}.`);
-        return;
-      }
-
       setLoading(true);
       const newImages: GeneratedImage[] = [];
 
@@ -124,17 +106,6 @@ export function FluxImageGenerator() {
               timestamp: new Date().toISOString(),
               style: selectedStyle
             });
-
-            // Record Flux transaction
-            await creditsService.useCredits(cost, "Flux Image Generation", {
-              feature: 'flux_image_gen',
-              prompt,
-              style: selectedStyle.name,
-              timestamp: new Date().toISOString(),
-              image_number: i + 1,
-              total_images: imageCount,
-              engine: 'flux_advanced'
-            });
           }
         } catch (error) {
           console.error('Error in Flux generation:', error);
@@ -143,19 +114,18 @@ export function FluxImageGenerator() {
       }
 
       if (newImages.length > 0) {
-        await refreshCredits();
-        setImages(prev => [...newImages, ...prev]);
-        toast.success(`Flux engine successfully generated ${newImages.length} image${newImages.length > 1 ? 's' : ''}!`);
+        setGeneratedImages(prev => [...newImages, ...prev]);
+        toast.success(`Successfully generated ${newImages.length} image${newImages.length > 1 ? 's' : ''}!`);
       }
     } catch (error) {
-      toast.error("Flux engine encountered an error. Please try again.");
+      toast.error("Error generating images. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <motion.div
           whileHover={{ scale: 1.05 }}
@@ -178,7 +148,7 @@ export function FluxImageGenerator() {
             />
             <span className="relative flex items-center gap-2">
               <Zap className="w-4 h-4" />
-              Try Flux ({15 * imageCount} Credits)
+              Try Flux
             </span>
           </Button>
         </motion.div>
@@ -189,7 +159,7 @@ export function FluxImageGenerator() {
             Flux Image Generator
           </DialogTitle>
           <DialogDescription className="text-gray-300">
-            Harness the power of Flux AI to generate stunning, professional-grade images. Each creation costs 15 Flux credits.
+            Harness the power of Flux AI to generate stunning, professional-grade images.
           </DialogDescription>
         </DialogHeader>
 
@@ -220,14 +190,14 @@ export function FluxImageGenerator() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="imageCount" className="text-gray-200">Number of Creations</Label>
+            <Label htmlFor="imageCount" className="text-gray-200">Number of Images</Label>
             <Select 
               value={imageCount.toString()} 
               onValueChange={(value) => setImageCount(parseInt(value))}
             >
-              {[1, 2, 3, 4, 5].map(num => (
+              {[1, 2, 3, 4].map(num => (
                 <SelectItem key={num} value={num.toString()}>
-                  {num} {num === 1 ? 'creation' : 'creations'} ({15 * num} Flux credits)
+                  {num} {num === 1 ? 'image' : 'images'}
                 </SelectItem>
               ))}
             </Select>
@@ -251,7 +221,7 @@ export function FluxImageGenerator() {
                   <Zap className="w-4 h-4" />
                 </motion.div>
               ) : null}
-              {loading ? 'Flux Engine Processing...' : `Generate ${imageCount} Flux Creation${imageCount > 1 ? 's' : ''}`}
+              {loading ? 'Generating...' : `Generate ${imageCount} Image${imageCount > 1 ? 's' : ''}`}
             </Button>
           </motion.div>
 
@@ -262,7 +232,7 @@ export function FluxImageGenerator() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              {images.map((image, index) => (
+              {generatedImages.map((image, index) => (
                 <motion.div
                   key={index}
                   className="relative group rounded-lg overflow-hidden"
@@ -272,12 +242,12 @@ export function FluxImageGenerator() {
                 >
                   <img 
                     src={image.url} 
-                    alt={`Flux Creation ${index + 1}`}
+                    alt={`Generated ${index + 1}`}
                     className="w-full h-auto rounded-lg border border-gray-700 transition-transform group-hover:scale-105"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 text-sm rounded-b-lg transform translate-y-full group-hover:translate-y-0 transition-transform">
                     <p className="font-medium">Vision: {image.prompt}</p>
-                    <p className="text-xs text-gray-300 mt-1">Flux Style: {image.style?.name}</p>
+                    <p className="text-xs text-gray-300 mt-1">Style: {image.style?.name}</p>
                     <p className="text-xs text-gray-400">
                       Created: {new Date(image.timestamp).toLocaleString()}
                     </p>
