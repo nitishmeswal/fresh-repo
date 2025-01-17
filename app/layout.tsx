@@ -12,13 +12,13 @@ import { Toaster } from 'react-hot-toast';
 import { Inter } from 'next/font/google';
 import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
+import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from 'next/navigation';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -146,6 +146,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           <div className="h-full">
             <AnimatePresence mode="wait">
               <PageTransition key={pathname}>
+                {/* Removed ComingSoonWrapper as we now handle overlays in individual components */}
                 {children}
               </PageTransition>
             </AnimatePresence>

@@ -29,6 +29,7 @@ import {
 import styles from './styles.module.css';
 import { GPU, gpuData } from '@/constants/values';
 import { useToast } from "@/components/ui/use-toast";
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 const Home = () => {
   const router = useRouter();
@@ -406,11 +407,12 @@ const Home = () => {
           )}
                 </div>
 
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mt-4">
-                  <p className="text-blue-400 text-center font-medium">
-                    🚀 GPU Marketplace coming in Version 2.0! Stay tuned for the launch.
-                  </p>
-                </div>
+                <ComingSoonOverlay 
+                  type="banner"
+                  title="GPU Marketplace"
+                  description="Stay tuned for the launch."
+                  version="2.0"
+                />
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="mt-6 space-x-3">

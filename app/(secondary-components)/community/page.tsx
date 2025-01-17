@@ -9,6 +9,7 @@ import { NewsHub } from './components/NewsHub';
 import { MessagePing } from './components/MessagePing';
 import { Users, MessageSquare, Newspaper, Zap, Trophy } from 'lucide-react';
 import { motion } from "framer-motion";
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 export default function Community() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -30,25 +31,12 @@ export default function Community() {
 
   return (
     <div className="container mx-auto p-6 space-y-8 relative group">
-      {/* Coming Soon Overlay */}
-      <motion.div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 z-50"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-      >
-        <div className="text-center space-y-4">
-          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            Version 2.0
-          </span>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            Coming Soon
-          </h2>
-          <p className="text-gray-400 text-lg max-w-md">
-            Community experience will be live in Version 2.0!
-          </p>
-        </div>
-      </motion.div>
-
+      <ComingSoonOverlay 
+        type="hover"
+        title="Community"
+        description="Community experience will be live in Version 2.0!"
+        version="2.0"
+      />
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
           NeuroLov Community Hub

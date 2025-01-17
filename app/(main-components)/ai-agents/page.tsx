@@ -10,6 +10,7 @@ import CreateAgentModal from "./components/CreateAgentModal";
 import AgentInteractionDialog from "./components/AgentInteractionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 interface Agent {
   name: string;
@@ -29,28 +30,42 @@ interface Agent {
   securityLevel: string;
 }
 
-const onChainAgents: Agent[] = [
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
+
+const onChainAgents = [
   {
     name: "Smart Contract Auditor",
     description: "Automated security analysis and vulnerability detection in smart contracts",
-    icon: "🔍",
+    icon: "🛡️",
     status: "active",
     usageCount: 1234,
     performance: 95,
     pricing: {
       monthly: 299,
       yearly: 2990,
-      payAsYouGo: 0.1
+      payAsYouGo: 30
     },
     features: [
       "Real-time vulnerability scanning",
       "Gas optimization suggestions",
-      "Security best practices",
-      "Custom rule creation",
-      "Integration with major blockchains"
+      "Best practices enforcement",
+      "Custom rule creation"
     ],
     category: "Professional",
-    deploymentTime: "2-5 minutes",
+    deploymentTime: "2-5 min",
     securityLevel: "Enterprise-grade"
   },
   {
@@ -63,7 +78,7 @@ const onChainAgents: Agent[] = [
     pricing: {
       monthly: 199,
       yearly: 1990,
-      payAsYouGo: 0.05
+      payAsYouGo: 20
     },
     features: [
       "Automated yield optimization",
@@ -86,7 +101,7 @@ const onChainAgents: Agent[] = [
     pricing: {
       monthly: 249,
       yearly: 2490,
-      payAsYouGo: 0.08
+      payAsYouGo: 25
     },
     features: [
       "Real-time market data",
@@ -109,7 +124,7 @@ const onChainAgents: Agent[] = [
     pricing: {
       monthly: 149,
       yearly: 1490,
-      payAsYouGo: 0.03
+      payAsYouGo: 15
     },
     features: [
       "Proposal analysis",
@@ -132,7 +147,7 @@ const onChainAgents: Agent[] = [
     pricing: {
       monthly: 99,
       yearly: 990,
-      payAsYouGo: 0.02
+      payAsYouGo: 10
     },
     features: [
       "Real-time gas price monitoring",
@@ -146,7 +161,7 @@ const onChainAgents: Agent[] = [
   },
 ];
 
-const offChainAgents: Agent[] = [
+const offChainAgents = [
   {
     name: "Market Sentiment Analyzer",
     description: "Analyzes social media and news for market sentiment",
@@ -157,7 +172,7 @@ const offChainAgents: Agent[] = [
     pricing: {
       monthly: 149,
       yearly: 1490,
-      payAsYouGo: 0.03
+      payAsYouGo: 15
     },
     features: [
       "Real-time sentiment analysis",
@@ -180,7 +195,7 @@ const offChainAgents: Agent[] = [
     pricing: {
       monthly: 199,
       yearly: 1990,
-      payAsYouGo: 0.05
+      payAsYouGo: 20
     },
     features: [
       "Code generation",
@@ -202,7 +217,7 @@ const offChainAgents: Agent[] = [
     pricing: {
       monthly: 99,
       yearly: 990,
-      payAsYouGo: 0.02
+      payAsYouGo: 10
     },
     features: [
       "Documentation generation",
@@ -224,7 +239,7 @@ const offChainAgents: Agent[] = [
     pricing: {
       monthly: 249,
       yearly: 2490,
-      payAsYouGo: 0.08
+      payAsYouGo: 25
     },
     features: [
       "Automated testing",
@@ -246,7 +261,7 @@ const offChainAgents: Agent[] = [
     pricing: {
       monthly: 199,
       yearly: 1990,
-      payAsYouGo: 0.05
+      payAsYouGo: 20
     },
     features: [
       "Real-time performance monitoring",
@@ -260,21 +275,6 @@ const offChainAgents: Agent[] = [
   },
 ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const item = {
-  hidden: { y: 20, opacity: 0 },
-  show: { y: 0, opacity: 1 }
-};
-
 export default function AIAgents() {
   const [isOnChain, setIsOnChain] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -283,7 +283,14 @@ export default function AIAgents() {
   const agents = isOnChain ? onChainAgents : offChainAgents;
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="container mx-auto p-6 space-y-8 relative">
+      <ComingSoonOverlay 
+        type="fixed"
+        title="AI Agents"
+        description="Our AI Agents marketplace will be available in Version 2.0. Get ready to deploy powerful AI agents for your blockchain needs!"
+        version="2.0"
+      />
+      
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

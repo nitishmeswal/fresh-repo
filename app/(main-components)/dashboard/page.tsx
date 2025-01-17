@@ -6,6 +6,17 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
 import styles from './styles.module.css';
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
+import { Badge } from "@/components/ui/badge";
+
+const BetaTag = () => (
+  <Badge 
+    variant="secondary" 
+    className="absolute -top-3 -right-3 px-2.5 py-0.5 text-[10px] font-medium tracking-wider bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400 border border-blue-500/20 shadow-lg shadow-blue-500/5 backdrop-blur-sm transform hover:scale-105 transition-all duration-300"
+  >
+    BETA
+  </Badge>
+);
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -64,9 +75,10 @@ const DashboardPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* AI Models */}
-        <div className="group relative">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
+        <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
+            <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">AI Models</CardTitle>
             </CardHeader>
@@ -84,10 +96,40 @@ const DashboardPage = () => {
           </Card>
         </div>
 
+        {/* AI Agents */}
+        <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
+            <ComingSoonOverlay 
+              type="fixed"
+              title="AI Agents"
+              description="Our AI Agents marketplace will be available in Version 2.0"
+              version="2.0"
+            />
+            <BetaTag />
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl font-bold text-white">AI Agents</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-400 mb-6">
+                Deploy powerful AI agents for your blockchain needs. Automate and optimize.
+              </p>
+              <Button 
+                className={styles.dashboardBtn}
+                disabled={user?.email !== 'nitishmeswal@gmail.com'}
+                onClick={() => router.push('/ai-agents')}
+              >
+                VIEW AGENTS
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* GPU Marketplace */}
         <div className="group relative">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
+            <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">GPU Marketplace</CardTitle>
             </CardHeader>
@@ -106,9 +148,16 @@ const DashboardPage = () => {
         </div>
 
         {/* Connect to Earn */}
-        <div className="group relative">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
+        <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
+            <ComingSoonOverlay 
+              type="fixed"
+              title="Connect to Earn"
+              description="Connect to Earn will be available in Version 3.0"
+              version="3.0"
+            />
+            <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">Connect to Earn</CardTitle>
             </CardHeader>
@@ -118,6 +167,7 @@ const DashboardPage = () => {
               </p>
               <Button 
                 className={styles.dashboardBtn}
+                disabled={user?.email !== 'nitishmeswal@gmail.com'}
                 onClick={() => router.push('/connect-to-earn')}
               >
                 START EARNING
@@ -127,24 +177,16 @@ const DashboardPage = () => {
         </div>
 
         {/* NodeNet */}
-        <div className="group relative">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
+        <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
-            {/* Coming Soon Overlay */}
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl transition-all duration-500">
-              <div className="text-center space-y-4 p-6">
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                  Version 3.0
-                </span>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  Coming Soon
-                </h2>
-                <p className="text-gray-400 text-sm max-w-[250px]">
-                  NodeNet will be available in Version 3.0. Join our newsletter to be notified!
-                </p>
-              </div>
-            </div>
-            
+            <ComingSoonOverlay 
+              type="fixed"
+              title="NodeNet"
+              description="NodeNet will be available in Version 3.0. Join our newsletter to be notified!"
+              version="3.0"
+            />
+            <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">NodeNet</CardTitle>
             </CardHeader>
@@ -154,7 +196,8 @@ const DashboardPage = () => {
               </p>
               <Button 
                 className={styles.dashboardBtn}
-                disabled
+                disabled={user?.email !== 'nitishmeswal@gmail.com'}
+                onClick={() => router.push('/dashboard/NodeNet')}
               >
                 VIEW NETWORK
               </Button>

@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/contexts/user-context';
+import { useUser } from '@/lib/hooks/useUser';
 import { Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, GitBranch, Boxes, Bot, Cpu, X, Loader2, Check, AlertCircle, Activity, Cpu as CpuIcon, MemoryStick, Network, HardDrive, Users, Download, Compass, Filter, CheckCircle, BarChart2, Terminal, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { Progress } from '@/components/ui/progress';
 import NextImage from 'next/image';
 import type { AIModel } from '@/services/types';
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 const defaultDockerConfig: any = {
   templateName: '',
@@ -328,7 +329,8 @@ const deploymentSteps: DeploymentStep[] = [
 export default function AIModelsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const router = useRouter();
+  const { user } = useUser();
   // Image generation states
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -666,21 +668,22 @@ export default function AIModelsPage() {
                   <div className="mt-auto pt-4">
                     <Button
                       onClick={() => {
-                        toast.info('Deployment coming in Version 2.0! 🚀', {
-                          description: 'Full model deployment will be available in the next major release.',
-                          action: {
-                            label: "Notify Me",
-                            onClick: () => toast.success('We\'ll notify you when deployment is ready!')
-                          }
-                        });
+                        if (user?.email === 'nitishmeswal@gmail.com') {
+                          router.push(`/ai-models/${model.id}`);
+                        } else {
+                          toast.info('Model Deployment Coming in Version 2.0! 🚀', {
+                            description: 'Full model deployment will be available in the next major release.',
+                            action: {
+                              label: "Notify Me",
+                              onClick: () => toast.success('We\'ll notify you when deployment is ready!')
+                            }
+                          });
+                        }
                       }}
-                      className="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 group relative"
+                      className="w-full"
+                      size="lg"
                     >
-                      <span className="flex items-center justify-center gap-2">
-                        <Cpu className="w-4 h-4" />
-                        Deploy Model
-                      </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      Deploy Model
                     </Button>
                   </div>
                 </Card>

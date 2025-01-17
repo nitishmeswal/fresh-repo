@@ -6,7 +6,7 @@ import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, ResponsiveContai
 import { Sparkles, TrendingUp, Users, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AiAssistantCard from '@/components/AiAssistant/AiAssistantCard';
-import { ComingSoonOverlay } from './components/ComingSoonOverlay';
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 const data = [
   { name: 'Jan', earnings: 400 },
@@ -70,7 +70,12 @@ export default function EarningsPage() {
 
   return (
     <div className="relative p-8 space-y-8">
-      <ComingSoonOverlay />
+      <ComingSoonOverlay 
+        type="fixed"
+        title="Earnings Dashboard"
+        description="Track your earnings and optimize your resources in the next version."
+        version="2.0"
+      />
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
