@@ -315,7 +315,7 @@ const Home = () => {
                   From ${gpu.price.usd}/hr
                 </p>
                 <button className={styles.selectButton}>
-                  VIEW DETAILS
+                  Buy Now
                 </button>
               </div>
             </div>

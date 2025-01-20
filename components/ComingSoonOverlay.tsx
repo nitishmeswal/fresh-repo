@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/lib/hooks/useUser';
+import { BiLogoGmail } from 'react-icons/bi';
 
 interface ComingSoonOverlayProps {
   version?: string;
@@ -14,7 +15,7 @@ interface ComingSoonOverlayProps {
   className?: string;
 }
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com','neurolov.ai@gmail.com'];
 
 export const ComingSoonOverlay = ({ 
   version = '2.0', 

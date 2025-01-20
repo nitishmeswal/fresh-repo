@@ -1,8 +1,10 @@
 export interface Profile {
   id: string;
-  email: string | null;
-  full_name: string | null;
-  avatar_url: string | null;
+  email: string;
+  full_name: string;
+  avatar_url: string;
+  custom_name: string;
+  billing_plan: 'free' | 'pro' | 'ultimate';
   created_at: string;
   last_sign_in: string;
 }

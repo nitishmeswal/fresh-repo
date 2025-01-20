@@ -1,337 +1,27 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
-import { Image as ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, GitBranch, Boxes, Bot, Cpu, X, Loader2, Check, AlertCircle, Activity, Cpu as CpuIcon, MemoryStick, Network, HardDrive, Users, Download, Compass, Filter, CheckCircle, BarChart2, Terminal, Lock } from 'lucide-react';
+import { ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, Bot, AlertCircle, Compass, Lock, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Progress } from '@/components/ui/progress';
-import NextImage from 'next/image';
 import type { AIModel } from '@/services/types';
+import { models } from './options/models';
+import { categoryToType } from './options/constants';
+import { GPULabClient } from '@/app/gpulab';
 import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
-const defaultDockerConfig: any = {
-  templateName: '',
-  containerImage: '',
-  exposedPorts: [],
-  containerDisk: 10,
-  volumeDisk: 20,
-  minVram: 8
-};
-
-const defaultNetworkVolume = {
-  volumeName: '',
-  diskSize: 10,
-  volumeType: 'local'
-};
-
-const filterOptions = {
-  category: {
-    name: "Category",
-    filters: [
-      "All",
-      "Image Generation",
-      "API Services",
-      "AI Agents",
-      "Video Processing",
-      "Model Serving",
-      "Language Models",
-      "3D Generation",
-      "Real-time AI",
-      "Audio Processing",
-      "Custom"
-    ]
-  },
-  view: {
-    options: ["explore", "my-models"],
-    labels: {
-      explore: "Explore Models",
-      "my-models": "My Models"
-    }
-  }
-};
-
-const categoryToType = {
-  "All": "all",
-  "Image Generation": "image",
-  "API Services": "api",
-  "AI Agents": "agent",
-  "Video Processing": "video",
-  "Model Serving": "server",
-  "Language Models": "text",
-  "3D Generation": "3d",
-  "Real-time AI": "realtime",
-  "Audio Processing": "audio",
-  "Custom": "custom"
-};
-
-const models: AIModel[] = [
-  {
-    id: 'flux-image',
-    name: 'Flux Image Gen',
-    description: 'High-performance image generation and manipulation with support for multiple styles and formats',
-    type: 'image',
-    tags: ['Image Generation', 'Fast'],
-    icon: ImageIcon,
-    iconBg: 'bg-blue-500/10',
-    features: [
-      'Multiple style support',
-      'Real-time image manipulation',
-      'Batch processing',
-      'Custom style training'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/image-gen:latest',
-      exposedPorts: [8080, 3754],
-      minDisk: 10,
-      minVram: 24
-    }
-  },
-  {
-    id: 'fast-api',
-    name: 'Fast API',
-    description: 'High-speed API development and deployment with automatic documentation',
-    type: 'api',
-    tags: ['Fast', 'API'],
-    icon: Zap,
-    iconBg: 'bg-yellow-500/10',
-    features: [
-      'Automatic API documentation',
-      'High-performance endpoints',
-      'OpenAPI integration',
-      'Real-time validation'
-    ],
-    defaultConfig: {
-      containerImage: 'tiangolo/uvicorn-gunicorn-fastapi:python3.9',
-      exposedPorts: [8000],
-      minDisk: 5,
-      minVram: 8
-    }
-  },
-  {
-    id: 'super-agents',
-    name: 'AI Super Agents',
-    description: 'Advanced AI agents for task automation and decision making',
-    type: 'agent',
-    tags: ['Agents', 'Automation'],
-    icon: Bot,
-    iconBg: 'bg-purple-500/10',
-    features: [
-      'Multi-agent coordination',
-      'Task automation',
-      'Decision making',
-      'Learning capabilities'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/super-agents:latest',
-      exposedPorts: [8080, 5000],
-      minDisk: 20,
-      minVram: 16
-    }
-  },
-  {
-    id: 'deepfake',
-    name: 'Deepfake Studio',
-    description: 'Professional video synthesis and face swapping with advanced controls',
-    type: 'video',
-    tags: ['Video', 'AI'],
-    icon: Video,
-    iconBg: 'bg-red-500/10',
-    features: [
-      'Face swapping',
-      'Video synthesis',
-      'Real-time processing',
-      'High-quality output'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/deepfake:latest',
-      exposedPorts: [8080],
-      minDisk: 30,
-      minVram: 32
-    }
-  },
-  {
-    id: 'pytorch-server',
-    name: 'PyTorch Server',
-    description: 'Deploy PyTorch models with high performance and scalability',
-    type: 'server',
-    tags: ['PyTorch', 'Server'],
-    icon: Brain,
-    iconBg: 'bg-orange-500/10',
-  
-    features: [
-      'Model serving',
-      'Dynamic batching',
-      'GPU optimization',
-      'Model versioning'
-    ],
-    defaultConfig: {
-      containerImage: 'pytorch/pytorch:2.0.0-cuda11.7-cudnn8-runtime',
-      exposedPorts: [8000],
-      minDisk: 15,
-      minVram: 16
-    }
-  },
-  {
-    id: 'llm-server',
-    name: 'LLM Server',
-    description: 'Deploy and serve large language models with optimized inference',
-    type: 'text',
-    tags: ['LLM', 'Text'],
-    icon: MessageSquare,
-    iconBg: 'bg-green-500/10',
-    
-    features: [
-      'Model quantization',
-      'Optimized inference',
-      'Multi-model serving',
-      'Token streaming'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/llm-server:latest',
-      exposedPorts: [8080],
-      minDisk: 100,
-      minVram: 48
-    }
-  },
-  {
-    id: '3d-server',
-    name: '3D Server',
-    description: '3D model generation and rendering with real-time capabilities',
-    type: '3d',
-    tags: ['3D', 'Rendering'],
-    icon: Box,
-    iconBg: 'bg-blue-500/10',
-   
-    features: [
-      '3D model generation',
-      'Real-time rendering',
-      'Texture synthesis',
-      'Animation support'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/3d-server:latest',
-      exposedPorts: [8080, 3754],
-      minDisk: 20,
-      minVram: 24
-    }
-  },
-  {
-    id: 'realtime-server',
-    name: 'Realtime AI',
-    description: 'Real-time AI processing for streaming and live applications',
-    type: 'realtime',
-    tags: ['Real-time', 'Streaming'],
-    icon: Clock,
-    iconBg: 'bg-red-500/10',
-    
-    features: [
-      'Stream processing',
-      'Low latency inference',
-      'Auto-scaling',
-      'Live monitoring'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/realtime:latest',
-      exposedPorts: [8080, 5000],
-      minDisk: 15,
-      minVram: 16
-    }
-  },
-  {
-    id: 'audio-server',
-    name: 'Audio Server',
-    description: 'Audio processing and generation with support for multiple formats',
-    type: 'audio',
-    tags: ['Audio', 'Generation'],
-    icon: Music,
-    iconBg: 'bg-green-500/10',
-    
-    features: [
-      'Audio generation',
-      'Format conversion',
-      'Real-time processing',
-      'Voice synthesis'
-    ],
-    defaultConfig: {
-      containerImage: 'fluxai/audio:latest',
-      exposedPorts: [8080],
-      minDisk: 20,
-      minVram: 16
-    }
-  },
-  {
-    id: 'custom-model',
-    name: 'Custom Model',
-    description: 'Deploy your own AI model with custom configuration',
-    type: 'custom',
-    tags: ['Custom', 'Flexible'],
-    icon: Upload,
-    iconBg: 'bg-purple-500/10',
-    
-    features: [
-      'Custom model deployment',
-      'Flexible configuration',
-      'Resource optimization',
-      'API customization'
-    ],
-    defaultConfig: {
-      containerImage: 'nvidia/cuda:11.8.0-runtime-ubuntu22.04',
-      exposedPorts: [8080],
-      minDisk: 10,
-      minVram: 8
-    }
-  }
-];
-
-type DeploymentStep = {
-  id: string;
-  name: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed';
-  message: string;
-};
-
-const deploymentSteps: DeploymentStep[] = [
-  {
-    id: 'docker',
-    name: 'Docker Configuration',
-    status: 'pending',
-    message: 'Configure container settings'
-  },
-  {
-    id: 'network',
-    name: 'Network Setup',
-    status: 'pending',
-    message: 'Configure network and endpoint settings'
-  },
-  {
-    id: 'gpu',
-    name: 'GPU Selection',
-    status: 'pending',
-    message: 'Select GPU resources for your model'
-  },
-  {
-    id: 'deployment',
-    name: 'Deployment Progress',
-    status: 'pending',
-    message: 'Deploying your model...'
-  }
-];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com'];
 
 export default function AIModelsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
   const { user } = useUser();
-  // Image generation states
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -339,6 +29,7 @@ export default function AIModelsPage() {
   const [inferenceTime, setInferenceTime] = useState<number | null>(null);
   const [generationCount, setGenerationCount] = useState(0);
   const [cooldownTime, setCooldownTime] = useState(0);
+  const [view, setView] = useState<'explore' | 'my-models'>('explore');
   const MAX_GENERATIONS = 5;
 
   useEffect(() => {
@@ -372,121 +63,42 @@ export default function AIModelsPage() {
     setIsGenerating(true);
     setError(null);
 
-    const response = await fetch('/api/hyperbolic', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: prompt.trim()
-      })
-    });
+    try {
+      const response = await fetch('/api/hyperbolic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt.trim() })
+      });
 
-    const data = await response.json();
-    
-    if (response.status === 429) {
-      setError("Please wait 30 seconds between generations");
-      setCooldownTime(30);
+      const data = await response.json();
+      
+      if (response.status === 429) {
+        setError("Please wait 30 seconds between generations");
+        setCooldownTime(30);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate image');
+      }
+
+      if (data.images?.[0]) {
+        setGeneratedImage(`data:image/png;base64,${data.images[0].image}`);
+        setInferenceTime(data.inference_time);
+        setGenerationCount(prev => prev + 1);
+        setCooldownTime(30);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate image');
+    } finally {
       setIsGenerating(false);
-      return;
     }
-
-    if (!response.ok) {
-      setError(data.error || 'Failed to generate image');
-      setIsGenerating(false);
-      return;
-    }
-
-    if (data.images?.[0]) {
-      const imageUrl = `data:image/png;base64,${data.images[0].image}`;
-      setGeneratedImage(imageUrl);
-      setInferenceTime(data.inference_time);
-      setGenerationCount(prev => prev + 1);
-      setCooldownTime(30); // Set cooldown after successful generation
-    }
-    setIsGenerating(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !isGenerating) {
       e.preventDefault();
       generateImage('flux-image');
-    }
-  };
-
-  const [showDeployModal, setShowDeployModal] = useState<boolean>(false);
-  const [selectedModel, setSelectedModel] = useState<AIModel | null>(null);
-  const [isDeploying, setIsDeploying] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'docker' | 'network' | 'gpu' | 'deployment'>('docker');
-  const [dockerConfig, setDockerConfig] = useState<any>(defaultDockerConfig);
-  const [selectedGpu, setSelectedGpu] = useState<any | null>(null);
-  const [networkConfig, setNetworkConfig] = useState<any | null>(null);
-  const [deploymentStepsState, setDeploymentSteps] = useState<DeploymentStep[]>(deploymentSteps);
-  const [showMonitoringView, setShowMonitoringView] = useState(false);
-  const [view, setView] = useState<'explore' | 'my-models'>('explore');
-  const [myModels, setMyModels] = useState<AIModel[]>([]);
-  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
-
-  const updateStepStatus = (stepId: string, status: DeploymentStep['status']) => {
-    setDeploymentSteps(steps =>
-      steps.map(step =>
-        step.id === stepId ? { ...step, status } : step
-      )
-    );
-  };
-
-  const handleModelSelect = (model: AIModel) => {
-    setSelectedModel(model);
-    setShowDeployModal(true);
-    setCurrentStep('docker');
-  };
-
-  const handleNext = () => {
-    if (currentStep === 'docker') {
-      setCurrentStep('network');
-    } else if (currentStep === 'network') {
-      setCurrentStep('gpu');
-    } else if (currentStep === 'gpu') {
-      setCurrentStep('deployment');
-      handleDeployment();
-    }
-  };
-
-  const handleDeployment = async () => {
-    try {
-      setIsDeploying(true);
-
-      // Docker Configuration
-      updateStepStatus('docker', 'in-progress');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      updateStepStatus('docker', 'completed');
-
-      // Network Setup
-      updateStepStatus('network', 'in-progress');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      updateStepStatus('network', 'completed');
-
-      // GPU Selection
-      updateStepStatus('gpu', 'in-progress');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      updateStepStatus('gpu', 'completed');
-
-      // Deployment Progress
-      updateStepStatus('deployment', 'in-progress');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      updateStepStatus('deployment', 'completed');
-
-      toast.success(`${selectedModel?.name} deployed successfully!`);
-    } catch (error) {
-      console.error('Deployment failed:', error);
-      deploymentStepsState.forEach(step => {
-        if (step.status === 'in-progress') {
-          updateStepStatus(step.id, 'failed');
-        }
-      });
-      toast.error("Deployment failed. Please try again.");
-    } finally {
-      setIsDeploying(false);
     }
   };
 
@@ -522,11 +134,7 @@ export default function AIModelsPage() {
                     variant={view === 'explore' ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setView('explore')}
-                    className={`text-sm ${
-                      view === 'explore'
-                        ? "bg-blue-500/20 text-blue-300"
-                        : "hover:bg-blue-500/10 text-blue-300/60 hover:text-blue-300"
-                    }`}
+                    className={`text-sm ${view === 'explore' ? "bg-blue-500/20 text-blue-300" : "hover:bg-blue-500/10 text-blue-300/60 hover:text-blue-300"}`}
                   >
                     <Compass className="w-4 h-4 mr-2" />
                     Explore Models
@@ -535,11 +143,7 @@ export default function AIModelsPage() {
                     variant={view === 'my-models' ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setView('my-models')}
-                    className={`text-sm ${
-                      view === 'my-models'
-                        ? "bg-blue-500/20 text-blue-300"
-                        : "hover:bg-blue-500/10 text-blue-300/60 hover:text-blue-300"
-                    }`}
+                    className={`text-sm ${view === 'my-models' ? "bg-blue-500/20 text-blue-300" : "hover:bg-blue-500/10 text-blue-300/60 hover:text-blue-300"}`}
                   >
                     <Box className="w-4 h-4 mr-2" />
                     My Models
@@ -554,13 +158,10 @@ export default function AIModelsPage() {
             {filteredModels.map((model) => (
               <div key={model.id} className="relative group">
                 <Card className="relative bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700 p-6">
-                  {/* Original card content */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${model.iconBg || 'bg-blue-500/10'}`}>
-                        {React.createElement(model.icon, { 
-                          className: 'w-5 h-5 text-blue-400'
-                        })}
+                        {React.createElement(model.icon, { className: 'w-5 h-5 text-blue-400' })}
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold">{model.name}</h3>
@@ -647,10 +248,7 @@ export default function AIModelsPage() {
                                   src={generatedImage}
                                   alt="Generated image"
                                   className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    console.error('Error loading image:', e);
-                                    setError('Failed to load the generated image');
-                                  }}
+                                  onError={() => setError('Failed to load the generated image')}
                                 />
                               </motion.div>
                               {inferenceTime && (
@@ -666,25 +264,38 @@ export default function AIModelsPage() {
                   )}
 
                   <div className="mt-auto pt-4">
-                    <Button
-                      onClick={() => {
-                        if (user?.email === 'nitishmeswal@gmail.com') {
-                          router.push(`/ai-models/${model.id}`);
-                        } else {
-                          toast.info('Model Deployment Coming in Version 2.0! 🚀', {
-                            description: 'Full model deployment will be available in the next major release.',
-                            action: {
-                              label: "Notify Me",
-                              onClick: () => toast.success('We\'ll notify you when deployment is ready!')
-                            }
-                          });
-                        }
-                      }}
-                      className="w-full"
-                      size="lg"
-                    >
-                      Deploy Model
-                    </Button>
+                    {!user?.email || !DEV_EMAILS.includes(user.email) ? (
+                      <ComingSoonOverlay 
+                        type="toast" 
+                        title="Deploy Model"
+                        description="AI Model deployment will be available soon!"
+                      />
+                    ) : (
+                      <Button
+                        onClick={async () => {
+                          try {
+                            console.log('Starting model deployment...');
+                            const result = await GPULabClient.getInstance().deployModel();
+                            
+                            console.log('Deployment result:', result);
+                            toast.success('Model Deployment Started!', {
+                              description: `Model ID: ${result.model_id}`,
+                            });
+
+                            router.push(`/ai-models/${model.id}`);
+                          } catch (error: any) {
+                            console.error('Full deployment error:', error);
+                            toast.error('Deployment Failed', {
+                              description: error.message || 'An error occurred during deployment'
+                            });
+                          }
+                        }}
+                        disabled={false}
+                        className="w-full"
+                      >
+                        Deploy Model
+                      </Button>
+                    )}
                   </div>
                 </Card>
               </div>

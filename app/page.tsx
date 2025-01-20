@@ -94,16 +94,14 @@ export default function RootPage() {
 
           {/* Login Container with enhanced animations */}
           <div className="flex flex-col items-center -mt-40">
-            {/* Brand text with glow effect */}
+            {/* Brand logo with glow effect */}
             <motion.div
-              className="text-4xl md:text-5xl font-bold relative"
+              className="mb-8"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <span className="relative">
-                NEURO<span className="text-[#40A6FF] glow-text">LOV</span>
-              </span>
+              <img src="/neurolov-logo.svg" alt="Neurolov" className="h-12" />
             </motion.div>
 
             {/* Welcome text with staggered animation */}
