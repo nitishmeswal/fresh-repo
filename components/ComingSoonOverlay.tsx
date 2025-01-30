@@ -87,7 +87,7 @@ export const ComingSoonOverlay = ({
   }
 
   return (
-    <div className={`fixed inset-0 ${className}`}>
+    <div className={`fixed top-0 left-[240px] right-0 bottom-0 ${className}`}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -13,7 +13,7 @@ const protectedPaths = [
 ]
 
 // Routes that should be accessible without auth
-const publicPaths = ['/', '/auth/callback']
+const publicPaths = ['/', '/auth/callback', '/auth/profile']
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
@@ -23,24 +23,41 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // If there's no session and the user is trying to access a protected route
-  if (!session && !req.nextUrl.pathname.startsWith('/auth')) {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/'
-    redirectUrl.searchParams.delete('message')
-    return NextResponse.redirect(redirectUrl)
+  const path = req.nextUrl.pathname
+
+  // If it's a public path or auth-related path, allow access
+  if (publicPaths.includes(path) || path.startsWith('/auth/')) {
+    // Only redirect from home to dashboard if logged in
+    if (session && path === '/') {
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.pathname = '/dashboard'
+      return NextResponse.redirect(redirectUrl)
+    }
+    return res
   }
 
-  // If there's a session and the user is on the home page, redirect to dashboard
-  if (session && req.nextUrl.pathname === '/') {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/dashboard'
-    return NextResponse.redirect(redirectUrl)
+  // For protected paths, check if user is authenticated
+  if (protectedPaths.some(p => path.startsWith(p))) {
+    if (!session) {
+      const redirectUrl = req.nextUrl.clone()
+      redirectUrl.pathname = '/'
+      redirectUrl.searchParams.delete('message')
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
   return res
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }

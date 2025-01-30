@@ -93,7 +93,7 @@ const DashboardPage = () => {
                 Deploy and manage your AI models with ease. Access pre-trained models or upload your own.
               </p>
               <Button 
-                className={styles.dashboardBtn}
+                className={`${styles.dashboardBtn} relative overflow-hidden group/btn w-full h-[42px]`}
                 onClick={() => router.push('/ai-models')}
               >
                 MANAGE MODELS
@@ -115,23 +115,17 @@ const DashboardPage = () => {
               <p className="text-gray-400 mb-6">
                 Deploy powerful AI agents for your blockchain needs. Automate and optimize.
               </p>
-              <div className="flex flex-col gap-3">
-                <Button 
-                  className={styles.dashboardBtn}
-                  disabled={!isDevUser}
-                  onClick={() => router.push('/ai-agents')}
-                >
-                  VIEW AGENTS
-                </Button>
-                {!isDevUser && (
-                  <Button
-                    onClick={() => handleGetNotified('AI Agents')}
-                    className={styles.notifyBtn}
-                  >
-                    Get Notified
-                  </Button>
-                )}
-              </div>
+              <Button 
+                className={`${styles.dashboardBtn} relative overflow-hidden group/btn w-full h-[42px]`}
+                onClick={() => !isDevUser ? handleGetNotified('AI Agents') : router.push('/ai-agents')}
+              >
+                <span className="relative z-10 group-hover/btn:opacity-0 transition-opacity duration-300">
+                  {isDevUser ? 'VIEW AGENTS' : 'COMING SOON'}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-600 to-cyan-600">
+                  GET NOTIFIED
+                </span>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -149,7 +143,7 @@ const DashboardPage = () => {
                 Rent or provide GPU computing power. Access high-performance GPUs on demand.
               </p>
               <Button 
-                className={styles.dashboardBtn}
+                className={`${styles.dashboardBtn} relative overflow-hidden group/btn w-full h-[42px]`}
                 onClick={() => router.push('/gpu-marketplace')}
               >
                 EXPLORE GPUS
@@ -171,23 +165,17 @@ const DashboardPage = () => {
               <p className="text-gray-400 mb-6">
                 Share your compute resources and earn credits. Monitor your earnings in real-time.
               </p>
-              <div className="flex flex-col gap-3">
-                <Button 
-                  className={styles.dashboardBtn}
-                  disabled={!isDevUser}
-                  onClick={() => router.push('/connect-to-earn')}
-                >
-                  START EARNING
-                </Button>
-                {!isDevUser && (
-                  <Button
-                    onClick={() => handleGetNotified('Connect to Earn')}
-                    className={styles.notifyBtn}
-                  >
-                    Get Notified
-                  </Button>
-                )}
-              </div>
+              <Button 
+                className={`${styles.dashboardBtn} relative overflow-hidden group/btn w-full h-[42px]`}
+                onClick={() => !isDevUser ? handleGetNotified('Connect to Earn') : router.push('/connect-to-earn')}
+              >
+                <span className="relative z-10 group-hover/btn:opacity-0 transition-opacity duration-300">
+                  {isDevUser ? 'START EARNING' : 'COMING SOON'}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-600 to-cyan-600">
+                  GET NOTIFIED
+                </span>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -199,29 +187,23 @@ const DashboardPage = () => {
             <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">NodeNet</CardTitle>
-              <CardDescription className="text-gray-500">Coming in Version 3.0</CardDescription>
+              <CardDescription className="text-gray-500">Coming in Version 2.0</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400 mb-6">
-                Join our decentralized compute network. View network status and connected nodes.
+                Decentralized compute network. Contribute and earn from the network.
               </p>
-              <div className="flex flex-col gap-3">
-                <Button 
-                  className={styles.dashboardBtn}
-                  disabled={!isDevUser}
-                  onClick={() => router.push('/dashboard/NodeNet')}
-                >
-                  VIEW NETWORK
-                </Button>
-                {!isDevUser && (
-                  <Button
-                    onClick={() => handleGetNotified('NodeNet')}
-                    className={styles.notifyBtn}
-                  >
-                    Get Notified
-                  </Button>
-                )}
-              </div>
+              <Button 
+                className={`${styles.dashboardBtn} relative overflow-hidden group/btn w-full h-[42px]`}
+                onClick={() => !isDevUser ? handleGetNotified('NodeNet') : router.push('/dashboard/NodeNet')}
+              >
+                <span className="relative z-10 group-hover/btn:opacity-0 transition-opacity duration-300">
+                  {isDevUser ? 'EXPLORE NODENET' : 'COMING SOON'}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-600 to-cyan-600">
+                  GET NOTIFIED
+                </span>
+              </Button>
             </CardContent>
           </Card>
         </div>
