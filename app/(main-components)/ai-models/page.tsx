@@ -58,6 +58,8 @@ export default function AIModelsPage() {
   const [cooldownTime, setCooldownTime] = useState(0);
   const [view, setView] = useState<'explore' | 'my-models'>('explore');
   const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [showModelInfo, setShowModelInfo] = useState(false);
+  const [modelToView, setModelToView] = useState<AIModel | null>(null);
   const MAX_GENERATIONS = 5;
 
   const { selectedModel, setSelectedModel } = useModelBag();
@@ -299,7 +301,10 @@ export default function AIModelsPage() {
                         variant="ghost"
                         size="icon"
                         className="bg-gray-900/50 hover:bg-gray-900"
-                        onClick={() => setSelectedModel(model)}
+                        onClick={() => {
+                          setModelToView(model);
+                          setShowModelInfo(true);
+                        }}
                       >
                         <Info className="w-4 h-4" />
                       </Button>
@@ -522,27 +527,33 @@ export default function AIModelsPage() {
       </Dialog>
 
       {/* Model Info Dialog */}
-      <Dialog open={!!selectedModel} onOpenChange={(open) => !open && setSelectedModel(null)}>
+      <Dialog 
+        open={showModelInfo} 
+        onOpenChange={(open) => {
+          setShowModelInfo(open);
+          if (!open) setModelToView(null);
+        }}
+      >
         <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${selectedModel?.iconBg || 'bg-blue-500/10'}`}>
-                {selectedModel && getModelIcon(selectedModel.type)}
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${modelToView?.iconBg || 'bg-blue-500/10'}`}>
+                {modelToView && getModelIcon(modelToView.type)}
               </div>
-              {selectedModel?.name}
+              {modelToView?.name}
             </DialogTitle>
             <DialogDescription className="text-gray-400">
-              {selectedModel?.description}
+              {modelToView?.description}
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid gap-4 py-4">
             {/* Features */}
-            {selectedModel?.features && (
+            {modelToView?.features && (
               <div className="space-y-2">
                 <h4 className="text-sm font-medium text-gray-300">Features</h4>
                 <div className="space-y-2">
-                  {selectedModel.features.map((feature, index) => (
+                  {modelToView.features.map((feature, index) => (
                     <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
                       <CheckCircle className="w-4 h-4 text-blue-500" />
                       {feature}
@@ -556,9 +567,9 @@ export default function AIModelsPage() {
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-gray-300">Container Information</h4>
               <div className="space-y-2 text-sm text-gray-300">
-                <p>Image: {selectedModel?.defaultConfig.containerImage}</p>
-                <p>Ports: {selectedModel?.defaultConfig.exposedPorts.join(', ')}</p>
-                <p>Minimum Disk Space: {selectedModel?.defaultConfig.minDisk}GB</p>
+                <p>Image: {modelToView?.defaultConfig.containerImage}</p>
+                <p>Ports: {modelToView?.defaultConfig.exposedPorts.join(', ')}</p>
+                <p>Minimum Disk Space: {modelToView?.defaultConfig.minDisk}GB</p>
               </div>
             </div>
           </div>
@@ -567,7 +578,12 @@ export default function AIModelsPage() {
             <Button
               variant="default"
               className="w-full bg-blue-500 hover:bg-blue-600"
-              onClick={() => selectedModel && handleAddToBag(selectedModel)}
+              onClick={() => {
+                if (modelToView) {
+                  handleAddToBag(modelToView);
+                  setShowModelInfo(false);
+                }
+              }}
             >
               <ShoppingBag className="w-4 h-4 mr-2" />
               Add to Bag

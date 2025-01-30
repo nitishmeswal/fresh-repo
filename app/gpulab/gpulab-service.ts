@@ -8,10 +8,24 @@ export class GPULabClient {
     private apiKey: string | null = null;
 
     private constructor() {
-        const envApiKey = process.env.NEXT_PUBLIC_GPULAB_API_KEY;
+        // Try to get API key from environment
+        let envApiKey: string | null = null;
+        try {
+            envApiKey = process.env.NEXT_PUBLIC_GPULAB_API_KEY || null;
+        } catch (error) {
+            console.warn('Error accessing environment variable:', error);
+        }
+
         if (envApiKey) {
             this.apiKey = envApiKey;
             console.log('API key loaded from environment');
+        } else if (typeof window !== 'undefined') {
+            // Try to get from localStorage in client-side
+            const storedKey = window.localStorage.getItem('gpulab_api_key');
+            if (storedKey) {
+                this.apiKey = storedKey;
+                console.log('API key loaded from localStorage');
+            }
         }
     }
 
@@ -32,18 +46,36 @@ export class GPULabClient {
             throw new Error('GPULab API key is required');
         }
         this.apiKey = apiKey;
+        // Store in localStorage for client-side persistence
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem('gpulab_api_key', apiKey);
+        }
         console.log('API key set manually');
     }
 
     private checkInitialization() {
         if (!this.apiKey) {
-            const envApiKey = process.env.NEXT_PUBLIC_GPULAB_API_KEY;
+            // Try to get API key from environment again
+            let envApiKey: string | null = null;
+            try {
+                envApiKey = process.env.NEXT_PUBLIC_GPULAB_API_KEY || null;
+            } catch (error) {
+                console.warn('Error accessing environment variable:', error);
+            }
+
             if (envApiKey) {
                 this.apiKey = envApiKey;
                 console.log('API key loaded from environment during check');
-            } else {
-                throw new Error('GPULabClient must be initialized with an API key first');
+            } else if (typeof window !== 'undefined') {
+                // Try to get from localStorage in client-side
+                const storedKey = window.localStorage.getItem('gpulab_api_key');
+                if (storedKey) {
+                    this.apiKey = storedKey;
+                    console.log('API key loaded from localStorage during check');
+                    return;
+                }
             }
+            throw new Error('GPULabClient must be initialized with an API key first');
         }
     }
 

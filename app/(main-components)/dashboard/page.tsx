@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
-import styles from './styles.module.css';
+import styles from './styles.module.scss';
 import { Badge } from "@/components/ui/badge";
 import { toast } from 'sonner';
 

@@ -261,13 +261,15 @@ export default function Home() {
             </div>
 
             {/* Coming Soon Overlay */}
-            <div className="absolute inset-0 z-20">
-              <ComingSoonOverlay 
-                type="hover" 
-                title="GPU Coming Soon"
-                description="This GPU will be available for deployment soon!"
-              />
-            </div>
+            {!isGpuAvailable(gpu.id) && (
+              <div className="absolute inset-0 z-20">
+                <ComingSoonOverlay 
+                  type="hover" 
+                  title="GPU Coming Soon"
+                  description="This GPU will be available for deployment soon!"
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
