@@ -87,7 +87,7 @@ export const ComingSoonOverlay = ({
   }
 
   return (
-    <div className={`absolute inset-0 z-50 flex items-center justify-center ${className}`}>
+    <div className={`fixed inset-0 ${className}`}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -96,7 +96,7 @@ export const ComingSoonOverlay = ({
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative z-10 bg-black/60 p-8 rounded-2xl max-w-md w-full border border-blue-500/20"
+        className="relative z-10 bg-black/60 p-8 rounded-2xl max-w-md w-full border border-blue-500/20 mx-auto mt-[20vh]"
       >
         <div className="relative z-10">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
