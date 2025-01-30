@@ -15,7 +15,7 @@ interface ComingSoonOverlayProps {
   className?: string;
 }
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com','neurolov.ai@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com'];
 
 export const ComingSoonOverlay = ({ 
   version = '2.0', 
@@ -49,31 +49,19 @@ export const ComingSoonOverlay = ({
     );
   }
 
-  if (type === 'banner') {
-    return (
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mt-4">
-        <p className="text-blue-400 text-center font-medium">
-          🚀 {title} coming in Version {version}! {description}
-        </p>
-      </div>
-    );
-  }
-
   if (type === 'hover') {
     return (
       <motion.div 
-        className={`absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 z-50 ${className}`}
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
+        className="absolute inset-0 flex items-center justify-center"
       >
-        <div className="text-center space-y-4">
-          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            Version {version}
-          </span>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+        <div className="relative z-10 p-4 text-center">
+          <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
             {title}
-          </h2>
-          <p className="text-gray-400 text-lg max-w-md">
+          </h3>
+          <p className="text-sm text-gray-300">
             {description}
           </p>
         </div>
@@ -81,20 +69,56 @@ export const ComingSoonOverlay = ({
     );
   }
 
-  // Default fixed overlay
-  return (
-    <div className={`absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl transition-all duration-500 ${className}`}>
-      <div className="text-center space-y-4 p-6">
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-          Version {version}
-        </span>
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          {title}
-        </h2>
-        <p className="text-gray-400 text-sm max-w-[250px]">
-          {description}
-        </p>
+  if (type === 'banner') {
+    return (
+      <div className={`relative overflow-hidden rounded-lg p-4 ${className}`}>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm" />
+        <div className="web3-glow absolute inset-0 opacity-10" />
+        <div className="relative z-10">
+          <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+            {title}
+          </h3>
+          <p className="text-sm text-gray-300">
+            {description}
+          </p>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className={`absolute inset-0 z-50 flex items-center justify-center ${className}`}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+      />
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="relative z-10 bg-black/60 p-8 rounded-2xl max-w-md w-full border border-blue-500/20"
+      >
+        <div className="relative z-10">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            {title}
+          </h2>
+          <p className="text-gray-300 mb-6">
+            {description}
+          </p>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            Coming in Version {version}
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <Button
+              onClick={() => toast.success('You will be notified when this feature launches!')}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+            >
+              Get Notified
+            </Button>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };

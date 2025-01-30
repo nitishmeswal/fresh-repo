@@ -1,5 +1,4 @@
-import { ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Upload, Bot } from 'lucide-react';
-import type { AIModel } from '@/services/types';
+import type { AIModel } from '@/store/model-bag';
 
 export const models: AIModel[] = [
   {
@@ -8,7 +7,6 @@ export const models: AIModel[] = [
     description: 'High-performance image generation and manipulation with support for multiple styles and formats',
     type: 'image',
     tags: ['Image Generation', 'Fast'],
-    icon: ImageIcon,
     iconBg: 'bg-blue-500/10',
     features: [
       'Multiple style support',
@@ -29,7 +27,6 @@ export const models: AIModel[] = [
     description: 'High-speed API development and deployment with automatic documentation',
     type: 'api',
     tags: ['Fast', 'API'],
-    icon: Zap,
     iconBg: 'bg-yellow-500/10',
     features: [
       'Automatic API documentation',
@@ -50,7 +47,6 @@ export const models: AIModel[] = [
     description: 'Advanced AI agents for task automation and decision making',
     type: 'agent',
     tags: ['AI', 'Automation'],
-    icon: Bot,
     iconBg: 'bg-purple-500/10',
     features: [
       'Task automation',
@@ -71,7 +67,6 @@ export const models: AIModel[] = [
     description: 'AI-powered video generation and editing with real-time processing',
     type: 'video',
     tags: ['Video', 'Generation'],
-    icon: Video,
     iconBg: 'bg-red-500/10',
     features: [
       'Real-time video generation',
@@ -92,7 +87,6 @@ export const models: AIModel[] = [
     description: 'Large Language Model server for text generation and analysis',
     type: 'text',
     tags: ['LLM', 'Text'],
-    icon: MessageSquare,
     iconBg: 'bg-green-500/10',
     features: [
       'Text generation',
@@ -113,7 +107,6 @@ export const models: AIModel[] = [
     description: 'AI-powered music generation and audio processing',
     type: 'audio',
     tags: ['Music', 'Audio'],
-    icon: Music,
     iconBg: 'bg-pink-500/10',
     features: [
       'Music generation',
@@ -134,7 +127,6 @@ export const models: AIModel[] = [
     description: 'Professional video synthesis and face swapping with advanced controls',
     type: 'video',
     tags: ['Video', 'AI'],
-    icon: Video,
     iconBg: 'bg-red-500/10',
     features: [
       'Face swapping',
@@ -155,7 +147,6 @@ export const models: AIModel[] = [
     description: 'Deploy PyTorch models with high performance and scalability',
     type: 'server',
     tags: ['PyTorch', 'Server'],
-    icon: Brain,
     iconBg: 'bg-orange-500/10',
     features: [
       'Model serving',
@@ -176,7 +167,6 @@ export const models: AIModel[] = [
     description: '3D model generation and rendering with real-time capabilities',
     type: '3d',
     tags: ['3D', 'Rendering'],
-    icon: Box,
     iconBg: 'bg-blue-500/10',
     features: [
       '3D model generation',
@@ -197,7 +187,6 @@ export const models: AIModel[] = [
     description: 'Audio processing and generation with support for multiple formats',
     type: 'audio',
     tags: ['Audio', 'Generation'],
-    icon: Music,
     iconBg: 'bg-green-500/10',
     features: [
       'Audio generation',
@@ -218,7 +207,6 @@ export const models: AIModel[] = [
     description: 'Deploy your own AI model with custom configuration',
     type: 'custom',
     tags: ['Custom', 'Flexible'],
-    icon: Upload,
     iconBg: 'bg-purple-500/10',
     features: [
       'Custom model deployment',

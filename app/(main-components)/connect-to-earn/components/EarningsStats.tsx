@@ -5,19 +5,28 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Coins, Clock, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface EarningsData {
-  totalEarned: number;
-  dailyRate: number;
-  uptime: number;
-  nextPayout: number;
+  currentSession: {
+    duration: string;
+    earnings: number;
+    powerCost: number;
+    netEarnings: number;
+  };
+  lifetimeEarnings: number;
+  history: Array<{
+    date: string;
+    earnings: number;
+  }>;
 }
 
 interface EarningsStatsProps {
-  data: EarningsData;
+  stats: EarningsData;
+  onCashout: () => void;
 }
 
-export const EarningsStats: React.FC<EarningsStatsProps> = ({ data }) => {
+export const EarningsStats: React.FC<EarningsStatsProps> = ({ stats, onCashout }) => {
   return (
     <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
@@ -34,7 +43,7 @@ export const EarningsStats: React.FC<EarningsStatsProps> = ({ data }) => {
             <span className="text-sm">Total Earned</span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{data.totalEarned}</span>
+            <span className="text-2xl font-bold">{stats.lifetimeEarnings}</span>
             <span className="text-sm text-muted-foreground">NLOV</span>
           </div>
         </div>
@@ -42,31 +51,30 @@ export const EarningsStats: React.FC<EarningsStatsProps> = ({ data }) => {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-4 h-4" />
-            <span className="text-sm">Daily Rate</span>
+            <span className="text-sm">Current Session</span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">{data.dailyRate}</span>
-            <span className="text-sm text-muted-foreground">NLOV/day</span>
+            <span className="text-2xl font-bold">{stats.currentSession.earnings}</span>
+            <span className="text-sm text-muted-foreground">NLOV</span>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span className="text-sm">Uptime</span>
-            </div>
-            <span className="text-sm font-mono">{data.uptime}%</span>
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="w-4 h-4" />
+            <span className="text-sm">Session Duration</span>
           </div>
-          <Progress value={data.uptime} />
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-bold">{stats.currentSession.duration}</span>
+          </div>
         </div>
 
-        <div className="pt-2 border-t">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-muted-foreground">Next Payout</span>
-            <span className="font-mono">{data.nextPayout} NLOV</span>
-          </div>
-        </div>
+        <Button 
+          onClick={onCashout}
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+        >
+          Cashout Earnings
+        </Button>
       </div>
     </Card>
   );

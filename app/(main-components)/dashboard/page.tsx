@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
 import styles from './styles.module.css';
-import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 import { Badge } from "@/components/ui/badge";
+import { toast } from 'sonner';
 
 const BetaTag = () => (
   <Badge 
@@ -41,6 +41,12 @@ const DashboardPage = () => {
     router.push('/');
     return null;
   }
+
+  const isDevUser = user?.email === 'nitishmeswal@gmail.com';
+
+  const handleGetNotified = (feature: string) => {
+    toast.success(`You will be notified when ${feature} launches!`);
+  };
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
@@ -100,27 +106,32 @@ const DashboardPage = () => {
         <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
-            <ComingSoonOverlay 
-              type="fixed"
-              title="AI Agents"
-              description="Our AI Agents marketplace will be available in Version 2.0"
-              version="2.0"
-            />
             <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">AI Agents</CardTitle>
+              <CardDescription className="text-gray-500">Coming in Version 2.0</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400 mb-6">
                 Deploy powerful AI agents for your blockchain needs. Automate and optimize.
               </p>
-              <Button 
-                className={styles.dashboardBtn}
-                disabled={user?.email !== 'nitishmeswal@gmail.com'}
-                onClick={() => router.push('/ai-agents')}
-              >
-                VIEW AGENTS
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button 
+                  className={styles.dashboardBtn}
+                  disabled={!isDevUser}
+                  onClick={() => router.push('/ai-agents')}
+                >
+                  VIEW AGENTS
+                </Button>
+                {!isDevUser && (
+                  <Button
+                    onClick={() => handleGetNotified('AI Agents')}
+                    className={styles.notifyBtn}
+                  >
+                    Get Notified
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -151,27 +162,32 @@ const DashboardPage = () => {
         <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
-            <ComingSoonOverlay 
-              type="fixed"
-              title="Connect to Earn"
-              description="Connect to Earn will be available in Version 3.0"
-              version="3.0"
-            />
             <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">Connect to Earn</CardTitle>
+              <CardDescription className="text-gray-500">Coming in Version 3.0</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400 mb-6">
                 Share your compute resources and earn credits. Monitor your earnings in real-time.
               </p>
-              <Button 
-                className={styles.dashboardBtn}
-                disabled={user?.email !== 'nitishmeswal@gmail.com'}
-                onClick={() => router.push('/connect-to-earn')}
-              >
-                START EARNING
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button 
+                  className={styles.dashboardBtn}
+                  disabled={!isDevUser}
+                  onClick={() => router.push('/connect-to-earn')}
+                >
+                  START EARNING
+                </Button>
+                {!isDevUser && (
+                  <Button
+                    onClick={() => handleGetNotified('Connect to Earn')}
+                    className={styles.notifyBtn}
+                  >
+                    Get Notified
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -180,27 +196,32 @@ const DashboardPage = () => {
         <div className="group relative transform hover:-translate-y-1 transition-all duration-300">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#40A6FF] to-[#2D63FF] rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
           <Card className="relative bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-xl border-white/5 hover:border-white/10 transition-all duration-300">
-            <ComingSoonOverlay 
-              type="fixed"
-              title="NodeNet"
-              description="NodeNet will be available in Version 3.0. Join our newsletter to be notified!"
-              version="3.0"
-            />
             <BetaTag />
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold text-white">NodeNet</CardTitle>
+              <CardDescription className="text-gray-500">Coming in Version 3.0</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-400 mb-6">
                 Join our decentralized compute network. View network status and connected nodes.
               </p>
-              <Button 
-                className={styles.dashboardBtn}
-                disabled={user?.email !== 'nitishmeswal@gmail.com'}
-                onClick={() => router.push('/dashboard/NodeNet')}
-              >
-                VIEW NETWORK
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button 
+                  className={styles.dashboardBtn}
+                  disabled={!isDevUser}
+                  onClick={() => router.push('/dashboard/NodeNet')}
+                >
+                  VIEW NETWORK
+                </Button>
+                {!isDevUser && (
+                  <Button
+                    onClick={() => handleGetNotified('NodeNet')}
+                    className={styles.notifyBtn}
+                  >
+                    Get Notified
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>

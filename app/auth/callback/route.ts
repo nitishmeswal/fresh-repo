@@ -7,22 +7,12 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code');
 
   if (code) {
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
     try {
-      const cookieStore = cookies();
-      const supabase = createRouteHandlerClient({ 
-        cookies: () => cookieStore,
-        cookieOptions: {
-          name: 'sb-session',
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7 // 1 week
-        }
-      });
-      
       // Exchange code for session
-      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-      if (exchangeError) throw exchangeError;
+      await supabase.auth.exchangeCodeForSession(code);
 
       // Get the user after exchange
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -51,23 +41,11 @@ export async function GET(request: Request) {
           if (insertError) throw insertError;
         }
 
-        // Set session cookie with strict settings
-        const response = NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
-        response.cookies.set('sb-session', user.id, {
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7 // 1 week
-        });
-
-        return response;
+        return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
       }
     } catch (error) {
       console.error('Auth callback error:', error);
-      // Clear any existing cookies on error
-      const response = NextResponse.redirect(new URL('/', requestUrl.origin));
-      response.cookies.delete('sb-session');
-      return response;
+      return NextResponse.redirect(new URL('/', requestUrl.origin));
     }
   }
 

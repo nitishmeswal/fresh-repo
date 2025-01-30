@@ -35,15 +35,33 @@ const ParticleEffect = ({
   useEffect(() => {
     if (!mountRef.current) return;
 
-    // Clear any existing content
+    let isComponentMounted = true;
+
+    // Clear any existing content and WebGL context
     while (mountRef.current.firstChild) {
-      mountRef.current.removeChild(mountRef.current.firstChild);
+      if (mountRef.current.firstChild.remove) {
+        mountRef.current.firstChild.remove();
+      } else {
+        mountRef.current.removeChild(mountRef.current.firstChild);
+      }
     }
-    
-    // Initialize new effect
-    cleanupRef.current = initializeEffect(mountRef.current);
+
+    // Try to initialize with error handling
+    try {
+      if (isComponentMounted) {
+        cleanupRef.current = initializeEffect(mountRef.current);
+      }
+    } catch (error) {
+      console.error('Failed to initialize particle effect:', error);
+      // Cleanup on error
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
+    }
 
     return () => {
+      isComponentMounted = false;
       if (cleanupRef.current) {
         cleanupRef.current();
         cleanupRef.current = null;

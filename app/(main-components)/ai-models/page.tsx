@@ -1,21 +1,48 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/lib/hooks/useUser';
-import { ImageIcon, Zap, Box, Video, Brain, MessageSquare, Music, Clock, Upload, Bot, AlertCircle, Compass, Lock, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Brain, Search, Filter, Zap, Loader2, ShoppingBag, Star, Info, CheckCircle, Cpu, HardDrive, Box, ImageIcon, Video, Music, Bot, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import type { AIModel } from '@/services/types';
 import { models } from './options/models';
 import { categoryToType } from './options/constants';
-import { GPULabClient } from '@/app/gpulab';
 import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { GPU, gpuData } from '@/constants/values';
+import { GPULabClient } from '@/app/gpulab/gpulab-service';
+import { useModelBag } from '@/store/model-bag';
+import type { AIModel } from '@/store/model-bag';
+import { useUser } from '@/lib/hooks/useUser';
+import { useToast } from '@/components/ui/use-toast';
+import Image from 'next/image';
+import ModelStatus from "@/app/gpulab/model-status";
 
 const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com'];
+
+const getModelIcon = (type: string) => {
+  switch (type) {
+    case 'image':
+      return <ImageIcon className="w-6 h-6 text-blue-500" />;
+    case 'api':
+      return <Zap className="w-6 h-6 text-yellow-500" />;
+    case 'agent':
+      return <Bot className="w-6 h-6 text-purple-500" />;
+    case 'audio':
+      return <Music className="w-6 h-6 text-pink-500" />;
+    case 'video':
+      return <Video className="w-6 h-6 text-red-500" />;
+    case 'text':
+      return <MessageSquare className="w-6 h-6 text-green-500" />;
+    case '3d':
+      return <Box className="w-6 h-6 text-orange-500" />;
+    default:
+      return <Brain className="w-6 h-6 text-blue-500" />;
+  }
+};
 
 export default function AIModelsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -30,21 +57,59 @@ export default function AIModelsPage() {
   const [generationCount, setGenerationCount] = useState(0);
   const [cooldownTime, setCooldownTime] = useState(0);
   const [view, setView] = useState<'explore' | 'my-models'>('explore');
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
   const MAX_GENERATIONS = 5;
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (cooldownTime > 0) {
-      timer = setInterval(() => {
-        setCooldownTime(time => Math.max(0, time - 1));
-      }, 1000);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [cooldownTime]);
+  const { selectedModel, setSelectedModel } = useModelBag();
 
-  const generateImage = async (modelId: string) => {
+  const [deployedContainers, setDeployedContainers] = useState<any[]>([]);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  // Fetch deployed containers
+  useEffect(() => {
+    const fetchContainers = async () => {
+      if (view === 'my-models') {
+        try {
+          const client = GPULabClient.getInstance();
+          const containers = await client.getContainerList();
+          setDeployedContainers(containers);
+        } catch (error) {
+          console.error('Error fetching containers:', error);
+        }
+      }
+    };
+
+    fetchContainers();
+    const interval = setInterval(fetchContainers, 10000); // Refresh every 10s
+    return () => clearInterval(interval);
+  }, [view]);
+
+  const handleAddToBag = async (model: AIModel) => {
+    try {
+      setSelectedModel(model);
+      
+      // Get volume identifier
+      const client = GPULabClient.getInstance();
+      const volumeIdentifier = await client.getVolumeIdentifier();
+      
+      // Store in localStorage
+      localStorage.setItem('pytorch_deployment', JSON.stringify({
+        volume_identifier: volumeIdentifier
+      }));
+      
+      toast.success('Model added to bag!', {
+        position: 'bottom-right',
+      });
+      router.push('/gpu-marketplace');
+    } catch (error) {
+      console.error('Error getting volume:', error);
+      toast.error('Failed to get volume identifier', {
+        position: 'bottom-right',
+      });
+    }
+  };
+
+  const generateImage = async () => {
     if (!prompt?.trim()) {
       setError('Please enter a prompt');
       return;
@@ -73,8 +138,8 @@ export default function AIModelsPage() {
       const data = await response.json();
       
       if (response.status === 429) {
-        setError("Please wait 30 seconds between generations");
-        setCooldownTime(30);
+        setError("Please wait 5 Minutes between generations");
+        setCooldownTime(300);
         return;
       }
 
@@ -98,7 +163,7 @@ export default function AIModelsPage() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !isGenerating) {
       e.preventDefault();
-      generateImage('flux-image');
+      generateImage();
     }
   };
 
@@ -108,6 +173,37 @@ export default function AIModelsPage() {
       categoryToType[selectedCategory as keyof typeof categoryToType] === model.type
     );
   }, [selectedCategory]);
+
+  const isDev = user?.email && DEV_EMAILS.includes(user.email);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldownTime > 0) {
+      timer = setInterval(() => {
+        setCooldownTime(time => Math.max(0, time - 1));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [cooldownTime]);
+
+  const handleDeleteModel = async (container: any) => {
+    try {
+      setIsDeleting(container.container_address);
+      const client = GPULabClient.getInstance();
+      await client.deleteContainer(container.container_address);
+      toast.success('Model deleted successfully');
+      // Refresh the list
+      const containers = await client.getContainerList();
+      setDeployedContainers(containers);
+    } catch (error) {
+      console.error('Error deleting model:', error);
+      toast.error('Failed to delete model');
+    } finally {
+      setIsDeleting(null);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -136,7 +232,7 @@ export default function AIModelsPage() {
                     onClick={() => setView('explore')}
                     className={`text-sm ${view === 'explore' ? "bg-blue-500/20 text-blue-300" : "hover:bg-blue-500/10 text-blue-300/60 hover:text-blue-300"}`}
                   >
-                    <Compass className="w-4 h-4 mr-2" />
+                    <Filter className="w-4 h-4 mr-2" />
                     Explore Models
                   </Button>
                   <Button
@@ -150,159 +246,335 @@ export default function AIModelsPage() {
                   </Button>
                 </div>
               </div>
+              <div className="flex items-center gap-4">
+                <ModelStatus />
+              </div>
             </div>
           </div>
 
           {/* Models Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {filteredModels.map((model) => (
-              <div key={model.id} className="relative group">
-                <Card className="relative bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700 p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg ${model.iconBg || 'bg-blue-500/10'}`}>
-                        {React.createElement(model.icon, { className: 'w-5 h-5 text-blue-400' })}
+            {view === 'explore' ? (
+              // Explore view - show available models
+              filteredModels.map((model) => (
+                <Card
+                  key={model.id}
+                  className="web3-card relative group p-6 bg-[#0A0A0A] border-gray-800 hover:border-blue-500/50 transition-all duration-300"
+                >
+                  {/* Model Icon */}
+                  <CardHeader>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${model.iconBg || 'bg-blue-500/10'}`}>
+                        {getModelIcon(model.type)}
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold">{model.name}</h3>
-                        <p className="text-sm text-gray-400">{model.type}</p>
+                        <CardTitle>{model.name}</CardTitle>
+                        <CardDescription>{model.type}</CardDescription>
                       </div>
                     </div>
-                  </div>
-                  <p className="text-gray-400 text-sm mb-4">{model.description}</p>
+                  </CardHeader>
 
-                  {/* Image Generation UI */}
-                  {model.id === 'flux-image' && (
-                    <div className="mt-4">
-                      <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/20">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Zap className="w-4 h-4 text-yellow-400" />
-                          <span className="text-yellow-400 text-sm font-medium">Demo Available!</span>
-                        </div>
-                        <h4 className="text-blue-300 font-medium mb-2">Try Flux Image Gen Demo</h4>
-                        <p className="text-sm text-gray-400 mb-3">Experience our powerful image generation capabilities.</p>
-                        
-                        <div className="space-y-3">
-                          <Input
-                            placeholder="Enter your image prompt..."
-                            className="bg-black/30 border-blue-500/20 hover:border-blue-500/40 transition-colors"
-                            value={prompt}
-                            onChange={(e) => setPrompt(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                          />
-                          <Button 
-                            onClick={() => generateImage(model.id)}
-                            disabled={isGenerating || generationCount >= MAX_GENERATIONS || cooldownTime > 0 || !prompt?.trim()}
-                            className="w-full bg-gradient-to-r from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 text-blue-300"
-                          >
-                            {isGenerating ? (
-                              <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Generating...
-                              </>
-                            ) : generationCount >= MAX_GENERATIONS ? (
-                              <>
-                                <Lock className="w-4 h-4 mr-2" />
-                                Upgrade to Generate More
-                              </>
-                            ) : cooldownTime > 0 ? (
-                              <>
-                                <Clock className="w-4 h-4 mr-2" />
-                                Wait {cooldownTime}s ({MAX_GENERATIONS - generationCount} left)
-                              </>
-                            ) : !prompt?.trim() ? (
-                              <>
-                                <AlertCircle className="w-4 h-4 mr-2" />
-                                Enter a Prompt
-                              </>
-                            ) : (
-                              <>
-                                <Zap className="w-4 h-4 mr-2" />
-                                Generate Image ({MAX_GENERATIONS - generationCount} left)
-                              </>
-                            )}
-                          </Button>
-                          {error && (
-                            <div className="text-red-400 text-sm mt-2 flex items-center gap-2">
-                              <AlertCircle className="w-4 h-4" />
-                              {error}
-                            </div>
-                          )}
-                          {generatedImage && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.5 }}
-                              className="mt-4"
-                            >
-                              <motion.div 
-                                initial={{ scale: 0.9 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.5, type: "spring" }}
-                                className="relative w-full aspect-square rounded-lg overflow-hidden border border-blue-500/20 bg-black/30"
-                              >
-                                <motion.img
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                  transition={{ duration: 0.3, delay: 0.2 }}
-                                  src={generatedImage}
-                                  alt="Generated image"
-                                  className="w-full h-full object-cover"
-                                  onError={() => setError('Failed to load the generated image')}
-                                />
-                              </motion.div>
-                              {inferenceTime && (
-                                <p className="text-sm text-gray-400 mt-2">
-                                  Generated in {inferenceTime.toFixed(2)}s
-                                </p>
-                              )}
-                            </motion.div>
-                          )}
-                        </div>
+                  {/* Model Description */}
+                  <CardContent className="p-6">
+                    <p className="text-gray-400 mb-6">{model.description}</p>
+
+                    {/* Features */}
+                    {model.features && (
+                      <div className="space-y-2 mb-6">
+                        {model.features.map((feature, index) => (
+                          <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
+                            <CheckCircle className="w-4 h-4 text-blue-500" />
+                            {feature}
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  )}
-
-                  <div className="mt-auto pt-4">
-                    {!user?.email || !DEV_EMAILS.includes(user.email) ? (
-                      <ComingSoonOverlay 
-                        type="toast" 
-                        title="Deploy Model"
-                        description="AI Model deployment will be available soon!"
-                      />
-                    ) : (
-                      <Button
-                        onClick={async () => {
-                          try {
-                            console.log('Starting model deployment...');
-                            const result = await GPULabClient.getInstance().deployModel();
-                            
-                            console.log('Deployment result:', result);
-                            toast.success('Model Deployment Started!', {
-                              description: `Model ID: ${result.model_id}`,
-                            });
-
-                            router.push(`/ai-models/${model.id}`);
-                          } catch (error: any) {
-                            console.error('Full deployment error:', error);
-                            toast.error('Deployment Failed', {
-                              description: error.message || 'An error occurred during deployment'
-                            });
-                          }
-                        }}
-                        disabled={false}
-                        className="w-full"
-                      >
-                        Deploy Model
-                      </Button>
                     )}
-                  </div>
+                  </CardContent>
+
+                  {/* Action Buttons */}
+                  <CardFooter className="p-4 border-t border-gray-800 flex justify-between">
+                    <div className="flex gap-2">
+                      {/* Info Button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="bg-gray-900/50 hover:bg-gray-900"
+                        onClick={() => setSelectedModel(model)}
+                      >
+                        <Info className="w-4 h-4" />
+                      </Button>
+
+                      {/* Demo Button for Flux Image Gen */}
+                      {model.id === 'flux-image' && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
+                          onClick={() => setIsDemoOpen(true)}
+                        >
+                          <Zap className="w-4 h-4 mr-1" />
+                          Try Demo
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Add to Bag Button */}
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white ml-auto"
+                      onClick={() => handleAddToBag(model)}
+                    >
+                      <ShoppingBag className="w-4 h-4 mr-1" />
+                      Add to Bag
+                    </Button>
+                  </CardFooter>
                 </Card>
-              </div>
-            ))}
+              ))
+            ) : (
+              // My Models view - show deployed containers
+              deployedContainers.map((container) => (
+                <motion.div
+                  key={container.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card className="web3-card relative group p-6 bg-[#0A0A0A] border-gray-800 hover:border-blue-500/50 transition-all duration-300">
+                    <CardHeader>
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                          <Box className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <div>
+                          <CardTitle className="flex items-center gap-2">
+                            {container.model_name}
+                            <span className={`px-2 py-0.5 text-xs rounded-full ${
+                              container.container_status === 'running'
+                                ? 'bg-green-500/20 text-green-400'
+                                : 'bg-yellow-500/20 text-yellow-400'
+                            }`}>
+                              {container.container_status}
+                            </span>
+                          </CardTitle>
+                          <CardDescription>
+                            Container: {container.container_address}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="space-y-4">
+                      {/* GPU Info */}
+                      {container.gpus?.map((gpu: any, index: number) => (
+                        <motion.div 
+                          key={gpu.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 * index }}
+                          className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Cpu className="w-5 h-5 text-blue-400" />
+                            <div>
+                              <p className="text-sm font-medium text-gray-200">{gpu.gpu_type}</p>
+                              <p className="text-xs text-gray-400">{gpu.gpuprice}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-medium text-gray-200">
+                              {gpu.memory_used} / {gpu.total_memory} MB
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {gpu.mem_used_percent.toFixed(1)}% Used
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+
+                      {/* Volume Info */}
+                      <motion.div 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <HardDrive className="w-5 h-5 text-purple-400" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-200">Volume</p>
+                            <p className="text-xs text-gray-400">{container.nas_server?.volume_server_identifier}</p>
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Uptime */}
+                      <p className="text-sm text-gray-400">
+                        Uptime: {container.system_uptime}
+                      </p>
+                    </CardContent>
+
+                    {/* URLs */}
+                    {container.public_urls && (
+                      <CardFooter className="pt-4 border-t border-gray-800">
+                        <div className="w-full space-y-2">
+                          <p className="text-sm font-medium text-gray-300">Access URLs:</p>
+                          {container.public_urls.split(',').map((url: string, index: number) => (
+                            <motion.a
+                              key={index}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.2 * index }}
+                              className="block text-sm text-blue-400 hover:text-blue-300 truncate"
+                            >
+                              {url}
+                            </motion.a>
+                          ))}
+                        </div>
+                      </CardFooter>
+                    )}
+                    <CardFooter className="pt-4 border-t border-gray-800">
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        disabled={isDeleting === container.container_address}
+                        onClick={() => handleDeleteModel(container)}
+                        className="ml-2"
+                      >
+                        {isDeleting === container.container_address ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : null}
+                        Delete
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
+        
       </div>
+      {/* Demo Dialog */}
+      <Dialog open={isDemoOpen} onOpenChange={setIsDemoOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
+          <DialogHeader>
+            <DialogTitle>Try Flux Image Gen</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Generate images using our state-of-the-art AI model.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Input
+                id="prompt"
+                placeholder="Enter your prompt..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isGenerating}
+                className="w-full bg-gray-800 border-gray-700 text-white"
+              />
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+            </div>
+
+            {generatedImage && (
+              <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+                <Image
+                  src={generatedImage}
+                  alt="Generated image"
+                  fill
+                  className="object-cover"
+                />
+                {inferenceTime && (
+                  <div className="absolute bottom-2 right-2 bg-black/50 px-2 py-1 rounded text-xs">
+                    Generated in {inferenceTime.toFixed(2)}s
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={generateImage}
+              disabled={isGenerating || !prompt}
+              className="w-full bg-blue-500 hover:bg-blue-600"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Generate Image
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Model Info Dialog */}
+      <Dialog open={!!selectedModel} onOpenChange={(open) => !open && setSelectedModel(null)}>
+        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${selectedModel?.iconBg || 'bg-blue-500/10'}`}>
+                {selectedModel && getModelIcon(selectedModel.type)}
+              </div>
+              {selectedModel?.name}
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              {selectedModel?.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            {/* Features */}
+            {selectedModel?.features && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-300">Features</h4>
+                <div className="space-y-2">
+                  {selectedModel.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
+                      <CheckCircle className="w-4 h-4 text-blue-500" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Container Info */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-300">Container Information</h4>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p>Image: {selectedModel?.defaultConfig.containerImage}</p>
+                <p>Ports: {selectedModel?.defaultConfig.exposedPorts.join(', ')}</p>
+                <p>Minimum Disk Space: {selectedModel?.defaultConfig.minDisk}GB</p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="default"
+              className="w-full bg-blue-500 hover:bg-blue-600"
+              onClick={() => selectedModel && handleAddToBag(selectedModel)}
+            >
+              <ShoppingBag className="w-4 h-4 mr-2" />
+              Add to Bag
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

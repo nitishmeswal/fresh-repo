@@ -72,7 +72,7 @@ export default function RootPage() {
         {/* Content Container */}
         <div className="relative z-10 w-full max-w-screen-xl mx-auto px-4">
           {/* Logo and Particle Effect Container */}
-          <div className="w-[900px] h-[800px] relative -mt-20 mx-auto flex items-center justify-center">
+          <div className="w-[576px] h-[512px] relative -mt-16 mx-auto flex items-center justify-center">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -81,8 +81,8 @@ export default function RootPage() {
             >
               <ParticleEffect
                 modelPath="/logo.glb"
-                width={900}
-                height={800}
+                width={576}
+                height={512}
                 particleCount={50000}
                 particleSize={0.004}
                 particleColor={0x40A6FF}
@@ -93,20 +93,20 @@ export default function RootPage() {
           </div>
 
           {/* Login Container with enhanced animations */}
-          <div className="flex flex-col items-center -mt-40">
+          <div className="flex flex-col items-center -mt-24">
             {/* Brand logo with glow effect */}
             <motion.div
-              className="mb-8"
+              className="mb-6"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <img src="/neurolov-logo.svg" alt="Neurolov" className="h-12" />
+              <img src="/neurolov-logo.svg" alt="Neurolov" className="h-6" />
             </motion.div>
 
             {/* Welcome text with staggered animation */}
             <motion.div
-              className="flex flex-col items-center"
+              className="flex flex-col items-center space-y-2"
               initial="hidden"
               animate="visible"
               variants={{
@@ -120,22 +120,22 @@ export default function RootPage() {
               }}
             >
               <motion.h1
-                className="text-lg font-semibold mt-1 text-gray-200"
+                className="text-2xl font-semibold text-gray-100 text-center"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 }
                 }}
               >
-                Welcome to Compute
+                Welcome to Neurolov
               </motion.h1>
               <motion.p
-                className="text-gray-400 text-sm mt-0.5 mb-6"
+                className="text-gray-400 text-base mt-1 mb-8 text-center"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 }
                 }}
               >
-                Sign in to access your dashboard
+                Sign in to continue
               </motion.p>
             </motion.div>
 
@@ -164,7 +164,7 @@ export default function RootPage() {
                 <Button
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
-                  className="w-full py-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Continue with Google
                 </Button>
@@ -178,7 +178,7 @@ export default function RootPage() {
                 <Button
                   onClick={handleGithubSignIn}
                   disabled={isLoading}
-                  className="w-full py-6 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-5 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Continue with GitHub
                 </Button>

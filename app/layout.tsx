@@ -45,14 +45,34 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, supabase } = useUser();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
+    try {
+      // Clear client-side data first
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Sign out first
+      await supabase.auth.signOut();
+      
+      // Then navigate to home page
+      router.replace('/');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   // Don't show sidebar and header on the sign-in page
   const isSignInPage = pathname === '/';
-  if (isSignInPage || loading) {
-    return <div className="min-h-screen bg-black">{children}</div>;
+  if (isSignInPage) {
+    return <div className="min-h-screen bg-gradient-to-b from-black to-gray-900">{children}</div>;
+  }
+  
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    );
   }
 
   return (
@@ -114,9 +134,9 @@ function MainLayout({ children }: { children: React.ReactNode }) {
       {/* Main Layout */}
       <div className="flex h-screen pt-20">
         {/* Sidebar */}
-        <aside className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-72 border-r border-gray-800 glass">
-          <nav className="h-full px-4 py-6">
-            <div className="space-y-2">
+        <aside className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass">
+          <nav className="h-full px-4 py-5">
+            <div className="space-y-1.5">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -124,13 +144,13 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-4 px-5 py-4 text-lg font-medium rounded-lg transition-colors ${
+                    className={`flex items-center space-x-3.5 px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
                       isActive
                         ? 'bg-white/10 text-white'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Icon className="h-6 w-6 flex-shrink-0" />
+                    <Icon className="h-5 w-5 flex-shrink-0" />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -140,7 +160,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 pl-72">
+        <main className="flex-1 pl-64">
           <div className="h-full">
             <AnimatePresence mode="wait">
               <PageTransition key={pathname}>

@@ -1,116 +1,91 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProfileCard } from './components/ProfileCard';
 import { TalkHub } from './components/TalkHub';
-import { NewsHub } from './components/NewsHub';
-import { MessagePing } from './components/MessagePing';
-import { Users, MessageSquare, Newspaper, Zap, Trophy } from 'lucide-react';
-import { motion } from "framer-motion";
-import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
+import { ProfileNewsFeed } from './components/ProfileNewsFeed';
+import { Card } from '@/components/ui/card';
+import { Users, MessageSquare, TrendingUp, Award } from 'lucide-react';
 
-export default function Community() {
-  const [activeTab, setActiveTab] = useState('profile');
-
-  const userStats = {
-    level: 3,
-    experience: 2750,
-    nextLevelXP: 3000,
-    contributions: 156,
-    nodesHelped: 42,
-    reputation: 4.8,
-    badges: ['Early Adopter', 'Problem Solver', 'Community Guide'],
-    achievements: [
-      { name: 'First Connection', description: 'Made your first node connection' },
-      { name: 'Helper', description: 'Helped 10 nodes with their queries' },
-      { name: 'Rising Star', description: 'Reached Level 3 in the community' }
-    ]
-  };
-
+export default function CommunityPage() {
   return (
-    <div className="container mx-auto p-6 space-y-8 relative group">
-      <ComingSoonOverlay 
-        type="hover"
-        title="Community"
-        description="Community experience will be live in Version 2.0!"
-        version="2.0"
-      />
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          NeuroLov Community Hub
-        </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto">
-          Connect with fellow Neurolovians, share knowledge, and level up your journey
-        </p>
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(24,24,27,0),rgba(0,0,0,1))]" />
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+        <motion.div
+          className="absolute top-60 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.3, 0.5, 0.3],
+            x: [0, -30, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Sidebar - Profile Card */}
-        <div className="lg:col-span-1">
-          <ProfileCard stats={userStats} />
-        </div>
-
+      <div className="relative container mx-auto py-4 max-w-6xl">
         {/* Main Content */}
-        <div className="lg:col-span-3">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3 bg-[#1A1A1A] border-gray-800">
-              <TabsTrigger value="talk-hub" className="data-[state=active]:bg-blue-500/20">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Talk Hub
-              </TabsTrigger>
-              <TabsTrigger value="news" className="data-[state=active]:bg-purple-500/20">
-                <Newspaper className="w-4 h-4 mr-2" />
-                News Feed
-              </TabsTrigger>
-              <TabsTrigger value="leaderboard" className="data-[state=active]:bg-green-500/20">
-                <Trophy className="w-4 h-4 mr-2" />
-                Leaderboard
-              </TabsTrigger>
-            </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Profile & News Section */}
+          <div className="lg:col-span-5">
+            <ProfileNewsFeed />
+          </div>
 
-            <TabsContent value="talk-hub">
-              <TalkHub />
-            </TabsContent>
-
-            <TabsContent value="news">
-              <NewsHub />
-            </TabsContent>
-
-            <TabsContent value="leaderboard">
-              <Card className="p-6 bg-[#1A1A1A] border-gray-800">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                        <span className="text-blue-500 font-bold">#{index + 1}</span>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-white">Neurolovian #{index + 1}</h3>
-                        <p className="text-sm text-gray-400">Level {6 - index}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="text-sm text-gray-400">Contribution Score</p>
-                        <p className="text-lg font-bold text-white">{1000 - index * 50}</p>
-                      </div>
-                      <Trophy className="w-5 h-5 text-yellow-500" />
-                    </div>
-                  </div>
-                ))}
-              </Card>
-            </TabsContent>
-          </Tabs>
+          {/* TalkHub Section */}
+          <div className="lg:col-span-7">
+            <Tabs defaultValue="talk" className="w-full">
+              <TabsList className="w-full bg-black/40 border border-blue-500/20 backdrop-blur-xl">
+                <TabsTrigger
+                  value="talk"
+                  className="flex-1 text-sm data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400"
+                >
+                  Talk Hub
+                </TabsTrigger>
+                <TabsTrigger
+                  value="leaderboard"
+                  className="flex-1 text-sm data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400"
+                >
+                  Leaderboard
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="talk">
+                <TalkHub />
+              </TabsContent>
+              <TabsContent value="leaderboard">
+                <Card className="p-6 border border-blue-500/20 bg-black/40 backdrop-blur-xl">
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Coming Soon
+                  </h2>
+                  <p className="text-gray-400 mt-2">
+                    The leaderboard feature is currently under development.
+                  </p>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-
-      {/* Message Ping Overlay */}
-      <MessagePing />
     </div>
   );
 }

@@ -23,43 +23,43 @@ import {
 } from 'lucide-react';
 
 interface CashoutDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCashout: (amount: number) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  amount: number;
 }
 
 export const CashoutDialog: React.FC<CashoutDialogProps> = ({
-  isOpen,
-  onClose,
-  onCashout,
+  open,
+  onOpenChange,
+  amount,
 }) => {
-  const [amount, setAmount] = useState('');
+  const [cashoutAmount, setCashoutAmount] = useState('');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
-  const availableBalance = 1250; // Example balance
+  const availableBalance = 99999; // Example balance
   const minCashout = 100;
   const maxCashout = 1000;
 
   const handleCashout = () => {
-    const cashoutAmount = Number(amount);
+    const cashoutAmountNumber = Number(cashoutAmount);
     
-    if (isNaN(cashoutAmount)) {
+    if (isNaN(cashoutAmountNumber)) {
       setError('Please enter a valid number');
       return;
     }
 
-    if (cashoutAmount < minCashout) {
+    if (cashoutAmountNumber < minCashout) {
       setError(`Minimum cashout amount is ${minCashout} NLOV`);
       return;
     }
 
-    if (cashoutAmount > maxCashout) {
+    if (cashoutAmountNumber > maxCashout) {
       setError(`Maximum cashout amount is ${maxCashout} NLOV`);
       return;
     }
 
-    if (cashoutAmount > availableBalance) {
+    if (cashoutAmountNumber > availableBalance) {
       setError('Insufficient balance');
       return;
     }
@@ -67,14 +67,13 @@ export const CashoutDialog: React.FC<CashoutDialogProps> = ({
     setProcessing(true);
     // Simulate processing
     setTimeout(() => {
-      onCashout(cashoutAmount);
       setProcessing(false);
-      onClose();
+      onOpenChange(false);
     }, 2000);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Cashout NLOV Tokens</DialogTitle>
@@ -100,9 +99,9 @@ export const CashoutDialog: React.FC<CashoutDialogProps> = ({
               id="amount"
               type="number"
               placeholder="Enter amount"
-              value={amount}
+              value={cashoutAmount}
               onChange={(e) => {
-                setAmount(e.target.value);
+                setCashoutAmount(e.target.value);
                 setError('');
               }}
             />
@@ -128,7 +127,7 @@ export const CashoutDialog: React.FC<CashoutDialogProps> = ({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Amount</span>
-                <span>{amount || '0'} NLOV</span>
+                <span>{cashoutAmount || '0'} NLOV</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Network Fee</span>
@@ -136,19 +135,19 @@ export const CashoutDialog: React.FC<CashoutDialogProps> = ({
               </div>
               <div className="flex justify-between font-medium pt-2 border-t">
                 <span>Total</span>
-                <span>{amount || '0'} NLOV</span>
+                <span>{cashoutAmount || '0'} NLOV</span>
               </div>
             </div>
           </Card>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
             onClick={handleCashout}
-            disabled={!amount || processing}
+            disabled={!cashoutAmount || processing}
           >
             {processing ? (
               <>

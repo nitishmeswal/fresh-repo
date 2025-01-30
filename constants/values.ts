@@ -351,53 +351,47 @@ export interface GPU {
 export const gpuData: GPU[] = [
   {
     id: 'rtx4090',
-    name: 'NVIDIA RTX 4090',
+    name: 'NVIDIA GeForce RTX 4090',
     image: '/gpu-images/RTX-4090.png',
-    available: false,
-    price: {
-      usd: 0.40,
-      nlov: 10
-    },
+    available: true,
     specs: {
-      cores: "16384 CUDA Cores",
-      tmus: "512 Texture Units",
-      rops: "176 ROPs",
-      rtCores: "128 RT Cores",
-      available: 0
+      cores: '16384 CUDA Cores',
+      boost: '2.52 GHz Boost Clock',
+      vram: 24
+    },
+    price: {
+      usd: 0.90,
+      nlov: 0.63
     }
   },
   {
     id: 'rtx3090ti',
-    name: 'NVIDIA RTX 3090 Ti',
+    name: 'NVIDIA GeForce RTX 3090 Ti',
     image: '/gpu-images/RTX-3090ti.png',
-    available: false,
-    price: {
-      usd: 0.30,
-      nlov: 6
-    },
+    available: true,
     specs: {
-      cores: "10752 CUDA Cores",
-      tmus: "384 Texture Units",
-      rops: "112 ROPs",
-      rtCores: "84 RT Cores",
-      available: 0
+      cores: '10752 CUDA Cores',
+      boost: '1.86 GHz Boost Clock',
+      vram: 24
+    },
+    price: {
+      usd: 0.80,
+      nlov: 0.56
     }
   },
   {
     id: 'rtx3090',
-    name: 'NVIDIA RTX 3090',
+    name: 'NVIDIA GeForceRTX 3090',
     image: '/gpu-images/RTX-3090.png',
-    available: false,
-    price: {
-      usd: 0.25,
-      nlov: 4
-    },
+    available: true,
     specs: {
-      cores: "10496 CUDA Cores",
-      tmus: "328 Texture Units",
-      rops: "112 ROPs",
-      rtCores: "82 RT Cores",
-      available: 0
+      cores: '10496 CUDA Cores',
+      boost: '1.70 GHz Boost Clock',
+      vram: 24
+    },
+    price: {
+      usd: 0.70,
+      nlov: 0.49
     }
   },
   {
@@ -405,16 +399,14 @@ export const gpuData: GPU[] = [
     name: 'NVIDIA A6000',
     image: '/gpu-images/A-6000.png',
     available: false,
+    specs: {
+      cores: '10752 CUDA Cores',
+      boost: '1.80 GHz Boost Clock',
+      vram: 48
+    },
     price: {
       usd: 0.90,
-      nlov: 20
-    },
-    specs: {
-      cores: "10752 CUDA Cores",
-      tmus: "336 Texture Units",
-      rops: "112 ROPs",
-      rtCores: "84 RT Cores",
-      available: 0
+      nlov: 0.63
     }
   },
   {
@@ -422,16 +414,14 @@ export const gpuData: GPU[] = [
     name: 'NVIDIA A5000',
     image: '/gpu-images/A-5000.png',
     available: false,
+    specs: {
+      cores: '8192 CUDA Cores',
+      boost: '1.73 GHz Boost Clock',
+      vram: 24
+    },
     price: {
       usd: 0.80,
-      nlov: 15
-    },
-    specs: {
-      cores: "8192 CUDA Cores",
-      tmus: "256 Texture Units",
-      rops: "96 ROPs",
-      rtCores: "64 RT Cores",
-      available: 0
+      nlov: 0.56
     }
   },
   {
@@ -439,16 +429,59 @@ export const gpuData: GPU[] = [
     name: 'NVIDIA A4000',
     image: '/gpu-images/A-4000.png',
     available: false,
+    specs: {
+      cores: '6144 CUDA Cores',
+      boost: '1.56 GHz Boost Clock',
+      vram: 16
+    },
     price: {
       usd: 0.70,
-      nlov: 12
-    },
+      nlov: 0.49
+    }
+  },
+  {
+    id: 'h100',
+    name: 'NVIDIA H100',
+    image: '/gpu-images/H-100.png',
+    available: false,
     specs: {
-      cores: "6144 CUDA Cores",
-      tmus: "192 Texture Units",
-      rops: "64 ROPs",
-      rtCores: "48 RT Cores",
-      available: 0
+      cores: '16896 CUDA Cores',
+      boost: '1.98 GHz Boost Clock',
+      vram: 80
+    },
+    price: {
+      usd: 3.50,
+      nlov: 2.45
+    }
+  },
+  {
+    id: 'a40',
+    name: 'NVIDIA A40',
+    image: '/gpu-images/A-40.png',
+    available: false,
+    specs: {
+      cores: '10752 CUDA Cores',
+      boost: '1.86 GHz Boost Clock',
+      vram: 48
+    },
+    price: {
+      usd: 1.20,
+      nlov: 0.84
+    }
+  },
+  {
+    id: 'a100',
+    name: 'NVIDIA A100',
+    image: '/gpu-images/A-100.png',
+    available: false,
+    specs: {
+      cores: '6912 CUDA Cores',
+      boost: '1.41 GHz Boost Clock',
+      vram: 80
+    },
+    price: {
+      usd: 2.50,
+      nlov: 1.75
     }
   }
 ];

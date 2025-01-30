@@ -7,70 +7,74 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Protected routes that require authentication
+const PROTECTED_ROUTES = [
+  '/dashboard',
+  '/gpu-marketplace',
+  '/ai-models',
+  '/earnings',
+  '/connect-to-earn',
+  '/wallet'
+];
+
+const isProtectedRoute = (path: string) => {
+  return PROTECTED_ROUTES.some(route => path.startsWith(route));
+};
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     const checkUser = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session && (
-          window.location.pathname.startsWith('/dashboard') ||
-          window.location.pathname.startsWith('/gpu-marketplace') ||
-          window.location.pathname.startsWith('/ai-models') ||
-          window.location.pathname.startsWith('/earnings') ||
-          window.location.pathname.startsWith('/connect-to-earn') ||
-          window.location.pathname.startsWith('/wallet')
-        )) {
+        if (mounted && !session && isProtectedRoute(window.location.pathname)) {
           router.push('/');
         }
       } catch (error) {
         console.error('Error checking auth:', error);
       } finally {
-        setIsLoading(false);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session && (
-        window.location.pathname.startsWith('/dashboard') ||
-        window.location.pathname.startsWith('/gpu-marketplace') ||
-        window.location.pathname.startsWith('/ai-models') ||
-        window.location.pathname.startsWith('/earnings') ||
-        window.location.pathname.startsWith('/connect-to-earn') ||
-        window.location.pathname.startsWith('/wallet')
-      )) {
+    // Check initial user state
+    checkUser();
+
+    // Set up auth state change listener
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        router.push('/');
+      } else if (!session && isProtectedRoute(window.location.pathname)) {
         router.push('/');
       }
     });
 
-    checkUser();
-
     return () => {
-      subscription.unsubscribe();
+      mounted = false;
     };
-  }, [supabase, router]);
+  }, [router, supabase]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return null;
   }
 
   return (
     <ThemeProvider
       attribute="class"
       defaultTheme="dark"
-      forcedTheme="dark"
+      enableSystem
       disableTransitionOnChange
     >
       <ToastProvider>
         {children}
-        <Toaster position="top-center" />
+        <Toaster position="bottom-right" />
       </ToastProvider>
     </ThemeProvider>
   );
