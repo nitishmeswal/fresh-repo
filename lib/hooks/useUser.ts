@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { getSupabaseClient, signOut } from '../supabase';
+import { getSupabaseClient } from '../supabase';
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -11,7 +11,7 @@ export function useUser() {
   useEffect(() => {
     const supabase = getSupabaseClient();
     
-    // One-time session check
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
@@ -30,6 +30,5 @@ export function useUser() {
   return {
     user,
     loading,
-    signOut,
   };
 }

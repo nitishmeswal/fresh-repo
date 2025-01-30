@@ -5,6 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
+import { signOut } from '@/lib/supabase';
 import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles } from 'lucide-react';
 import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
@@ -42,7 +43,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = React.useState('');
   const router = useRouter();
-  const { user, loading, supabase, signOut } = useUser();
+  const { user, loading } = useUser();
 
   const handleLogout = async () => {
     try {
