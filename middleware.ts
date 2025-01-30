@@ -19,21 +19,22 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req, res })
 
-  // Refresh session if it exists
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // Check if accessing a protected route
-  const isAccessingProtectedRoute = protectedPaths.some(path => 
-    req.nextUrl.pathname.startsWith(path)
-  )
+  // If there's no session and the user is trying to access a protected route
+  if (!session && !req.nextUrl.pathname.startsWith('/auth')) {
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = '/'
+    redirectUrl.searchParams.delete('message')
+    return NextResponse.redirect(redirectUrl)
+  }
 
-  // Check if accessing auth callback
-  const isAuthCallback = req.nextUrl.pathname.startsWith('/auth/callback')
-
-  if (!session && isAccessingProtectedRoute && !isAuthCallback) {
-    const redirectUrl = new URL('/', req.url)
+  // If there's a session and the user is on the home page, redirect to dashboard
+  if (session && req.nextUrl.pathname === '/') {
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = '/dashboard'
     return NextResponse.redirect(redirectUrl)
   }
 
@@ -41,14 +42,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }

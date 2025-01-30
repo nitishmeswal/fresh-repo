@@ -8,6 +8,22 @@ const nextConfig = {
   },
   images: {
     unoptimized: true
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        has: [
+          {
+            type: 'header',
+            key: 'host',
+            value: 'main--neurolov-compute.netlify.app',
+          },
+        ],
+        destination: 'https://app.neurolov.ai',
+        permanent: true,
+      },
+    ]
   }
 }
 
