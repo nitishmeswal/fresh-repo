@@ -42,19 +42,11 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = React.useState('');
   const router = useRouter();
-  const { user, loading, supabase } = useUser();
+  const { user, loading, supabase, signOut } = useUser();
 
   const handleLogout = async () => {
     try {
-      // Clear client-side data first
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Sign out first
-      await supabase.auth.signOut();
-      
-      // Then navigate to home page
-      router.replace('/');
+      await signOut();
     } catch (error) {
       console.error('Error during logout:', error);
     }

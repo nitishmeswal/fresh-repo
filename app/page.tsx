@@ -8,11 +8,12 @@ import { toast } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import PageTransition from "@/components/page-transition";
 import { useUser } from '@/lib/hooks/useUser';
+import { signInWithProvider } from '@/lib/supabase';
 import ParticleEffect from '@/particle-effect/ParticleEffect';
 
 export default function RootPage() {
   const router = useRouter();
-  const { user, loading, supabase } = useUser();
+  const { user, loading } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -24,15 +25,14 @@ export default function RootPage() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error) {
-      toast.error('Error signing in with Google');
+      const { error } = await signInWithProvider('google');
+      if (error) {
+        console.error('Google sign in error:', error);
+        throw error;
+      }
+    } catch (error: any) {
+      console.error('Sign in error:', error);
+      toast.error(error.message || 'Error signing in with Google');
     } finally {
       setIsLoading(false);
     }
@@ -41,15 +41,14 @@ export default function RootPage() {
   const handleGithubSignIn = async () => {
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error) {
-      toast.error('Error signing in with GitHub');
+      const { error } = await signInWithProvider('github');
+      if (error) {
+        console.error('GitHub sign in error:', error);
+        throw error;
+      }
+    } catch (error: any) {
+      console.error('Sign in error:', error);
+      toast.error(error.message || 'Error signing in with GitHub');
     } finally {
       setIsLoading(false);
     }
