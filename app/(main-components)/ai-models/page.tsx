@@ -307,7 +307,7 @@ export default function AIModelsPage() {
                               <Rocket className="w-4 h-4 mr-2" />
                             )}
                           </motion.div>
-                          {model.id === 'pytorch-server' ? 'Add to Bag' : 'Launch Now'}
+                          Launch Now
                         </Button>
                       </div>
                     </CardFooter>
