@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Brain, Search, Filter, Zap, Loader2, ShoppingBag, Star, Info, CheckCircle, Cpu, HardDrive, Box, ImageIcon, Video, Music, Bot, MessageSquare } from 'lucide-react';
+import { Brain, Search, Filter, Zap, Loader2, ShoppingBag, Star, Info, CheckCircle, Cpu, HardDrive, Box, ImageIcon, Video, Music, Bot, MessageSquare, Rocket, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -88,6 +88,13 @@ export default function AIModelsPage() {
 
   const handleAddToBag = async (model: AIModel) => {
     try {
+      // Special handling for Neurolov image generator
+      if (model.id === 'neurolov-image') {
+        router.push('/neurolov-image');
+        return;
+      }
+
+      // Default handling for other models
       setSelectedModel(model);
       
       // Get volume identifier
@@ -99,73 +106,22 @@ export default function AIModelsPage() {
         volume_identifier: volumeIdentifier
       }));
       
-      toast.success('Model added to bag!', {
-        position: 'bottom-right',
-      });
       router.push('/gpu-marketplace');
     } catch (error) {
-      console.error('Error getting volume:', error);
-      toast.error('Failed to get volume identifier', {
-        position: 'bottom-right',
+      console.error('Error adding model to bag:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add model to bag. Please try again.",
+        variant: "destructive"
       });
     }
   };
 
-  const generateImage = async () => {
-    if (!prompt?.trim()) {
-      setError('Please enter a prompt');
-      return;
-    }
-
-    if (generationCount >= MAX_GENERATIONS) {
-      setError("You've reached the maximum number of free generations. Please upgrade to continue.");
-      return;
-    }
-
-    if (cooldownTime > 0) {
-      setError(`Please wait ${cooldownTime} seconds before generating another image`);
-      return;
-    }
-
-    setIsGenerating(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/hyperbolic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt.trim() })
-      });
-
-      const data = await response.json();
-      
-      if (response.status === 429) {
-        setError("Please wait 5 Minutes between generations");
-        setCooldownTime(300);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate image');
-      }
-
-      if (data.images?.[0]) {
-        setGeneratedImage(`data:image/png;base64,${data.images[0].image}`);
-        setInferenceTime(data.inference_time);
-        setGenerationCount(prev => prev + 1);
-        setCooldownTime(30);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate image');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !isGenerating) {
-      e.preventDefault();
-      generateImage();
+  const handleDemo = async (model: AIModel) => {
+    if (model.id === 'flux-image') {
+      setIsDemoOpen(true);
+    } else if (model.id === 'neurolov-image') {
+      router.push('/neurolov-image');
     }
   };
 
@@ -208,7 +164,7 @@ export default function AIModelsPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 relative">
+    <div className="container mx-auto p-6">
       <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
         <div className="container mx-auto py-8 px-4">
           {/* Header with filter */}
@@ -258,83 +214,105 @@ export default function AIModelsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {view === 'explore' ? (
               // Explore view - show available models
-              filteredModels.map((model) => (
-                <Card
+              models.map((model) => (
+                <motion.div
                   key={model.id}
-                  className="web3-card relative group p-6 bg-[#0A0A0A] border-gray-800 hover:border-blue-500/50 transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative group"
+                  whileHover={{ scale: 1.02 }}
                 >
-                  {/* Model Icon */}
-                  <CardHeader>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${model.iconBg || 'bg-blue-500/10'}`}>
-                        {getModelIcon(model.type)}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-20 transition duration-500"></div>
+                  <Card className="relative h-full bg-[#0A0A0A] border-gray-800 group-hover:border-blue-500/50 transition-all duration-300 overflow-hidden">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500"></div>
+                    
+                    <CardHeader className="pb-4 relative">
+                      <div className="flex items-center gap-4">
+                        <motion.div 
+                          className="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {getModelIcon(model.type)}
+                        </motion.div>
+                        <div>
+                          <CardTitle className="text-lg font-semibold text-gray-100 group-hover:text-blue-400 transition-colors duration-300">
+                            {model.name}
+                          </CardTitle>
+                          <CardDescription className="text-sm text-gray-400">
+                            {model.type}
+                          </CardDescription>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle>{model.name}</CardTitle>
-                        <CardDescription>{model.type}</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
+                    </CardHeader>
 
-                  {/* Model Description */}
-                  <CardContent className="p-6">
-                    <p className="text-gray-400 mb-6">{model.description}</p>
+                    <CardContent className="space-y-4 relative">
+                      <p className="text-sm text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                        {model.description}
+                      </p>
 
-                    {/* Features */}
-                    {model.features && (
-                      <div className="space-y-2 mb-6">
-                        {model.features.map((feature, index) => (
-                          <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
-                            <CheckCircle className="w-4 h-4 text-blue-500" />
+                      {/* Features */}
+                      <div className="space-y-2">
+                        {model.features?.map((feature, index) => (
+                          <motion.div 
+                            key={index} 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex items-center gap-2 text-sm text-gray-300 group-hover:text-gray-200 transition-colors duration-300"
+                          >
+                            <motion.div
+                              whileHover={{ scale: 1.2, rotate: 180 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <CheckCircle className="w-4 h-4 text-blue-500" />
+                            </motion.div>
                             {feature}
-                          </div>
+                          </motion.div>
                         ))}
                       </div>
-                    )}
-                  </CardContent>
+                    </CardContent>
 
-                  {/* Action Buttons */}
-                  <CardFooter className="p-4 border-t border-gray-800 flex justify-between">
-                    <div className="flex gap-2">
-                      {/* Info Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="bg-gray-900/50 hover:bg-gray-900"
-                        onClick={() => {
-                          setModelToView(model);
-                          setShowModelInfo(true);
-                        }}
-                      >
-                        <Info className="w-4 h-4" />
-                      </Button>
+                    <CardFooter className="pt-4 border-t border-gray-800 relative">
+                      <div className="flex items-center gap-2 w-full">
+                        {/* Demo Button for both Flux and Image Generation */}
+                        {(model.id === 'flux-image' || model.id === 'neurolov-image') && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDemo(model)}
+                            className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:scale-105 transform transition-all duration-300"
+                          >
+                            <Zap className="w-4 h-4 mr-2 animate-pulse" />
+                            Try Demo
+                          </Button>
+                        )}
 
-                      {/* Demo Button for Flux Image Gen */}
-                      {model.id === 'flux-image' && (
+                        {/* Add to Bag/Launch Now Button */}
                         <Button
-                          variant="ghost"
+                          variant="default"
                           size="sm"
-                          className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
-                          onClick={() => setIsDemoOpen(true)}
+                          onClick={() => handleAddToBag(model)}
+                          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white ml-auto hover:scale-105 transform transition-all duration-300"
                         >
-                          <Zap className="w-4 h-4 mr-1" />
-                          Try Demo
+                          <motion.div
+                            whileHover={{ rotate: 360 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            {model.id === 'neurolov-image' ? (
+                              <Rocket className="w-4 h-4 mr-2" />
+                            ) : (
+                              <ShoppingBag className="w-4 h-4 mr-2" />
+                            )}
+                          </motion.div>
+                          {model.id === 'neurolov-image' ? 'Launch Now' : 'Add to Bag'}
                         </Button>
-                      )}
-                    </div>
-
-                    {/* Add to Bag Button */}
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="bg-blue-500 hover:bg-blue-600 text-white ml-auto"
-                      onClick={() => handleAddToBag(model)}
-                    >
-                      <ShoppingBag className="w-4 h-4 mr-1" />
-                      Add to Bag
-                    </Button>
-                  </CardFooter>
-                </Card>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
               ))
             ) : (
               // My Models view - show deployed containers
@@ -417,6 +395,22 @@ export default function AIModelsPage() {
                       <p className="text-sm text-gray-400">
                         Uptime: {container.system_uptime}
                       </p>
+
+                      {/* Delete Button */}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteModel(container)}
+                        disabled={isDeleting === container.container_address}
+                        className="w-full mt-4"
+                      >
+                        {isDeleting === container.container_address ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4 mr-2" />
+                        )}
+                        {isDeleting === container.container_address ? 'Deleting...' : 'Delete Model'}
+                      </Button>
                     </CardContent>
 
                     {/* URLs */}
@@ -433,7 +427,7 @@ export default function AIModelsPage() {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: 0.2 * index }}
-                              className="block text-sm text-blue-400 hover:text-blue-300 truncate"
+                              className="block p-2 rounded bg-gray-900/50 text-sm text-blue-400 hover:text-blue-300 hover:bg-gray-900/70"
                             >
                               {url}
                             </motion.a>
@@ -441,156 +435,13 @@ export default function AIModelsPage() {
                         </div>
                       </CardFooter>
                     )}
-                    <CardFooter className="pt-4 border-t border-gray-800">
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        disabled={isDeleting === container.container_address}
-                        onClick={() => handleDeleteModel(container)}
-                        className="ml-2"
-                      >
-                        {isDeleting === container.container_address ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : null}
-                        Delete
-                      </Button>
-                    </CardFooter>
                   </Card>
                 </motion.div>
               ))
             )}
           </div>
         </div>
-        
       </div>
-      {/* Demo Dialog */}
-      <Dialog open={isDemoOpen} onOpenChange={setIsDemoOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
-          <DialogHeader>
-            <DialogTitle>Try Flux Image Gen</DialogTitle>
-            <DialogDescription className="text-gray-400">
-              Generate images using our state-of-the-art AI model.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Input
-                id="prompt"
-                placeholder="Enter your prompt..."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={isGenerating}
-                className="w-full bg-gray-800 border-gray-700 text-white"
-              />
-              {error && <p className="text-red-500 text-sm">{error}</p>}
-            </div>
-
-            {generatedImage && (
-              <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                <Image
-                  src={generatedImage}
-                  alt="Generated image"
-                  fill
-                  className="object-cover"
-                />
-                {inferenceTime && (
-                  <div className="absolute bottom-2 right-2 bg-black/50 px-2 py-1 rounded text-xs">
-                    Generated in {inferenceTime.toFixed(2)}s
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button
-              onClick={generateImage}
-              disabled={isGenerating || !prompt}
-              className="w-full bg-blue-500 hover:bg-blue-600"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-4 h-4 mr-2" />
-                  Generate Image
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Model Info Dialog */}
-      <Dialog 
-        open={showModelInfo} 
-        onOpenChange={(open) => {
-          setShowModelInfo(open);
-          if (!open) setModelToView(null);
-        }}
-      >
-        <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${modelToView?.iconBg || 'bg-blue-500/10'}`}>
-                {modelToView && getModelIcon(modelToView.type)}
-              </div>
-              {modelToView?.name}
-            </DialogTitle>
-            <DialogDescription className="text-gray-400">
-              {modelToView?.description}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            {/* Features */}
-            {modelToView?.features && (
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-gray-300">Features</h4>
-                <div className="space-y-2">
-                  {modelToView.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
-                      <CheckCircle className="w-4 h-4 text-blue-500" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Container Info */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-gray-300">Container Information</h4>
-              <div className="space-y-2 text-sm text-gray-300">
-                <p>Image: {modelToView?.defaultConfig.containerImage}</p>
-                <p>Ports: {modelToView?.defaultConfig.exposedPorts.join(', ')}</p>
-                <p>Minimum Disk Space: {modelToView?.defaultConfig.minDisk}GB</p>
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="default"
-              className="w-full bg-blue-500 hover:bg-blue-600"
-              onClick={() => {
-                if (modelToView) {
-                  handleAddToBag(modelToView);
-                  setShowModelInfo(false);
-                }
-              }}
-            >
-              <ShoppingBag className="w-4 h-4 mr-2" />
-              Add to Bag
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

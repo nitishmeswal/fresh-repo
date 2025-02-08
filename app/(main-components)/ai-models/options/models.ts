@@ -2,143 +2,23 @@ import type { AIModel } from '@/store/model-bag';
 
 export const models: AIModel[] = [
   {
-    id: 'flux-image',
-    name: 'Flux Image Gen',
-    description: 'High-performance image generation and manipulation with support for multiple styles and formats',
+    id: 'neurolov-image',
+    name: 'Neurolov Image Generator',
+    description: 'Advanced AI image generation with multi-model fallback system. Create stunning visuals with our cutting-edge technology.',
     type: 'image',
-    tags: ['Image Generation', 'Fast'],
+    tags: ['Image Generation', 'AI', 'Multi-Model'],
     iconBg: 'bg-blue-500/10',
     features: [
-      'Multiple style support',
-      'Real-time image manipulation',
-      'Batch processing',
-      'Custom style training'
+      'Multi-tier AI model system',
+      'High-resolution output (1024x1024)',
+      'Prompt enhancement',
+      'Image history & preset prompts'
     ],
     defaultConfig: {
-      containerImage: 'adhikjoshi/pytorch-gpulab:latest',
-      exposedPorts: [8080, 3754],
+      containerImage: 'modelslab/neuro-gen:latest',
+      exposedPorts: [8080],
       minDisk: 10,
-      minVram: 24
-    }
-  },
-  {
-    id: 'fast-api',
-    name: 'Fast API',
-    description: 'High-speed API development and deployment with automatic documentation',
-    type: 'api',
-    tags: ['Fast', 'API'],
-    iconBg: 'bg-yellow-500/10',
-    features: [
-      'Automatic API documentation',
-      'High-performance endpoints',
-      'OpenAPI integration',
-      'Real-time validation'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/fastapi-gpulab:latest',
-      exposedPorts: [8000],
-      minDisk: 5,
-      minVram: 8
-    }
-  },
-  {
-    id: 'super-agents',
-    name: 'AI Super Agents',
-    description: 'Advanced AI agents for task automation and decision making',
-    type: 'agent',
-    tags: ['AI', 'Automation'],
-    iconBg: 'bg-purple-500/10',
-    features: [
-      'Task automation',
-      'Decision making',
-      'Multi-agent coordination',
-      'Custom agent training'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/agents-gpulab:latest',
-      exposedPorts: [8888],
-      minDisk: 15,
       minVram: 16
-    }
-  },
-  {
-    id: 'video-gen',
-    name: 'Video Generator',
-    description: 'AI-powered video generation and editing with real-time processing',
-    type: 'video',
-    tags: ['Video', 'Generation'],
-    iconBg: 'bg-red-500/10',
-    features: [
-      'Real-time video generation',
-      'Style transfer',
-      'Video editing',
-      'Custom effects'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/video-gpulab:latest',
-      exposedPorts: [8080, 50051],
-      minDisk: 20,
-      minVram: 32
-    }
-  },
-  {
-    id: 'llm-server',
-    name: 'LLM Server',
-    description: 'Large Language Model server for text generation and analysis',
-    type: 'text',
-    tags: ['LLM', 'Text'],
-    iconBg: 'bg-green-500/10',
-    features: [
-      'Text generation',
-      'Language analysis',
-      'Custom model training',
-      'API integration'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/llm-gpulab:latest',
-      exposedPorts: [8000, 8080],
-      minDisk: 30,
-      minVram: 24
-    }
-  },
-  {
-    id: 'music-gen',
-    name: 'Music Generator',
-    description: 'AI-powered music generation and audio processing',
-    type: 'audio',
-    tags: ['Music', 'Audio'],
-    iconBg: 'bg-pink-500/10',
-    features: [
-      'Music generation',
-      'Audio processing',
-      'Style transfer',
-      'Custom training'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/music-gpulab:latest',
-      exposedPorts: [8080],
-      minDisk: 15,
-      minVram: 16
-    }
-  },
-  {
-    id: 'deepfake',
-    name: 'Deepfake Studio',
-    description: 'Professional video synthesis and face swapping with advanced controls',
-    type: 'video',
-    tags: ['Video', 'AI'],
-    iconBg: 'bg-red-500/10',
-    features: [
-      'Face swapping',
-      'Video synthesis',
-      'Real-time processing',
-      'High-quality output'
-    ],
-    defaultConfig: {
-      containerImage: 'adhikjoshi/deepfake-gpulab:latest',
-      exposedPorts: [8080],
-      minDisk: 30,
-      minVram: 32
     }
   },
   {
@@ -146,7 +26,7 @@ export const models: AIModel[] = [
     name: 'PyTorch Server',
     description: 'Deploy PyTorch models with high performance and scalability',
     type: 'server',
-    tags: ['PyTorch', 'Server'],
+    tags: ['PyTorch', 'Server', 'AI'],
     iconBg: 'bg-orange-500/10',
     features: [
       'Model serving',
@@ -162,62 +42,182 @@ export const models: AIModel[] = [
     }
   },
   {
-    id: '3d-server',
-    name: '3D Server',
-    description: '3D model generation and rendering with real-time capabilities',
-    type: '3d',
-    tags: ['3D', 'Rendering'],
-    iconBg: 'bg-blue-500/10',
+    id: 'voice-audio',
+    name: 'AI Voice and Audio',
+    description: 'Create lifelike audio experiences with our versatile voice synthesis and audio processing with our audio generator API',
+    type: 'audio',
+    tags: ['Audio', 'Voice', 'AI'],
+    iconBg: 'bg-purple-500/10',
     features: [
-      '3D model generation',
-      'Real-time rendering',
-      'Texture synthesis',
-      'Animation support'
+      'Voice synthesis',
+      'Audio processing',
+      'Multiple voices',
+      'Custom audio effects'
     ],
     defaultConfig: {
-      containerImage: 'adhikjoshi/3d-gpulab:latest',
-      exposedPorts: [8080, 3754],
-      minDisk: 20,
+      containerImage: 'modelslab/audio:latest',
+      exposedPorts: [8000],
+      minDisk: 8,
+      minVram: 12
+    }
+  },
+  {
+    id: 'uncensored-chat',
+    name: 'Uncensored Chat',
+    description: 'Engage in dynamic conversations powered by our advanced natural language understanding AI models API.',
+    type: 'chat',
+    tags: ['Chat', 'AI', 'NLP'],
+    iconBg: 'bg-green-500/10',
+    features: [
+      'Advanced language understanding',
+      'Real-time responses',
+      'Context awareness',
+      'Customizable behavior'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/chat:latest',
+      exposedPorts: [8000],
+      minDisk: 15,
       minVram: 24
     }
   },
   {
-    id: 'audio-server',
-    name: 'Audio Server',
-    description: 'Audio processing and generation with support for multiple formats',
-    type: 'audio',
-    tags: ['Audio', 'Generation'],
-    iconBg: 'bg-green-500/10',
+    id: 'enterprise-api',
+    name: 'Enterprise API',
+    description: 'Scale with confidence using our robust, secure APIs designed for enterprise needs.',
+    type: 'api',
+    tags: ['Enterprise', 'API', 'Secure'],
+    iconBg: 'bg-gray-500/10',
     features: [
-      'Audio generation',
-      'Format conversion',
-      'Real-time processing',
-      'Voice synthesis'
+      'High availability',
+      'Enterprise security',
+      'Scalable infrastructure',
+      'Advanced monitoring'
     ],
     defaultConfig: {
-      containerImage: 'adhikjoshi/audio-gpulab:latest',
-      exposedPorts: [8080],
+      containerImage: 'modelslab/enterprise:latest',
+      exposedPorts: [8080, 443],
       minDisk: 20,
       minVram: 16
     }
   },
   {
-    id: 'custom-model',
-    name: 'Custom Model',
-    description: 'Deploy your own AI model with custom configuration',
-    type: 'custom',
-    tags: ['Custom', 'Flexible'],
-    iconBg: 'bg-purple-500/10',
+    id: 'image-editing',
+    name: 'AI Image Editing',
+    description: 'Elevate your images with AI-driven editing tools for flawless enhancements and transformations.',
+    type: 'image',
+    tags: ['Image Editing', 'AI'],
+    iconBg: 'bg-yellow-500/10',
     features: [
-      'Custom model deployment',
-      'Flexible configuration',
-      'Resource optimization',
-      'API customization'
+      'Advanced editing tools',
+      'Real-time transformations',
+      'Batch processing',
+      'Professional effects'
     ],
     defaultConfig: {
-      containerImage: 'nvidia/cuda:11.8.0-runtime-ubuntu22.04',
+      containerImage: 'modelslab/image-edit:latest',
       exposedPorts: [8080],
-      minDisk: 10,
+      minDisk: 12,
+      minVram: 16
+    }
+  },
+  {
+    id: 'video',
+    name: 'AI Video',
+    description: 'Craft compelling video content effortlessly with our AI-powered video creation and editing API.',
+    type: 'video',
+    tags: ['Video', 'AI', 'Creation'],
+    iconBg: 'bg-red-500/10',
+    features: [
+      'Video generation',
+      'Advanced editing',
+      'Effects library',
+      'Real-time processing'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/video:latest',
+      exposedPorts: [8080],
+      minDisk: 25,
+      minVram: 32
+    }
+  },
+  {
+    id: 'deepfake',
+    name: 'Deepfake API',
+    description: 'Create engaging marketing materials, training videos, our Deepfake Maker offers unmatched precision and quality',
+    type: 'deepfake',
+    tags: ['Deepfake', 'AI', 'Video'],
+    iconBg: 'bg-indigo-500/10',
+    features: [
+      'High-quality face swapping',
+      'Video manipulation',
+      'Real-time processing',
+      'Custom training'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/deepfake:latest',
+      exposedPorts: [8080],
+      minDisk: 30,
+      minVram: 32
+    }
+  },
+  {
+    id: '3d-api',
+    name: '3D API',
+    description: 'Create engaging and compelling 3d objects from texts prompt and image prompt to generate 3d model',
+    type: '3d',
+    tags: ['3D', 'AI', 'Modeling'],
+    iconBg: 'bg-cyan-500/10',
+    features: [
+      'Text-to-3D generation',
+      'Image-to-3D conversion',
+      'Model optimization',
+      'Multiple formats support'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/3d:latest',
+      exposedPorts: [8080],
+      minDisk: 20,
+      minVram: 24
+    }
+  },
+  {
+    id: 'interior',
+    name: 'Interior API',
+    description: 'Create beautiful home interiors, room decorations and floor planning with our AI-powered interior API',
+    type: 'interior',
+    tags: ['Interior', 'AI', 'Design'],
+    iconBg: 'bg-orange-500/10',
+    features: [
+      'Room design',
+      'Floor planning',
+      'Decoration suggestions',
+      'Real-time visualization'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/interior:latest',
+      exposedPorts: [8080],
+      minDisk: 15,
+      minVram: 16
+    }
+  },
+  {
+    id: 'general-api',
+    name: 'General API',
+    description: 'Useful general endpoints for miscellaneous purposes',
+    type: 'general',
+    tags: ['General', 'API', 'Utility'],
+    iconBg: 'bg-slate-500/10',
+    features: [
+      'Utility endpoints',
+      'Common operations',
+      'Integration support',
+      'Flexible usage'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/general:latest',
+      exposedPorts: [8080],
+      minDisk: 8,
       minVram: 8
     }
   }

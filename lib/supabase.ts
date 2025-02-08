@@ -10,8 +10,7 @@ export const getSupabaseClient = () => {
         auth: {
           persistSession: true,
           autoRefreshToken: false,
-          detectSessionInUrl: true,
-          flowType: 'pkce'
+          detectSessionInUrl: true
         }
       }
     });
@@ -22,51 +21,27 @@ export const getSupabaseClient = () => {
 // Simple auth helpers
 export const signInWithProvider = async (provider: 'google' | 'github') => {
   const client = getSupabaseClient();
-  const { origin } = window.location;
-  
-  try {
-    // First clear any existing session
-    await client.auth.signOut();
-    
-    // Then start new sign in
-    return client.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${origin}/auth/callback`,
-        skipBrowserRedirect: false
-      },
-    });
-  } catch (error) {
-    console.error('Sign in error:', error);
-    throw error;
-  }
+  return client.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+      skipBrowserRedirect: false
+    },
+  });
 };
 
 export const signOut = async () => {
   const client = getSupabaseClient();
-  
   try {
-    // First clear all storage
-    if (typeof window !== 'undefined') {
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Remove any auth cookies
-      document.cookie.split(";").forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-    }
-
-    // Then sign out from Supabase
-    await client.auth.signOut();
+    // Clear all storage first
+    localStorage.clear();
+    sessionStorage.clear();
     
-    // Finally redirect
+    // Sign out and redirect
+    await client.auth.signOut({ scope: 'local' });
     window.location.href = '/';
   } catch (error) {
     console.error('Error during sign out:', error);
-    // Force redirect on error
     window.location.href = '/';
   }
 };

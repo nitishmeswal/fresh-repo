@@ -12,59 +12,43 @@ export async function GET(request: Request) {
 
     try {
       // Exchange code for session
-      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-      if (exchangeError) throw exchangeError;
+      await supabase.auth.exchangeCodeForSession(code);
 
       // Get the user after exchange
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) throw userError;
 
-      if (!user) {
-        throw new Error('No user found after authentication');
-      }
-
-      // Ensure profile exists
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (!profile) {
-        // Create profile if it doesn't exist
-        const { error: insertError } = await supabase
+      if (user) {
+        // Ensure profile exists
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .insert([
-            {
-              id: user.id,
-              full_name: user.user_metadata.full_name || user.email?.split('@')[0],
-              avatar_url: user.user_metadata.avatar_url,
-              email: user.email,
-            },
-          ])
+          .select('*')
+          .eq('id', user.id)
           .single();
 
-        if (insertError) {
-          console.error('Error creating profile:', insertError);
-          // Continue even if profile creation fails
+        if (!profile) {
+          // Create profile if it doesn't exist
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: user.id,
+                full_name: user.user_metadata.full_name,
+                avatar_url: user.user_metadata.avatar_url,
+                email: user.email,
+              },
+            ]);
+          if (insertError) throw insertError;
         }
+
+        return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
       }
-
-      // Redirect to dashboard
-      return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
-
     } catch (error) {
       console.error('Auth callback error:', error);
-      
-      // Clear any partial auth state
-      await supabase.auth.signOut();
-      
-      // Redirect to home with error
-      const redirectUrl = new URL('/', requestUrl.origin);
-      return NextResponse.redirect(redirectUrl);
+      return NextResponse.redirect(new URL('/', requestUrl.origin));
     }
   }
 
-  // No code found, redirect to home
+  // Something went wrong, redirect back to login
   return NextResponse.redirect(new URL('/', requestUrl.origin));
 }

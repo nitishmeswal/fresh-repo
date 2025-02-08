@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -18,9 +18,7 @@ import { Plus, Heart, MessageSquare, Share2, Tag, AtSign, Send, Sparkles } from 
 export const TalkHub: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newPost, setNewPost] = useState('');
-
-  // Sample posts data
-  const posts = [
+  const [posts, setPosts] = useState([
     {
       id: 1,
       author: 'John Doe',
@@ -31,13 +29,36 @@ export const TalkHub: React.FC = () => {
       shares: 5,
       tags: ['Web3', 'Blockchain', 'Future']
     },
-    // Add more sample posts as needed
-  ];
+  ]);
 
   const handlePost = () => {
-    // Handle post creation
-    setIsDialogOpen(false);
+    if (!newPost.trim()) return;
+
+    // Create new post
+    const newPostObj = {
+      id: posts.length + 1,
+      author: 'You',
+      content: newPost.trim(),
+      timestamp: new Date().toISOString(),
+      likes: 0,
+      comments: [],
+      shares: 0,
+      tags: []
+    };
+
+    // Add new post to the beginning of the array
+    setPosts([newPostObj, ...posts]);
+    
+    // Reset form
     setNewPost('');
+    setIsDialogOpen(false);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent new line
+      handlePost();
+    }
   };
 
   return (
@@ -173,6 +194,7 @@ export const TalkHub: React.FC = () => {
               placeholder="Share your thoughts with the community..."
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="min-h-[80px] bg-gray-900/50 border border-blue-500/20 focus:border-blue-500/50 text-white placeholder:text-gray-400 text-sm"
             />
             <div className="flex gap-2">
