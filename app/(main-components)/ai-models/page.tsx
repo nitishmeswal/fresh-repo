@@ -277,8 +277,8 @@ export default function AIModelsPage() {
 
                     <CardFooter className="pt-4 border-t border-gray-800 relative">
                       <div className="flex items-center gap-2 w-full">
-                        {/* Demo Button for both Flux and Image Generation */}
-                        {(model.id === 'flux-image' || model.id === 'neurolov-image') && (
+                        {/* Demo Button only for Flux Image */}
+                        {model.id === 'flux-image' && (
                           <Button
                             variant="ghost"
                             size="sm"
@@ -301,13 +301,13 @@ export default function AIModelsPage() {
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.5 }}
                           >
-                            {model.id === 'neurolov-image' ? (
-                              <Rocket className="w-4 h-4 mr-2" />
-                            ) : (
+                            {model.id === 'pytorch-server' ? (
                               <ShoppingBag className="w-4 h-4 mr-2" />
+                            ) : (
+                              <Rocket className="w-4 h-4 mr-2" />
                             )}
                           </motion.div>
-                          {model.id === 'neurolov-image' ? 'Launch Now' : 'Add to Bag'}
+                          {model.id === 'pytorch-server' ? 'Add to Bag' : 'Launch Now'}
                         </Button>
                       </div>
                     </CardFooter>

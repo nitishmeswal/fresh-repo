@@ -3,7 +3,7 @@ import type { AIModel } from '@/store/model-bag';
 export const models: AIModel[] = [
   {
     id: 'neurolov-image',
-    name: 'Neurolov Image Generator',
+    name: 'Neuro Image Gen',
     description: 'Advanced AI image generation with multi-model fallback system. Create stunning visuals with our cutting-edge technology.',
     type: 'image',
     tags: ['Image Generation', 'AI', 'Multi-Model'],
@@ -19,6 +19,86 @@ export const models: AIModel[] = [
       exposedPorts: [8080],
       minDisk: 10,
       minVram: 16
+    }
+  },
+  {
+    id: 'video',
+    name: 'AI Video Generator',
+    description: 'Create stunning videos from text descriptions or transform existing videos with AI-powered effects and enhancements.',
+    type: 'video',
+    tags: ['Video', 'AI', 'Creation'],
+    iconBg: 'bg-red-500/10',
+    features: [
+      'Text to video generation',
+      'Video enhancement & upscaling',
+      'Style transfer & effects',
+      'Frame interpolation'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/video:latest',
+      exposedPorts: [8080],
+      minDisk: 25,
+      minVram: 32
+    }
+  },
+  {
+    id: 'music-ai',
+    name: 'AI Music Studio',
+    description: 'Create original music, generate melodies, and produce professional-grade audio with our AI-powered music studio.',
+    type: 'music',
+    tags: ['Music', 'AI', 'Audio'],
+    iconBg: 'bg-purple-500/10',
+    features: [
+      'Text to music generation',
+      'Music style transfer',
+      'Multi-instrument composition',
+      'Professional audio mixing'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/music:latest',
+      exposedPorts: [8000],
+      minDisk: 15,
+      minVram: 16
+    }
+  },
+  {
+    id: '3d-api',
+    name: '3D Creator Pro',
+    description: 'Transform your ideas into stunning 3D models instantly. Create photorealistic objects, scenes, and characters with simple text prompts.',
+    type: '3d',
+    tags: ['3D', 'AI', 'Modeling'],
+    iconBg: 'bg-pink-500/10',
+    features: [
+      'Text to 3D generation',
+      'Image to 3D conversion',
+      'Real-time model preview',
+      'Multiple export formats'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/3d:latest',
+      exposedPorts: [8000],
+      minDisk: 20,
+      minVram: 24
+    }
+  },
+  {
+    id: 'deepfake',
+    name: 'Deepfake Creator',
+    description: 'Create professional AI-powered face swaps for marketing, education, and entertainment with unmatched quality.',
+    type: 'deepfake',
+    tags: ['Deepfake', 'AI', 'Video'],
+    iconBg: 'bg-indigo-500/10',
+    features: [
+      'High-quality face swapping',
+      'Video manipulation',
+      'Real-time processing',
+      'Custom training options'
+    ],
+    defaultConfig: {
+      containerImage: 'modelslab/deepfake:latest',
+      exposedPorts: [8080],
+      minDisk: 30,
+      minVram: 32
     }
   },
   {
@@ -39,186 +119,6 @@ export const models: AIModel[] = [
       exposedPorts: [8888],
       minDisk: 15,
       minVram: 16
-    }
-  },
-  {
-    id: 'voice-audio',
-    name: 'AI Voice and Audio',
-    description: 'Create lifelike audio experiences with our versatile voice synthesis and audio processing with our audio generator API',
-    type: 'audio',
-    tags: ['Audio', 'Voice', 'AI'],
-    iconBg: 'bg-purple-500/10',
-    features: [
-      'Voice synthesis',
-      'Audio processing',
-      'Multiple voices',
-      'Custom audio effects'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/audio:latest',
-      exposedPorts: [8000],
-      minDisk: 8,
-      minVram: 12
-    }
-  },
-  {
-    id: 'uncensored-chat',
-    name: 'Uncensored Chat',
-    description: 'Engage in dynamic conversations powered by our advanced natural language understanding AI models API.',
-    type: 'chat',
-    tags: ['Chat', 'AI', 'NLP'],
-    iconBg: 'bg-green-500/10',
-    features: [
-      'Advanced language understanding',
-      'Real-time responses',
-      'Context awareness',
-      'Customizable behavior'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/chat:latest',
-      exposedPorts: [8000],
-      minDisk: 15,
-      minVram: 24
-    }
-  },
-  {
-    id: 'enterprise-api',
-    name: 'Enterprise API',
-    description: 'Scale with confidence using our robust, secure APIs designed for enterprise needs.',
-    type: 'api',
-    tags: ['Enterprise', 'API', 'Secure'],
-    iconBg: 'bg-gray-500/10',
-    features: [
-      'High availability',
-      'Enterprise security',
-      'Scalable infrastructure',
-      'Advanced monitoring'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/enterprise:latest',
-      exposedPorts: [8080, 443],
-      minDisk: 20,
-      minVram: 16
-    }
-  },
-  {
-    id: 'image-editing',
-    name: 'AI Image Editing',
-    description: 'Elevate your images with AI-driven editing tools for flawless enhancements and transformations.',
-    type: 'image',
-    tags: ['Image Editing', 'AI'],
-    iconBg: 'bg-yellow-500/10',
-    features: [
-      'Advanced editing tools',
-      'Real-time transformations',
-      'Batch processing',
-      'Professional effects'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/image-edit:latest',
-      exposedPorts: [8080],
-      minDisk: 12,
-      minVram: 16
-    }
-  },
-  {
-    id: 'video',
-    name: 'AI Video',
-    description: 'Craft compelling video content effortlessly with our AI-powered video creation and editing API.',
-    type: 'video',
-    tags: ['Video', 'AI', 'Creation'],
-    iconBg: 'bg-red-500/10',
-    features: [
-      'Video generation',
-      'Advanced editing',
-      'Effects library',
-      'Real-time processing'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/video:latest',
-      exposedPorts: [8080],
-      minDisk: 25,
-      minVram: 32
-    }
-  },
-  {
-    id: 'deepfake',
-    name: 'Deepfake API',
-    description: 'Create engaging marketing materials, training videos, our Deepfake Maker offers unmatched precision and quality',
-    type: 'deepfake',
-    tags: ['Deepfake', 'AI', 'Video'],
-    iconBg: 'bg-indigo-500/10',
-    features: [
-      'High-quality face swapping',
-      'Video manipulation',
-      'Real-time processing',
-      'Custom training'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/deepfake:latest',
-      exposedPorts: [8080],
-      minDisk: 30,
-      minVram: 32
-    }
-  },
-  {
-    id: '3d-api',
-    name: '3D API',
-    description: 'Create engaging and compelling 3d objects from texts prompt and image prompt to generate 3d model',
-    type: '3d',
-    tags: ['3D', 'AI', 'Modeling'],
-    iconBg: 'bg-cyan-500/10',
-    features: [
-      'Text-to-3D generation',
-      'Image-to-3D conversion',
-      'Model optimization',
-      'Multiple formats support'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/3d:latest',
-      exposedPorts: [8080],
-      minDisk: 20,
-      minVram: 24
-    }
-  },
-  {
-    id: 'interior',
-    name: 'Interior API',
-    description: 'Create beautiful home interiors, room decorations and floor planning with our AI-powered interior API',
-    type: 'interior',
-    tags: ['Interior', 'AI', 'Design'],
-    iconBg: 'bg-orange-500/10',
-    features: [
-      'Room design',
-      'Floor planning',
-      'Decoration suggestions',
-      'Real-time visualization'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/interior:latest',
-      exposedPorts: [8080],
-      minDisk: 15,
-      minVram: 16
-    }
-  },
-  {
-    id: 'general-api',
-    name: 'General API',
-    description: 'Useful general endpoints for miscellaneous purposes',
-    type: 'general',
-    tags: ['General', 'API', 'Utility'],
-    iconBg: 'bg-slate-500/10',
-    features: [
-      'Utility endpoints',
-      'Common operations',
-      'Integration support',
-      'Flexible usage'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/general:latest',
-      exposedPorts: [8080],
-      minDisk: 8,
-      minVram: 8
     }
   }
 ];

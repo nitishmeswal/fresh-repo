@@ -11,9 +11,10 @@ import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
 import { Toaster } from 'react-hot-toast';
 import { Inter } from 'next/font/google';
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import PageTransition from "@/components/page-transition";
 import { useRouter } from 'next/navigation';
+import { LockIcon } from '@/components/LockIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,13 +24,13 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'GPU Marketplace', href: '/gpu-marketplace', icon: Cpu },
-  { name: 'AI Models', href: '/ai-models', icon: Brain },
-  { name: 'AI Agents', href: '/ai-agents', icon: Sparkles },
-  { name: 'Earnings', href: '/earnings', icon: Coins },
-  { name: 'Connect to Earn', href: '/connect-to-earn', icon: Cpu },
-  { name: 'Wallet', href: '/wallet', icon: Wallet },
-  { name: 'Community', href: '/community', icon: Users },
+  { name: 'GPU Marketplace', href: '/gpu-marketplace', icon: Cpu, isNew: true },
+  { name: 'AI Models', href: '/ai-models', icon: Brain, isNew: true },
+  { name: 'AI Agents', href: '/ai-agents', icon: Sparkles, isLocked: true },
+  { name: 'Earnings', href: '/earnings', icon: Coins, isLocked: true },
+  { name: 'Connect to Earn', href: '/connect-to-earn', icon: Cpu, isLocked: true },
+  { name: 'Wallet', href: '/wallet', icon: Wallet, isLocked: true },
+  { name: 'Community', href: '/community', icon: Users, isLocked: true },
   { name: 'Settings', href: '/settings', icon: Settings },
   { name: 'More info', href: '/more-info', icon: Info },
 ];
@@ -137,14 +138,32 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-3.5 px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
+                    className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
                       isActive
                         ? 'bg-white/10 text-white'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Icon className="h-5 w-5 flex-shrink-0" />
-                    <span>{item.name}</span>
+                    <div className="flex items-center space-x-3.5">
+                      <Icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{item.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {item.isNew && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="px-1.5 py-0.5 text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg shadow-blue-500/20"
+                        >
+                          New
+                        </motion.div>
+                      )}
+                      {item.isLocked && (
+                        <div className="opacity-80 group-hover:opacity-100 transition-opacity">
+                          <LockIcon />
+                        </div>
+                      )}
+                    </div>
                   </Link>
                 );
               })}
