@@ -7,7 +7,7 @@ interface DeploymentData {
   volume_identifier: string;
 }
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];
 
 export const ModelStatus = () => {
   const [deploymentData, setDeploymentData] = useState<DeploymentData | null>(null);

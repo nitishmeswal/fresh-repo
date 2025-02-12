@@ -30,7 +30,7 @@ import { gpuData } from '@/constants/values';
 import { useUser } from '@/lib/hooks/useUser';
 
 const COMPATIBLE_GPUS = ['rtx4090', 'rtx3090ti', 'rtx3090', 'a6000', 'a5000', 'a4000', 'a100', 'a40', 'h100'];
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];
 
 export default function Home() {
   const router = useRouter();

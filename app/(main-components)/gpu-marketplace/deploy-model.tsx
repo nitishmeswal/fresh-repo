@@ -18,7 +18,7 @@ import { useModelBag } from '@/store/model-bag';
 import { useUser } from '@/lib/hooks/useUser';
 import { useRouter } from 'next/navigation';
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];
 
 interface ContainerStats {
   container_stats: {
