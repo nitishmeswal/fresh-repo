@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { toast } from 'sonner';
-import { ImageIcon, Sparkles, Send, Download, Wand2, Image, PenTool, Layers, Palette, CircleSlash2, Combine } from 'lucide-react';
+import { ImageIcon, Sparkles, Send, Download, Wand2, Image as ImageLucide, PenTool, Layers, Palette, CircleSlash2, Combine, Settings2, LayoutTemplate, Zap, Crown, Frame, Maximize2, Minimize2, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import './neuroStyle.css';
 
 interface Message {
   id: string;
@@ -14,6 +16,66 @@ interface Message {
   imageUrl?: string;
   timestamp: Date;
 }
+
+interface ImageConfig {
+  style: 'Realistic' | 'Anime' | 'Digital Art';
+  quality: 'Fast' | 'Standard' | 'Ultra HD';
+  ratio: '1:1' | '16:9' | '9:16';
+  enhancement: 'Standard' | 'Ultra HD';
+}
+
+interface FeatureState {
+  type: string;
+  count: number;
+}
+
+const examplePrompts = [
+  "Create a photorealistic portrait in renaissance style",
+  "Create an anime-style character with vibrant colors",
+  "Generate a surreal dreamscape with floating islands",
+  "Design a minimalist abstract composition",
+  "Remove background and create transparent PNG",
+  "Combine multiple styles into one unique image"
+];
+
+const featureOptions = [
+  { 
+    type: 'quality', 
+    icon: '✨', 
+    prompt: 'in ultra HD quality, highly detailed, sharp and clear', 
+    color: '#FF6B6B' 
+  },
+  { 
+    type: 'lighting', 
+    icon: '💡', 
+    prompt: 'with perfect lighting, enhanced shadows and highlights', 
+    color: '#4ECDC4' 
+  },
+  { 
+    type: 'detail', 
+    icon: '🔍', 
+    prompt: 'with intricate details, fine textures, and precise features', 
+    color: '#45B7D1' 
+  },
+  { 
+    type: 'enhance', 
+    icon: '⚡', 
+    prompt: 'enhanced with more definition and clarity', 
+    color: '#96CEB4' 
+  },
+  { 
+    type: 'focus', 
+    icon: '🎯', 
+    prompt: 'with perfect focus and depth of field', 
+    color: '#FFEEAD' 
+  },
+  { 
+    type: 'resolution', 
+    icon: '💫', 
+    prompt: 'in 8k resolution with maximum sharpness', 
+    color: '#D4A5A5' 
+  }
+];
 
 export default function NeuroImageGenerator() {
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -38,9 +100,67 @@ export default function NeuroImageGenerator() {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [config, setConfig] = useState<ImageConfig>({
+    style: 'Realistic',
+    quality: 'Standard',
+    ratio: '1:1',
+    enhancement: 'Standard'
+  });
+
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedFeature, setDraggedFeature] = useState<string | null>(null);
+  const [isClusterOpen, setIsClusterOpen] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Function to safely store messages with size management
+  const handleFeatureDragStart = (type: string) => {
+    setIsDragging(true);
+    setDraggedFeature(type);
+  };
+
+  const handleFeatureDragEnd = () => {
+    setIsDragging(false);
+    setDraggedFeature(null);
+  };
+
+  const handleFeatureDrop = (e: React.DragEvent, targetMessage: Message) => {
+    e.preventDefault();
+    if (!draggedFeature || targetMessage.type !== 'image') return;
+
+    const feature = featureOptions.find(f => f.type === draggedFeature);
+    if (!feature) return;
+
+    setSelectedFeatures(prev => [...prev, draggedFeature]);
+    
+    // Update prompt with feature while keeping original subject
+    setPrompt(prev => {
+      const basePrompt = targetMessage.content;
+      const featurePrompt = feature.prompt;
+      return `${basePrompt} ${featurePrompt}`;
+    });
+
+    // Visual feedback
+    const ball = document.createElement('div');
+    ball.className = 'feature-ball-effect';
+    ball.style.left = `${e.clientX}px`;
+    ball.style.top = `${e.clientY}px`;
+    ball.style.backgroundColor = feature.color;
+    document.body.appendChild(ball);
+
+    setTimeout(() => document.body.removeChild(ball), 1000);
+  };
+
+  const removeFeature = (typeToRemove: string) => {
+    setSelectedFeatures(prev => prev.filter(type => type !== typeToRemove));
+    
+    // Update prompt by removing the feature's prompt
+    const feature = featureOptions.find(f => f.type === typeToRemove);
+    if (feature) {
+      setPrompt(prev => prev.replace(feature.prompt, '').trim());
+    }
+  };
+
   const safelyStoreMessages = (messagesToStore: Message[]) => {
     try {
       // Keep only the last 50 messages to prevent storage issues
@@ -102,9 +222,36 @@ export default function NeuroImageGenerator() {
   const clearHistory = () => {
     setMessages([]);
     localStorage.removeItem('neurolov-image-history');
-    toast.success('History cleared', {
-      style: { background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.1)' }
-    });
+    toast.success('History cleared successfully!');
+  };
+
+  const updateConfig = (key: keyof ImageConfig, value: string) => {
+    setConfig(prev => ({ ...prev, [key]: value }));
+    
+    // Update the prompt based on config
+    let enhancedPrompt = prompt;
+    if (key === 'style') {
+      enhancedPrompt = `${value.toLowerCase()} style: ${prompt}`;
+    }
+    if (key === 'enhancement' && value === 'Ultra HD') {
+      enhancedPrompt += ', 8k uhd, highly detailed';
+    }
+    setPrompt(enhancedPrompt);
+  };
+
+  const getConfigIcon = (option: string) => {
+    switch (option) {
+      case 'Realistic': return <ImageIcon />;
+      case 'Anime': return <PenTool />;
+      case 'Digital Art': return <Palette />;
+      case 'Ultra HD': return <Crown />;
+      case 'Standard': return <Zap />;
+      case 'Fast': return <Sparkles />;
+      case '1:1': return <Frame />;
+      case '16:9': return <Maximize2 />;
+      case '9:16': return <Minimize2 />;
+      default: return <Settings2 />;
+    }
   };
 
   const handleGenerate = async () => {
@@ -124,6 +271,16 @@ export default function NeuroImageGenerator() {
     try {
       console.log('Sending request with prompt:', prompt);
       
+      // Get dimensions based on ratio
+      let width = 1024, height = 1024;
+      if (config.ratio === '16:9') {
+        width = 1024;
+        height = 576;
+      } else if (config.ratio === '9:16') {
+        width = 576;
+        height = 1024;
+      }
+
       const response = await fetch('/api/Neurolov-image-generator', {
         method: 'POST',
         headers: {
@@ -131,10 +288,11 @@ export default function NeuroImageGenerator() {
         },
         body: JSON.stringify({
           prompt,
-          width: 1024,
-          height: 1024,
+          width,
+          height,
           num_samples: 1,
-          enhance_prompt: true,
+          enhance_prompt: config.enhancement === 'Ultra HD',
+          quality: config.quality === 'Ultra HD' ? 'high' : config.quality === 'Fast' ? 'fast' : 'standard',
           negative_prompt: 'blurry, low quality, distorted, deformed'
         })
       });
@@ -196,185 +354,201 @@ export default function NeuroImageGenerator() {
   };
 
   return (
-    <div className="flex flex-col h-[90vh]">
-      {/* Header */}
-      <div className="shrink-0 flex items-center justify-between p-4 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
-            <ImageIcon className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-white font-medium">Neuro Image Generator</span>
-        </div>
-        {messages.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearHistory}
-            className="text-xs text-gray-400 hover:text-white hover:bg-[#1A1A1A]"
-          >
-            Clear History
-          </Button>
-        )}
+    <div className="neuro-container">
+      <div className="neuro-background">
+        <div className="neuro-grid"></div>
+        <div className="neuro-glow"></div>
       </div>
+      
+      <div className="neuro-content">
+        <motion.h1 
+          className="text-5xl md:text-7xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          Neuro Image Gen
+        </motion.h1>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto">
-        {showWelcome ? (
-          <div className="h-full flex flex-col items-center justify-center p-8 text-center">
-            <h1 className="text-2xl font-bold text-white mb-8">What would you like to create?</h1>
-            <div className="grid grid-cols-2 gap-4 max-w-2xl w-full mb-8">
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Create a photorealistic portrait in renaissance style")}
-              >
-                <Image className="w-6 h-6" />
-                <span>Photorealistic</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Create an anime-style character with vibrant colors")}
-              >
-                <PenTool className="w-6 h-6" />
-                <span>Anime Style</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Generate a surreal dreamscape with floating islands")}
-              >
-                <Layers className="w-6 h-6" />
-                <span>Surreal Art</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Design a minimalist abstract composition")}
-              >
-                <Palette className="w-6 h-6" />
-                <span>Abstract</span>
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4 max-w-2xl w-full">
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Remove background and create transparent PNG")}
-              >
-                <CircleSlash2 className="w-6 h-6" />
-                <span>Remove Background</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-col gap-2 p-6 h-auto bg-[#1A1A1A] hover:bg-[#252525] border-white/5"
-                onClick={() => handlePromptSelect("Combine multiple styles into one unique image")}
-              >
-                <Combine className="w-6 h-6" />
-                <span>Style Fusion</span>
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-6 p-4">
-            <AnimatePresence>
+        {/* Chat Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-8 max-w-7xl mx-auto">
+          <div className="glass-panel h-[calc(100vh-300px)] overflow-y-auto">
+            <div className="space-y-6 p-6">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
+                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div 
-                    className={`max-w-[80%] rounded-2xl ${
-                      message.type === 'user' 
-                        ? 'bg-white/10 text-white px-4 py-3' 
-                        : message.type === 'image' 
-                          ? 'bg-[#1A1A1A] text-white overflow-hidden w-full md:w-1/2'
-                          : 'bg-[#1A1A1A] text-white px-4 py-3'
+                    className={`max-w-[80%] ${
+                      message.type === 'user' ? 'message-user' :
+                      message.type === 'image' ? 'message-image' :
+                      'message-assistant'
                     }`}
+                    onDragOver={(e) => message.type === 'image' && e.preventDefault()}
+                    onDrop={(e) => handleFeatureDrop(e, message)}
                   >
-                    {message.type === 'image' ? (
-                      <div>
-                        <div className="px-4 pt-3">
-                          <p className="text-sm text-gray-300">{message.content}</p>
-                        </div>
-                        <div className="mt-3 relative">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src={message.imageUrl} 
-                            alt={message.content}
-                            className="w-full h-auto object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                    {message.type === 'image' && message.imageUrl ? (
+                      <div className="relative w-full aspect-square">
+                        <Image
+                          src={message.imageUrl}
+                          alt={message.content}
+                          fill
+                          className="object-cover rounded-xl"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          priority
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-xl flex items-end p-4">
+                          <div className="w-full flex justify-between items-center">
+                            <p className="text-sm text-white/90 line-clamp-2">{message.content}</p>
                             <Button
+                              onClick={() => window.open(message.imageUrl, '_blank')}
+                              size="icon"
                               variant="ghost"
-                              size="sm"
-                              className="text-white hover:bg-white/20"
-                              onClick={() => message.imageUrl && handleDownload(message.imageUrl)}
+                              className="ml-2"
                             >
-                              <Download className="w-4 h-4 mr-2" />
-                              Download
+                              <Download className="w-5 h-5" />
                             </Button>
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <p className="whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-white">{message.content}</p>
                     )}
                   </div>
                 </motion.div>
               ))}
-            </AnimatePresence>
-            {isGenerating && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex justify-start"
-              >
-                <div className="bg-[#1A1A1A] rounded-2xl px-4 py-3">
-                  <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                </div>
-              </motion.div>
-            )}
-            <div ref={messagesEndRef} />
+              
+              {messages.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex justify-center mt-8"
+                >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearHistory}
+                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 clear-history-btn"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Clear Chat History
+                  </Button>
+                </motion.div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Fixed Input Area */}
-      <div className="shrink-0 p-4 border-t border-white/5 bg-[#0A0A0A]">
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="shrink-0 hover:bg-[#1A1A1A]"
-            onClick={() => setPrompt(prev => prev + "✨ ")}
-          >
-            <Sparkles className="w-5 h-5" />
-          </Button>
-          <input
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Describe the image you want to create..."
-            className="flex-1 bg-[#1A1A1A] text-white border-0 rounded-lg px-4 py-2 focus:ring-1 ring-white/20"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleGenerate();
-              }
-            }}
-          />
-          <Button
-            className="shrink-0 bg-white/10 hover:bg-white/20"
-            size="icon"
-            disabled={!prompt.trim() || isGenerating}
-            onClick={handleGenerate}
-          >
-            <Send className="w-5 h-5" />
-          </Button>
+          {/* Control Panel */}
+          <div className="glass-panel p-6">
+            <div className="space-y-4">
+              {selectedFeatures.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {selectedFeatures.map((type) => {
+                    const feature = featureOptions.find(f => f.type === type);
+                    return feature && (
+                      <div 
+                        key={type}
+                        className="feature-tag"
+                        style={{ backgroundColor: feature.color }}
+                      >
+                        <span>{feature.icon}</span>
+                        <span>{feature.type}</span>
+                        <button 
+                          className="remove-feature"
+                          onClick={() => removeFeature(type)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Describe your imagination..."
+                className="prompt-input"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleGenerate();
+                  }
+                }}
+              />
+
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <motion.div
+                    className="feature-cluster"
+                    onClick={() => setIsClusterOpen(!isClusterOpen)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="text-2xl">✨</span>
+                    <motion.span
+                      className="cluster-arrow"
+                      animate={{ rotate: isClusterOpen ? 180 : 0 }}
+                    >
+                      ▼
+                    </motion.span>
+                  </motion.div>
+
+                  <AnimatePresence>
+                    {isClusterOpen && !isGenerating && (
+                      <motion.div 
+                        className="feature-balls-container"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                      >
+                        {featureOptions.map((feature) => (
+                          <motion.div
+                            key={feature.type}
+                            className="feature-ball"
+                            style={{ backgroundColor: feature.color }}
+                            draggable
+                            onDragStart={() => handleFeatureDragStart(feature.type)}
+                            onDragEnd={handleFeatureDragEnd}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span>{feature.icon}</span>
+                            <span className="feature-tooltip">
+                              <strong>{feature.type}</strong>
+                              <br />
+                              {feature.prompt}
+                            </span>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <Button
+                  onClick={handleGenerate}
+                  disabled={!prompt.trim() || isGenerating}
+                  className="generate-button ml-auto"
+                >
+                  {isGenerating ? (
+                    <>
+                      <div className="loading-spinner" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Generate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

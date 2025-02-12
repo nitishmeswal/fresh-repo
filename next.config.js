@@ -9,6 +9,23 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+    };
+    config.resolve.extensions = [...config.resolve.extensions, '.js', '.jsx'];
+    config.module.rules.push({
+      test: /\.(js|jsx)$/,
+      include: [/three\/examples\/jsm/],
+      type: 'javascript/auto'
+    });
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false
+    };
+    return config;
+  },
   async redirects() {
     return [
       {

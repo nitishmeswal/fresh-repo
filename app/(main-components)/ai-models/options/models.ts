@@ -22,6 +22,50 @@ export const models: AIModel[] = [
     }
   },
   {
+    id: 'uncensored-chat',
+    name: 'Uncensored Chat',
+    description: 'Engage in unrestricted conversations without any censorship or limitations. Ask anything, discuss any topic, and get unfiltered responses.',
+    features: [
+      'Unrestricted conversations',
+      'No topic limitations',
+      'Unfiltered responses',
+      'Advanced context understanding'
+    ],
+    category: 'text',
+    type: 'text',
+    isComingSoon: false,
+    isPopular: true,
+    isFeatured: true,
+    price: 0,
+    gpuRequirements: {
+      minGPU: 'T4',
+      minVRAM: 8,
+      minCores: 1
+    }
+  },
+  {
+    id: 'text-to-3d',
+    name: '3D Creator Pro',
+    description: 'Transform text descriptions into stunning 3D models. Create detailed meshes, sculptures, and objects using advanced AI technology.',
+    features: [
+      'Text to 3D model generation',
+      'Multiple output formats',
+      'NeRF video rendering',
+      'Advanced mesh controls'
+    ],
+    category: '3d',
+    type: '3d',
+    isComingSoon: false,
+    isPopular: true,
+    isFeatured: true,
+    price: 0,
+    gpuRequirements: {
+      minGPU: 'T4',
+      minVRAM: 16,
+      minCores: 2
+    }
+  },
+  {
     id: 'video',
     name: 'AI Video Generator',
     description: 'Create stunning videos from text descriptions or transform existing videos with AI-powered effects and enhancements.',
@@ -62,42 +106,23 @@ export const models: AIModel[] = [
     }
   },
   {
-    id: '3d-api',
-    name: '3D Creator Pro',
-    description: 'Transform your ideas into stunning 3D models instantly. Create photorealistic objects, scenes, and characters with simple text prompts.',
-    type: '3d',
-    tags: ['3D', 'AI', 'Modeling'],
-    iconBg: 'bg-pink-500/10',
-    features: [
-      'Text to 3D generation',
-      'Image to 3D conversion',
-      'Real-time model preview',
-      'Multiple export formats'
-    ],
-    defaultConfig: {
-      containerImage: 'modelslab/3d:latest',
-      exposedPorts: [8000],
-      minDisk: 20,
-      minVram: 24
-    }
-  },
-  {
     id: 'deepfake',
-    name: 'Deepfake Creator',
-    description: 'Create professional AI-powered face swaps for marketing, education, and entertainment with unmatched quality.',
+    name: 'AI Deepfake Studio',
+    description: 'Create stunning face swaps in images and videos using advanced AI technology. Swap faces in photos and videos with precise control.',
     type: 'deepfake',
-    tags: ['Deepfake', 'AI', 'Video'],
-    iconBg: 'bg-indigo-500/10',
+    tags: ['Deepfake', 'AI', 'Face Swap'],
+    iconBg: 'bg-purple-500/10',
     features: [
-      'High-quality face swapping',
-      'Video manipulation',
-      'Real-time processing',
-      'Custom training options'
+      'Single face swap in images',
+      'Multiple face swap in images',
+      'Face swap in videos',
+      'Specific face targeting',
+      'High-quality results'
     ],
     defaultConfig: {
       containerImage: 'modelslab/deepfake:latest',
       exposedPorts: [8080],
-      minDisk: 30,
+      minDisk: 25,
       minVram: 32
     }
   },

@@ -4,7 +4,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { useUser } from '@/lib/hooks/useUser';
 import { BiLogoGmail } from 'react-icons/bi';
 
 interface ComingSoonOverlayProps {
@@ -15,8 +14,6 @@ interface ComingSoonOverlayProps {
   className?: string;
 }
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com'];
-
 export const ComingSoonOverlay = ({ 
   version = '2.0', 
   title = 'Coming Soon',
@@ -24,13 +21,6 @@ export const ComingSoonOverlay = ({
   type = 'fixed',
   className = ''
 }: ComingSoonOverlayProps) => {
-  const { user } = useUser();
-  
-  // If user is a developer, don't show any overlay
-  if (user?.email && DEV_EMAILS.includes(user.email)) {
-    return null;
-  }
-
   if (type === 'toast') {
     return (
       <Button
@@ -56,7 +46,7 @@ export const ComingSoonOverlay = ({
         whileHover={{ opacity: 1 }}
         className="absolute inset-0 flex items-center justify-center"
       >
-        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/80" />
         <div className="relative z-10 p-4 text-center">
           <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
             {title}
@@ -72,7 +62,7 @@ export const ComingSoonOverlay = ({
   if (type === 'banner') {
     return (
       <div className={`relative overflow-hidden rounded-lg p-4 ${className}`}>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10" />
         <div className="web3-glow absolute inset-0 opacity-10" />
         <div className="relative z-10">
           <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
@@ -86,12 +76,13 @@ export const ComingSoonOverlay = ({
     );
   }
 
+  // Default fixed overlay with blur
   return (
     <div className="absolute inset-0 z-10">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/90 backdrop-blur-md"
       />
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}

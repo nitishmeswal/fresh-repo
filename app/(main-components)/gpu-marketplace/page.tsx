@@ -132,7 +132,7 @@ export default function Home() {
             <div className="flex items-center space-x-8">
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  GPU Marketplace
+                  Compute
                 </h1>
                 <div className="relative">
                   <span className="px-3 py-1 text-sm font-semibold bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 rounded-full border border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-pulse">
@@ -341,7 +341,7 @@ export default function Home() {
 
                 <ComingSoonOverlay 
                   type="banner"
-                  title="GPU Marketplace"
+                  title="Compute"
                   description="Stay tuned for the launch."
                   version="2.0"
                 />

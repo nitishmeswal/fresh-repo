@@ -1,15 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useParticleEffect } from './useParticleEffect';
 import './ParticleEffect.css';
 
 const ParticleEffect = ({
   modelPath,
+  modelScale = 1,
+  particleCount = 1000,
+  particleSize = 0.02,
+  particleSpread = 2,
   width = 600,
   height = 600,
-  particleCount = 25000,
-  particleSize = 0.02,
   particleColor = 0x007bff,
   disperseSpeed = 0.15,
   disperseDistance = 2,
@@ -23,10 +24,12 @@ const ParticleEffect = ({
     handleMouseMove,
   } = useParticleEffect({
     modelPath,
-    width,
-    height,
+    modelScale,
     particleCount,
     particleSize,
+    particleSpread,
+    width,
+    height,
     particleColor,
     disperseSpeed,
     disperseDistance,
@@ -67,7 +70,7 @@ const ParticleEffect = ({
         cleanupRef.current = null;
       }
     };
-  }, [initializeEffect, modelPath, width, height]);
+  }, [initializeEffect, modelPath, modelScale, particleCount, particleSize, particleSpread, width, height, particleColor, disperseSpeed, disperseDistance]);
 
   return (
     <div 

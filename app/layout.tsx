@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
 import { signOut } from '@/lib/supabase';
+import Script from 'next/script';
 import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles } from 'lucide-react';
 import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
@@ -24,7 +25,7 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'GPU Marketplace', href: '/gpu-marketplace', icon: Cpu, isNew: true },
+  { name: 'Compute', href: '/gpu-marketplace', icon: Cpu, isNew: true },
   { name: 'AI Models', href: '/ai-models', icon: Brain, isNew: true },
   { name: 'AI Agents', href: '/ai-agents', icon: Sparkles, isLocked: true },
   { name: 'Earnings', href: '/earnings', icon: Coins, isLocked: true },
@@ -198,6 +199,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${localInter.variable}`}
     >
+      <head>
+        <Script
+          type="module"
+          src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className="min-h-screen bg-black font-sans antialiased">
         <ThemeProvider
             attribute="class"
