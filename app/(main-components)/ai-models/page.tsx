@@ -19,6 +19,7 @@ import Image from 'next/image';
 import ModelStatus from "@/app/gpulab/model-status";
 import { useUser } from '@/lib/hooks/useUser';
 import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'test@example.com', 'jprateek961@gmail.com'];
 
@@ -53,10 +54,10 @@ const getModelIcon = (type: string) => {
 };
 
 export default function AIModelsPage() {
+  const supabase = createClientComponentClient();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [likes, setLikes] = useState<Record<string, boolean>>({});
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -78,11 +79,115 @@ export default function AIModelsPage() {
   const { user } = useUser();
   const isDev = user?.email && DEV_EMAILS.includes(user.email);
 
-  const handleLike = (modelId: string) => {
-    setLikes(prev => ({
-      ...prev,
-      [modelId]: !prev[modelId]
-    }));
+  const [modelLikes, setModelLikes] = useState<Record<string, { count: number, isLiked: boolean }>>({});
+
+  useEffect(() => {
+    const initializeLikes = async () => {
+      // Initialize with base count for all models
+      const initialLikes: Record<string, { count: number, isLiked: boolean }> = {};
+      models.forEach(model => {
+        initialLikes[model.id] = {
+          count: 7869,
+          isLiked: false
+        };
+      });
+      setModelLikes(initialLikes);
+
+      if (!user) return;
+
+      try {
+        // Get all like counts
+        const { data: likeCounts, error: likeError } = await supabase
+          .from('model_like_counts')
+          .select('model_id, like_count');
+
+        if (likeError) throw likeError;
+
+        // Get user's likes
+        const { data: userLikes, error: userError } = await supabase
+          .from('model_likes')
+          .select('model_id')
+          .eq('user_id', user.id);
+
+        if (userError) throw userError;
+
+        const userLikedModels = new Set(userLikes?.map(like => like.model_id) || []);
+
+        // Update with actual counts and user likes
+        likeCounts?.forEach(count => {
+          if (initialLikes[count.model_id]) {
+            initialLikes[count.model_id].count = count.like_count;
+          }
+        });
+
+        userLikedModels.forEach(modelId => {
+          if (initialLikes[modelId]) {
+            initialLikes[modelId].isLiked = true;
+          }
+        });
+
+        setModelLikes(initialLikes);
+      } catch (error) {
+        console.error('Error fetching likes:', error);
+        toast.error('Failed to fetch likes');
+      }
+    };
+
+    initializeLikes();
+  }, [user, supabase]);
+
+  const handleLike = async (modelId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent card click
+    
+    if (!user) {
+      toast.error('Please sign in to like models');
+      return;
+    }
+
+    try {
+      const currentLike = modelLikes[modelId];
+      if (!currentLike) return;
+
+      if (currentLike.isLiked) {
+        // Unlike
+        const { error } = await supabase
+          .from('model_likes')
+          .delete()
+          .eq('model_id', modelId)
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        setModelLikes(prev => ({
+          ...prev,
+          [modelId]: {
+            count: Math.max(7869, prev[modelId].count - 1),
+            isLiked: false
+          }
+        }));
+      } else {
+        // Like
+        const { error } = await supabase
+          .from('model_likes')
+          .insert({
+            model_id: modelId,
+            user_id: user.id
+          });
+
+        if (error) throw error;
+
+        setModelLikes(prev => ({
+          ...prev,
+          [modelId]: {
+            count: prev[modelId].count + 1,
+            isLiked: true
+          }
+        }));
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      toast.error('Failed to update like');
+    }
   };
 
   const handleAddToBag = async (model: AIModel) => {
@@ -277,16 +382,18 @@ export default function AIModelsPage() {
                 </Button>
                 <div 
                   className="flex items-center gap-2 text-gray-400 cursor-pointer group/like"
-                  onClick={() => handleLike(model.id)}
+                  onClick={(e) => handleLike(model.id, e)}
                 >
-                  <span className="text-[15px]">2,829</span>
-                  <Heart 
-                    className={`w-5 h-5 ${
-                      likes[model.id] 
-                        ? 'fill-red-500 text-red-500 scale-110' 
-                        : 'fill-transparent text-gray-400 group-hover/like:text-red-400'
-                    }`} 
-                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`hover:text-red-500 transition-colors ${modelLikes[model.id]?.isLiked ? 'text-red-500' : 'text-gray-500'}`}
+                  >
+                    <Heart className={`w-5 h-5 ${modelLikes[model.id]?.isLiked ? 'fill-current' : ''}`} />
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {modelLikes[model.id]?.count?.toLocaleString() || '7,869'}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -348,16 +455,18 @@ export default function AIModelsPage() {
                 </Button>
                 <div 
                   className="flex items-center gap-2 text-gray-400 cursor-pointer group/like"
-                  onClick={() => handleLike(container.model_name)}
+                  onClick={(e) => handleLike(container.model_name, e)}
                 >
-                  <span className="text-[15px]">2,829</span>
-                  <Heart 
-                    className={`w-5 h-5 ${
-                      likes[container.model_name] 
-                        ? 'fill-red-500 text-red-500 scale-110' 
-                        : 'fill-transparent text-gray-400 group-hover/like:text-red-400'
-                    }`} 
-                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`hover:text-red-500 transition-colors ${modelLikes[container.model_name]?.isLiked ? 'text-red-500' : 'text-gray-500'}`}
+                  >
+                    <Heart className={`w-5 h-5 ${modelLikes[container.model_name]?.isLiked ? 'fill-current' : ''}`} />
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {modelLikes[container.model_name]?.count?.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </Card>
