@@ -9,10 +9,10 @@ export const models: AIModel[] = [
     tags: ['Image Generation', 'AI', 'Multi-Model'],
     iconBg: 'bg-blue-500/10',
     features: [
-      'Multi-tier AI model system',
-      'High-resolution output (1024x1024)',
-      'Prompt enhancement',
-      'Image history & preset prompts'
+      'Hyper-realistic Quality',
+      'Stunnign HD Quality',
+      'Unlimited & Free',
+      '100% Ad-Free'
     ],
     defaultConfig: {
       containerImage: 'modelslab/neuro-gen:latest',
