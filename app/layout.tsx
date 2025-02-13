@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
 import { signOut } from '@/lib/supabase';
 import Script from 'next/script';
-import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles } from 'lucide-react';
+import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles, Network } from 'lucide-react';
 import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
 import { Toaster } from 'react-hot-toast';
@@ -29,7 +29,7 @@ const navigation = [
   { name: 'AI Models', href: '/ai-models', icon: Brain, isNew: true },
   { name: 'AI Agents', href: '/ai-agents', icon: Sparkles, isLocked: true },
   { name: 'Earnings', href: '/earnings', icon: Coins, isLocked: true },
-  { name: 'Connect to Earn', href: '/connect-to-earn', icon: Cpu, isLocked: true },
+  { name: 'Connect to Earn', href: '/connect-to-earn', icon: Network, isLocked: true },
   { name: 'Wallet', href: '/wallet', icon: Wallet, isLocked: true },
   { name: 'Community', href: '/community', icon: Users, isLocked: true },
   { name: 'Settings', href: '/settings', icon: Settings },

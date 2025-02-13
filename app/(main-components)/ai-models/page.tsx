@@ -378,7 +378,7 @@ export default function AIModelsPage() {
                         'neuro-image-gen'}.png`}
                   alt={model.name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80">
                   <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
@@ -451,7 +451,7 @@ export default function AIModelsPage() {
                         'neuro-image-gen'}.png`}
                   alt={container.model_name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80">
                   <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
