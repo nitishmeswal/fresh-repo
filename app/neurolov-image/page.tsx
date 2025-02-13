@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Image, Palette, LayoutTemplate, Wand2, Loader2, Sparkles } from 'lucide-react';
+import { ArrowLeft, Download, Image, Palette, LayoutTemplate, Wand2, Loader2, Sparkles, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   Dialog,
@@ -46,6 +46,21 @@ export default function NeuroImageGenerator() {
       setUserName(name);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      const savedHistory = localStorage.getItem(`image_gen_history_${user.id}`);
+      if (savedHistory) {
+        setChatHistory(JSON.parse(savedHistory));
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user && chatHistory.length > 0) {
+      localStorage.setItem(`image_gen_history_${user.id}`, JSON.stringify(chatHistory));
+    }
+  }, [chatHistory, user]);
 
   const handleBack = () => {
     router.push('/ai-models');
@@ -112,184 +127,215 @@ export default function NeuroImageGenerator() {
     document.body.removeChild(link);
   };
 
-  return (
-    <div className="chat-ui">
-      <div className="header">
-        <button className="back-button" onClick={handleBack}>
-          <ArrowLeft className="icon" />
-          All AI Models
-        </button>
-      </div>
+  const handleClearHistory = () => {
+    if (user) {
+      localStorage.removeItem(`image_gen_history_${user.id}`);
+      setChatHistory([]);
+    }
+  };
 
-      <div className="content">
-        <div className="welcome">
-          <h1 className="welcome-title">
-            Hi there, <span className="welcome-name">{userName}</span>
-          </h1>
-          <h2 className="welcome-subtitle">What would you like to imagine today?</h2>
-          <p className="welcome-description">
+  return (
+    <>
+      {/* Main content area */}
+      <div className="main-content">
+        <div className="sticky-header compact-header">
+          <button className="back-button" onClick={() => router.push('/ai-models')}>
+            <ArrowLeft className="icon" />
+            All AI Models
+          </button>
+        </div>
+
+        <div className="image-gen">
+          <div className="header-row">
+            <div className="welcome-header">
+              <h2 className="greeting">Hi there, <span className="name">{userName}</span></h2>
+              <h1>What would you like to imagine today?</h1>
+            </div>
+            <button className="clear-history" onClick={handleClearHistory}>
+              <Trash2 className="icon" />
+              Clear History
+            </button>
+          </div>
+
+          <p className="description">
             Enter your text prompt here. Be as descriptive as possible! (e.g., A photorealistic image of a majestic lion resting on a grassy savanna at sunset, with golden light filtering through the clouds.
           </p>
 
-          {chatHistory.map((message, index) => (
-            <div key={index} className={`message ${message.type}`}>
-              <div className={`message-content ${message.type}`}>
-                {message.content}
-                {message.type === 'response' && message.image && (
-                  <div className="message-image-container">
-                    <img src={message.image} alt={message.content} />
+          {/* Generated images will appear here */}
+          <div className="generated-images">
+            {chatHistory.map((message, index) => (
+              message.type === 'response' && message.image && (
+                <div key={index} className="image-card">
+                  <img src={message.image} alt={message.content} />
+                  <div className="image-overlay">
                     <button className="download-button" onClick={() => handleDownload(message.image!)}>
                       <Download className="icon" />
                     </button>
-                    {message.metadata && (
-                      <div className="message-metadata">
-                        <span className="metadata-tag">{message.metadata.size}</span>
-                        <span className="metadata-tag">{message.metadata.style}</span>
-                        {message.metadata.enhance && (
-                          <span className="metadata-tag enhance">Enhanced</span>
-                        )}
-                      </div>
-                    )}
+                    <div className="image-metadata">
+                      {selectedSize && <span className="metadata-tag">{selectedSize}</span>}
+                      {selectedStyle && <span className="metadata-tag">{selectedStyle}</span>}
+                      {selectedAspectRatio && <span className="metadata-tag">{selectedAspectRatio}</span>}
+                      {enhance && <span className="metadata-tag enhance">Enhanced</span>}
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          ))}
-
-          <div className="prompt-dialog">
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="In a serene depiction, two transparent chairs crafted from intricately shattered glass are elegantly positioned in shallow, crystal-clear water..."
-              rows={3}
-            />
-            <div className="controls">
-              <button className="control-button" onClick={() => setShowSizeDialog(true)}>
-                <Image className="icon" />
-                <span>512x512</span>
-              </button>
-              <button className="control-button" onClick={() => setShowStyleDialog(true)}>
-                <Palette className="icon" />
-                <span>Art Style</span>
-              </button>
-              <button className="control-button" onClick={() => setShowAspectRatioDialog(true)}>
-                <LayoutTemplate className="icon" />
-                <span>Aspect Ratio</span>
-              </button>
-              <button className={`control-button ${enhance ? 'enhance active' : ''}`} onClick={() => setEnhance(!enhance)}>
-                <Wand2 className="icon" />
-                <span>Enhance</span>
-              </button>
-              <button
-                className="generate-button"
-                onClick={handleGenerate}
-                disabled={!prompt.trim() || isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="icon animate-spin" />
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="icon" />
-                    <span>Generate →</span>
-                  </>
-                )}
-              </button>
-            </div>
+                </div>
+              )
+            ))}
           </div>
-
-          {/* Dialogs */}
-          <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
-            <DialogContent className="dialog-content">
-              <DialogHeader>
-                <DialogTitle>Select Image Size</DialogTitle>
-              </DialogHeader>
-              <div className="dialog-options">
-                {[
-                  { label: '512x512', value: '512x512' },
-                  { label: '768x768', value: '768x768' },
-                  { label: '1024x1024', value: '1024x1024' },
-                  { label: '1024x768 (Landscape)', value: '1024x768' },
-                  { label: '768x1024 (Portrait)', value: '768x1024' },
-                ].map((size) => (
-                  <Button
-                    key={size.value}
-                    variant="ghost"
-                    className={`option ${selectedSize === size.value ? 'selected' : ''}`}
-                    onClick={() => {
-                      setSelectedSize(size.value);
-                      setShowSizeDialog(false);
-                    }}
-                  >
-                    {size.label}
-                  </Button>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Dialog open={showStyleDialog} onOpenChange={setShowStyleDialog}>
-            <DialogContent className="dialog-content">
-              <DialogHeader>
-                <DialogTitle>Select Art Style</DialogTitle>
-              </DialogHeader>
-              <div className="dialog-options">
-                {[
-                  { label: 'Photorealistic', value: 'photorealistic' },
-                  { label: 'Digital Art', value: 'digital-art' },
-                  { label: 'Anime', value: 'anime' },
-                  { label: 'Oil Painting', value: 'oil-painting' },
-                  { label: 'Watercolor', value: 'watercolor' },
-                  { label: 'Pencil Sketch', value: 'pencil-sketch' },
-                ].map((style) => (
-                  <Button
-                    key={style.value}
-                    variant="ghost"
-                    className={`option ${selectedStyle === style.value ? 'selected' : ''}`}
-                    onClick={() => {
-                      setSelectedStyle(style.value);
-                      setShowStyleDialog(false);
-                    }}
-                  >
-                    {style.label}
-                  </Button>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Dialog open={showAspectRatioDialog} onOpenChange={setShowAspectRatioDialog}>
-            <DialogContent className="dialog-content">
-              <DialogHeader>
-                <DialogTitle>Select Aspect Ratio</DialogTitle>
-              </DialogHeader>
-              <div className="dialog-options">
-                {[
-                  { label: 'Square (1:1)', value: 'square' },
-                  { label: 'Landscape (16:9)', value: 'landscape' },
-                  { label: 'Portrait (9:16)', value: 'portrait' },
-                  { label: 'Wide (2:1)', value: 'wide' },
-                  { label: 'Tall (1:2)', value: 'tall' },
-                ].map((ratio) => (
-                  <Button
-                    key={ratio.value}
-                    variant="ghost"
-                    className={`option ${selectedAspectRatio === ratio.value ? 'selected' : ''}`}
-                    onClick={() => {
-                      setSelectedAspectRatio(ratio.value);
-                      setShowAspectRatioDialog(false);
-                    }}
-                  >
-                    {ratio.label}
-                  </Button>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
-    </div>
+
+      {/* Fixed prompt dialog at bottom */}
+      <div className="prompt-dialog">
+        <div className="prompt-area">
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Enter a detailed description of what you want to create... (e.g., A serene scene with two transparent glass chairs in shallow water...)"
+            className={`prompt-input ${prompt ? 'has-content' : ''}`}
+          />
+          
+          <div className="controls">
+            <div className="control-buttons">
+              <button 
+                className={`control-button ${selectedSize ? 'active' : ''}`}
+                onClick={() => setShowSizeDialog(true)}
+              >
+                <Image className="icon" />
+                {selectedSize || 'Image Size/Resolution'}
+              </button>
+              <button 
+                className={`control-button ${selectedStyle ? 'active' : ''}`}
+                onClick={() => setShowStyleDialog(true)}
+              >
+                <Palette className="icon" />
+                {selectedStyle || 'Art Style'}
+              </button>
+              <button 
+                className={`control-button ${selectedAspectRatio ? 'active' : ''}`}
+                onClick={() => setShowAspectRatioDialog(true)}
+              >
+                <LayoutTemplate className="icon" />
+                {selectedAspectRatio || 'Aspect Ratio'}
+              </button>
+              <button 
+                className={`control-button ${enhance ? 'active' : ''}`}
+                onClick={() => setEnhance(!enhance)}
+              >
+                <Wand2 className="icon" />
+                Enhance
+              </button>
+            </div>
+
+            <button 
+              className="generate-button"
+              onClick={handleGenerate}
+              disabled={!prompt.trim() || isGenerating}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="icon animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="icon" />
+                  Generate →
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Dialogs */}
+      <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
+        <DialogContent className="dialog-content">
+          <DialogHeader>
+            <DialogTitle>Select Image Size</DialogTitle>
+          </DialogHeader>
+          <div className="dialog-options">
+            {[
+              { label: '512x512', value: '512x512' },
+              { label: '768x768', value: '768x768' },
+              { label: '1024x1024', value: '1024x1024' },
+              { label: '1024x768 (Landscape)', value: '1024x768' },
+              { label: '768x1024 (Portrait)', value: '768x1024' },
+            ].map((size) => (
+              <Button
+                key={size.value}
+                variant="ghost"
+                className={`option ${selectedSize === size.value ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedSize(size.value);
+                  setShowSizeDialog(false);
+                }}
+              >
+                {size.label}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showStyleDialog} onOpenChange={setShowStyleDialog}>
+        <DialogContent className="dialog-content">
+          <DialogHeader>
+            <DialogTitle>Select Art Style</DialogTitle>
+          </DialogHeader>
+          <div className="dialog-options">
+            {[
+              { label: 'Photorealistic', value: 'photorealistic' },
+              { label: 'Digital Art', value: 'digital-art' },
+              { label: 'Anime', value: 'anime' },
+              { label: 'Oil Painting', value: 'oil-painting' },
+              { label: 'Watercolor', value: 'watercolor' },
+              { label: 'Pencil Sketch', value: 'pencil-sketch' },
+            ].map((style) => (
+              <Button
+                key={style.value}
+                variant="ghost"
+                className={`option ${selectedStyle === style.value ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedStyle(style.value);
+                  setShowStyleDialog(false);
+                }}
+              >
+                {style.label}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showAspectRatioDialog} onOpenChange={setShowAspectRatioDialog}>
+        <DialogContent className="dialog-content">
+          <DialogHeader>
+            <DialogTitle>Select Aspect Ratio</DialogTitle>
+          </DialogHeader>
+          <div className="dialog-options">
+            {[
+              { label: 'Square (1:1)', value: 'square' },
+              { label: 'Landscape (16:9)', value: 'landscape' },
+              { label: 'Portrait (9:16)', value: 'portrait' },
+              { label: 'Wide (2:1)', value: 'wide' },
+              { label: 'Tall (1:2)', value: 'tall' },
+            ].map((ratio) => (
+              <Button
+                key={ratio.value}
+                variant="ghost"
+                className={`option ${selectedAspectRatio === ratio.value ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedAspectRatio(ratio.value);
+                  setShowAspectRatioDialog(false);
+                }}
+              >
+                {ratio.label}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
