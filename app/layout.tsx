@@ -41,7 +41,55 @@ const localInter = Inter({
   variable: '--font-inter',
 });
 
-function MainLayout({ children }: { children: React.ReactNode }) {
+function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  return (
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${localInter.variable}`}
+      data-sidebar-collapsed={isSidebarCollapsed}
+    >
+      <head>
+        <Script
+          type="module"
+          src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"
+          strategy="beforeInteractive"
+        />
+      </head>
+      <body className="min-h-screen bg-black font-sans antialiased">
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+        >
+          <Providers>
+            <MainLayout isSidebarCollapsed={isSidebarCollapsed} setIsSidebarCollapsed={setIsSidebarCollapsed}>
+              {children}
+            </MainLayout>
+            <Toaster />
+          </Providers>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+
+function MainLayout({ 
+  children,
+  isSidebarCollapsed,
+  setIsSidebarCollapsed
+}: { 
+  children: React.ReactNode;
+  isSidebarCollapsed: boolean;
+  setIsSidebarCollapsed: (collapsed: boolean) => void;
+}) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = React.useState('');
   const router = useRouter();
@@ -129,7 +177,22 @@ function MainLayout({ children }: { children: React.ReactNode }) {
       {/* Main Layout */}
       <div className="flex h-screen pt-20">
         {/* Sidebar */}
-        <aside className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass">
+        <aside className={`fixed left-0 top-20 h-[calc(100vh-5rem)] ${isSidebarCollapsed ? 'w-20' : 'w-64'} border-r border-gray-800 glass transition-all duration-300 z-50`}>
+          {/* Collapse Button */}
+          <button
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="absolute -right-3 top-5 p-1.5 bg-gray-800 rounded-full border border-gray-700 hover:bg-gray-700 transition-colors z-50"
+          >
+            <svg
+              className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
           <nav className="h-full px-4 py-5">
             <div className="space-y-1.5">
               {navigation.map((item) => {
@@ -147,24 +210,16 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   >
                     <div className="flex items-center space-x-3.5">
                       <Icon className="h-5 w-5 flex-shrink-0" />
-                      <span>{item.name}</span>
+                      {!isSidebarCollapsed && <span>{item.name}</span>}
                     </div>
-                    <div className="flex items-center space-x-2">
-                      {item.isNew && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="px-1.5 py-0.5 text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg shadow-blue-500/20"
-                        >
-                          New
-                        </motion.div>
-                      )}
-                      {item.isLocked && (
-                        <div className="opacity-80 group-hover:opacity-100 transition-opacity">
-                          <LockIcon />
-                        </div>
-                      )}
-                    </div>
+                    {!isSidebarCollapsed && item.isNew && (
+                      <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-400/30">
+                        New
+                      </span>
+                    )}
+                    {!isSidebarCollapsed && item.isLocked && (
+                      <LockIcon />
+                    )}
                   </Link>
                 );
               })}
@@ -173,7 +228,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 pl-64">
+        <main className={`flex-1 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'} transition-all duration-300`}>
           <div className="h-full">
             <AnimatePresence mode="wait">
               <PageTransition key={pathname}>
@@ -188,39 +243,4 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${localInter.variable}`}
-    >
-      <head>
-        <Script
-          type="module"
-          src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"
-          strategy="beforeInteractive"
-        />
-      </head>
-      <body className="min-h-screen bg-black font-sans antialiased">
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-        >
-          <Providers>
-            <MainLayout>
-              {children}
-            </MainLayout>
-            <Toaster />
-          </Providers>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-}
+export default RootLayout;

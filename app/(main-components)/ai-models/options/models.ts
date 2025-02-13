@@ -24,7 +24,7 @@ export const models: AIModel[] = [
   {
     id: 'uncensored-chat',
     name: 'Uncensored Chat',
-    description: 'Engage in unrestricted conversations without any censorship or limitations. Ask anything, discuss any topic, and get unfiltered responses.',
+    description: 'Engage in unrestricted conversations without any censorship or limitations. Ask anythingand get unfiltered responses.',
     features: [
       'Unrestricted conversations',
       'No topic limitations',
@@ -108,7 +108,7 @@ export const models: AIModel[] = [
   {
     id: 'deepfake',
     name: 'AI Deepfake Studio',
-    description: 'Create stunning face swaps in images and videos using advanced AI technology. Swap faces in photos and videos with precise control.',
+    description: 'Create stunning face swaps in images and videos using advanced AI technology',
     type: 'deepfake',
     tags: ['Deepfake', 'AI', 'Face Swap'],
     iconBg: 'bg-purple-500/10',
@@ -116,7 +116,6 @@ export const models: AIModel[] = [
       'Single face swap in images',
       'Multiple face swap in images',
       'Face swap in videos',
-      'Specific face targeting',
       'High-quality results'
     ],
     defaultConfig: {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Image, Palette, LayoutTemplate, Wand2, Loader2, Sparkles, Trash2 } from 'lucide-react';
+import { ArrowLeft, Download, Image, Palette, LayoutTemplate, Wand2, Loader2, Sparkles, Trash2, X, ArrowDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   Dialog,
@@ -38,6 +38,7 @@ export default function NeuroImageGenerator() {
   const [showAspectRatioDialog, setShowAspectRatioDialog] = useState(false);
   const [selectedAspectRatio, setSelectedAspectRatio] = useState('square');
   const [userName, setUserName] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -134,6 +135,14 @@ export default function NeuroImageGenerator() {
     }
   };
 
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
+
   return (
     <>
       {/* Main content area */}
@@ -157,92 +166,96 @@ export default function NeuroImageGenerator() {
             </button>
           </div>
 
-          <p className="description">
-            Enter your text prompt here. Be as descriptive as possible! (e.g., A photorealistic image of a majestic lion resting on a grassy savanna at sunset, with golden light filtering through the clouds.
-          </p>
-
-          {/* Generated images will appear here */}
+          {/* Chat messages and generated images */}
           <div className="generated-images">
             {chatHistory.map((message, index) => (
-              message.type === 'response' && message.image && (
-                <div key={index} className="image-card">
-                  <img src={message.image} alt={message.content} />
-                  <div className="image-overlay">
-                    <button className="download-button" onClick={() => handleDownload(message.image!)}>
-                      <Download className="icon" />
-                    </button>
-                    <div className="image-metadata">
-                      {selectedSize && <span className="metadata-tag">{selectedSize}</span>}
-                      {selectedStyle && <span className="metadata-tag">{selectedStyle}</span>}
-                      {selectedAspectRatio && <span className="metadata-tag">{selectedAspectRatio}</span>}
-                      {enhance && <span className="metadata-tag enhance">Enhanced</span>}
+              <div key={index} className={`chat-message ${message.type}`}>
+                <div className="message-content">
+                  {message.type === 'prompt' ? (
+                    <p>{message.content}</p>
+                  ) : message.image && (
+                    <div className="image-card">
+                      <img src={message.image} alt={message.content} />
+                      <div className="image-footer">
+                        <div className="image-metadata">
+                          {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
+                          {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
+                          {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
+                        </div>
+                        <button className="download-button" onClick={() => handleDownload(message.image!)}>
+                          <ArrowDown className="icon" />
+                          Save
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )
+              </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Fixed prompt dialog at bottom */}
-      <div className="prompt-dialog">
-        <div className="prompt-area">
-          <textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter a detailed description of what you want to create... (e.g., A serene scene with two transparent glass chairs in shallow water...)"
-            className={`prompt-input ${prompt ? 'has-content' : ''}`}
-          />
-          
-          <div className="controls">
-            <div className="control-buttons">
-              <button 
-                className={`control-button ${selectedSize ? 'active' : ''}`}
-                onClick={() => setShowSizeDialog(true)}
-              >
-                <Image className="icon" />
-                {selectedSize || 'Image Size/Resolution'}
-              </button>
-              <button 
-                className={`control-button ${selectedStyle ? 'active' : ''}`}
-                onClick={() => setShowStyleDialog(true)}
-              >
-                <Palette className="icon" />
-                {selectedStyle || 'Art Style'}
-              </button>
-              <button 
-                className={`control-button ${selectedAspectRatio ? 'active' : ''}`}
-                onClick={() => setShowAspectRatioDialog(true)}
-              >
-                <LayoutTemplate className="icon" />
-                {selectedAspectRatio || 'Aspect Ratio'}
-              </button>
-              <button 
-                className={`control-button ${enhance ? 'active' : ''}`}
-                onClick={() => setEnhance(!enhance)}
-              >
-                <Wand2 className="icon" />
-                Enhance
-              </button>
-            </div>
+      {/* Image Modal */}
+      {selectedImage && (
+        <div className="image-modal" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleCloseModal}>
+              <X className="icon" />
+            </button>
+            <img src={selectedImage} alt="Full size" />
+          </div>
+        </div>
+      )}
 
-            <button 
-              className="generate-button"
-              onClick={handleGenerate}
-              disabled={!prompt.trim() || isGenerating}
+      {/* Prompt dialog */}
+      <div className="prompt-dialog">
+        <textarea
+          className="prompt-input"
+          placeholder="Enter a detailed description of what you want to create... (e.g., A serene scene with two transparent glass chairs in shallow water...)"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          rows={4}
+        />
+        <div className="prompt-controls">
+          <div className="left">
+            <button
+              className={`control-button ${selectedSize === '1024x1024' ? 'active' : ''}`}
+              onClick={() => setSelectedSize('1024x1024')}
             >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="icon animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="icon" />
-                  Generate →
-                </>
-              )}
+              <Image className="icon" />
+              1024x1024
+            </button>
+            <button
+              className={`control-button ${selectedStyle === 'photorealistic' ? 'active' : ''}`}
+              onClick={() => setSelectedStyle('photorealistic')}
+            >
+              <Palette className="icon" />
+              photorealistic
+            </button>
+            <button
+              className={`control-button ${selectedAspectRatio === 'square' ? 'active' : ''}`}
+              onClick={() => setSelectedAspectRatio('square')}
+            >
+              <LayoutTemplate className="icon" />
+              square
+            </button>
+            <button
+              className={`control-button ${enhance ? 'active' : ''}`}
+              onClick={() => setEnhance(!enhance)}
+            >
+              <Wand2 className="icon" />
+              Enhance
+            </button>
+          </div>
+          <div className="right">
+            <button
+              className="control-button generate"
+              onClick={handleGenerate}
+              disabled={!prompt || isGenerating}
+            >
+              <Wand2 className="icon" />
+              {isGenerating ? 'Generating...' : 'Generate →'}
             </button>
           </div>
         </div>

@@ -127,6 +127,45 @@ export default function AIModelsPage() {
         });
 
         setModelLikes(initialLikes);
+
+        // Subscribe to real-time changes
+        const channel = supabase
+          .channel('model_likes_changes')
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'model_likes'
+            },
+            async (payload) => {
+              // Fetch updated counts when changes occur
+              const { data: updatedCounts, error: updateError } = await supabase
+                .from('model_like_counts')
+                .select('model_id, like_count');
+
+              if (!updateError && updatedCounts) {
+                setModelLikes(prev => {
+                  const newLikes = { ...prev };
+                  updatedCounts.forEach(count => {
+                    if (newLikes[count.model_id]) {
+                      newLikes[count.model_id] = {
+                        ...newLikes[count.model_id],
+                        count: count.like_count
+                      };
+                    }
+                  });
+                  return newLikes;
+                });
+              }
+            }
+          )
+          .subscribe();
+
+        // Cleanup subscription
+        return () => {
+          channel.unsubscribe();
+        };
       } catch (error) {
         console.error('Error fetching likes:', error);
         toast.error('Failed to fetch likes');
