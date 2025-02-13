@@ -501,20 +501,21 @@
 }
 
 .welcome-header .greeting {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }
 
 .welcome-header h1 {
-  font-size: 32px;
+  font-size: 2.5rem;
   font-weight: 600;
   color: var(--text-primary);
+  line-height: 1.2;
+  margin-top: 0.5rem;
 }
 
 .welcome-header .name {
-  color: #00ff9d;
+  color: var(--accent-green);
 }
 
 .welcome {
@@ -897,4 +898,27 @@
 .generate-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .welcome-header h1 {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+  
+  .welcome-header .greeting {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-header h1 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  .welcome-header .greeting {
+    font-size: 1rem;
+  }
 }

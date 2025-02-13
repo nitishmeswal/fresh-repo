@@ -117,6 +117,13 @@ export default function NeuroImageGenerator() {
       }
     } catch (error) {
       console.error('Generation error:', error);
+      
+      // Add error message to chat history
+      const errorMessage: ChatMessage = {
+        type: 'response',
+        content: 'Failed to generate image. The system will automatically try alternative services.',
+      };
+      setChatHistory(prev => [...prev, errorMessage]);
     } finally {
       setIsGenerating(false);
       setPrompt('');
@@ -160,10 +167,7 @@ export default function NeuroImageGenerator() {
 
   const sizeOptions = [
     '512x512',
-    '1024x1024',
-    '1600x1080',
-    '2560x1440',
-    '3840x2160'
+    '1024x1024'
   ];
 
   const styleOptions = [
