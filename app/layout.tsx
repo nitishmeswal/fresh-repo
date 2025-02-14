@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useUser } from '@/lib/hooks/useUser';
 import { signOut } from '@/lib/supabase';
 import Script from 'next/script';
-import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles, Network } from 'lucide-react';
+import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles, Network, Menu } from 'lucide-react';
 import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/providers";
 import { Toaster } from 'react-hot-toast';
@@ -92,6 +92,7 @@ function MainLayout({
 }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -124,8 +125,16 @@ function MainLayout({
       <header className="fixed top-0 z-50 w-full border-b border-gray-800 glass">
         <div className="px-8 h-20 flex items-center justify-between">
           <div className="flex items-center flex-1 space-x-12">
+            {/* Hamburger Menu */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 hover:bg-white/5 rounded-lg glass glow"
+            >
+              <Menu className="h-6 w-6 text-gray-400" />
+            </button>
+
             {/* Logo */}
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center ml-[-96px] md:ml-0">
               <img src="/neurolov-logo.svg" alt="Neurolov" className="h-8" />
             </Link>
 
@@ -143,11 +152,6 @@ function MainLayout({
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            <button className="p-3 hover:bg-white/5 rounded-lg glass glow">
-              <Bell className="h-6 w-6 text-gray-400" />
-            </button>
-
             {/* Profile Dropdown - Only show when logged in */}
             {user && (
               <DropdownMenu>
@@ -176,67 +180,54 @@ function MainLayout({
 
       {/* Main Layout */}
       <div className="flex h-screen pt-20">
-        {/* Sidebar */}
-        <aside className={`fixed left-0 top-20 h-[calc(100vh-5rem)] ${isSidebarCollapsed ? 'w-20' : 'w-64'} border-r border-gray-800 glass transition-all duration-300 z-50`}>
-          {/* Collapse Button */}
-          <button
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="absolute -right-3 top-5 p-1.5 bg-gray-800 rounded-full border border-gray-700 hover:bg-gray-700 transition-colors z-50"
-          >
-            <svg
-              className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        {/* Navigation Menu Dropdown */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: -300 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -300 }}
+              transition={{ duration: 0.3 }}
+              className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass z-50 backdrop-blur-xl"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          <nav className="h-full px-4 py-5">
-            <div className="space-y-1.5">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-white/10 text-white'
-                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3.5">
-                      <Icon className="h-5 w-5 flex-shrink-0" />
-                      {!isSidebarCollapsed && <span>{item.name}</span>}
-                    </div>
-                    {!isSidebarCollapsed && item.isNew && (
-                      <span className="inline-flex items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-400/30">
-                        New
-                      </span>
-                    )}
-                    {!isSidebarCollapsed && item.isLocked && (
-                      <LockIcon />
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        </aside>
+              <nav className="h-full px-4 py-5">
+                <div className="space-y-1.5">
+                  {navigation.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
+                          isActive
+                            ? 'bg-white/10 text-white'
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <Icon className="h-5 w-5" />
+                          <span>{item.name}</span>
+                        </div>
+                        {item.isNew && (
+                          <span className="bg-[#40A6FF] text-xs px-2 py-1 rounded-full text-white">
+                            New
+                          </span>
+                        )}
+                        {item.isLocked && <LockIcon />}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Main Content */}
-        <main className={`flex-1 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'} transition-all duration-300`}>
-          <div className="h-full">
-            <AnimatePresence mode="wait">
-              <PageTransition key={pathname}>
-                {/* Removed ComingSoonWrapper as we now handle overlays in individual components */}
-                {children}
-              </PageTransition>
-            </AnimatePresence>
-          </div>
+        <main className="flex-1 px-8 py-6">
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
     </div>

@@ -4,8 +4,7 @@ export const models: AIModel[] = [
   {
     id: 'neurolov-image',
     name: 'Neuro Image Gen',
-    description: 'Advanced AI image generation with multi-model fallback system. Create stunning visuals with our cutting-edge technology.',
-    type: 'image',
+    description: 'Advanced AI image generation. Create stunning visuals with our cutting-edge technology.Experience the future of image generation-Faster,Smarter and Limitless',
     tags: ['Image Generation', 'AI', 'Multi-Model'],
     iconBg: 'bg-blue-500/10',
     features: [
@@ -32,7 +31,6 @@ export const models: AIModel[] = [
       'Advanced context understanding'
     ],
     category: 'text',
-    type: 'text',
     isComingSoon: false,
     isPopular: true,
     isFeatured: true,
@@ -54,7 +52,6 @@ export const models: AIModel[] = [
       'Advanced mesh controls'
     ],
     category: '3d',
-    type: '3d',
     isComingSoon: false,
     isPopular: true,
     isFeatured: true,
@@ -69,7 +66,6 @@ export const models: AIModel[] = [
     id: 'video',
     name: 'AI Video Generator',
     description: 'Create stunning videos from text descriptions or transform existing videos with AI-powered effects and enhancements.',
-    type: 'video',
     tags: ['Video', 'AI', 'Creation'],
     iconBg: 'bg-red-500/10',
     features: [
@@ -89,7 +85,6 @@ export const models: AIModel[] = [
     id: 'music-ai',
     name: 'AI Music Studio',
     description: 'Create original music, generate melodies, and produce professional-grade audio with our AI-powered music studio.',
-    type: 'music',
     tags: ['Music', 'AI', 'Audio'],
     iconBg: 'bg-purple-500/10',
     features: [
@@ -109,7 +104,7 @@ export const models: AIModel[] = [
     id: 'deepfake',
     name: 'AI Deepfake Studio',
     description: 'Create stunning face swaps in images and videos using advanced AI technology',
-    type: 'deepfake',
+    
     tags: ['Deepfake', 'AI', 'Face Swap'],
     iconBg: 'bg-purple-500/10',
     features: [
@@ -129,7 +124,7 @@ export const models: AIModel[] = [
     id: 'pytorch-server',
     name: 'PyTorch Server',
     description: 'Deploy PyTorch models with high performance and scalability',
-    type: 'server',
+   
     tags: ['PyTorch', 'Server', 'AI'],
     iconBg: 'bg-orange-500/10',
     features: [

@@ -35,8 +35,6 @@ export default function NeuroImageGenerator() {
   const [enhance, setEnhance] = useState(true);
   const [showSizeDialog, setShowSizeDialog] = useState(false);
   const [showStyleDialog, setShowStyleDialog] = useState(false);
-  const [showAspectRatioDialog, setShowAspectRatioDialog] = useState(false);
-  const [selectedAspectRatio, setSelectedAspectRatio] = useState('1:1');
   const [userName, setUserName] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
@@ -181,7 +179,7 @@ export default function NeuroImageGenerator() {
   return (
     <>
       {/* Main content area */}
-      <div className="main-content">
+      <div className="main-content" style={{ left: 0 }}>
         <div className="sticky-header compact-header">
           <button className="back-button" onClick={handleBack}>
             <ArrowLeft className="icon" />
@@ -189,16 +187,11 @@ export default function NeuroImageGenerator() {
           </button>
         </div>
 
-        <div className="image-gen">
+        <div className="image-gen" style={{ maxWidth: '1200px' }}>
           <div className="header-row">
             <div className="welcome-header">
-              <h2 className="greeting">Hi there, <span className="name">{userName}</span></h2>
-              <h1>What would you like to imagine today?</h1>
+              <h2 className="greeting">Hi there, <span className="name">{userName}</span> what would you like to imageine today?</h2>
             </div>
-            <button className="clear-history" onClick={handleClearHistory}>
-              <Trash2 className="icon" />
-              Clear History
-            </button>
           </div>
 
           {/* Chat messages and generated images */}
@@ -218,13 +211,14 @@ export default function NeuroImageGenerator() {
                           {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
                         </div>
                       </div>
-                      <button 
-                        className="download-button" 
+                      <Button
+                        className="download-button"
+                        style={{ marginTop: '20px'}}
                         onClick={() => handleDownload(message.image!)}
                         aria-label="Download image"
                       >
-                        <ArrowDown className="icon" />
-                      </button>
+                        <Download className="h-4 w-4" />
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -247,7 +241,7 @@ export default function NeuroImageGenerator() {
       )}
 
       {/* Prompt dialog */}
-      <div className="prompt-dialog">
+      <div className="prompt-dialog" style={{ left: 0 }}>
         <div className="prompt-input">
           <textarea
             placeholder="Enter a detailed description of what you want to create..."
@@ -261,6 +255,11 @@ export default function NeuroImageGenerator() {
             }}
           />
           <div className="feature-buttons">
+          <button className="clear-history" onClick={handleClearHistory}>
+              <Trash2 className="icon" />
+              Clear History
+            </button>
+            
             <button 
               className="feature-button"
               onClick={() => setShowSettingsDialog(true)}
@@ -315,17 +314,6 @@ export default function NeuroImageGenerator() {
                 >
                   <Palette className="icon" />
                   Style
-                </button>
-
-                <button 
-                  className="feature-button"
-                  onClick={() => {
-                    setShowAspectRatioDialog(true);
-                    setShowSettingsDialog(false);
-                  }}
-                >
-                  <LayoutTemplate className="icon" />
-                  Aspect Ratio
                 </button>
 
                 <button 
@@ -385,46 +373,6 @@ export default function NeuroImageGenerator() {
                     {style}
                   </Button>
                 ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Dialog open={showAspectRatioDialog} onOpenChange={setShowAspectRatioDialog}>
-            <DialogContent className="dialog-content">
-              <DialogHeader>
-                <DialogTitle>Select Aspect Ratio</DialogTitle>
-              </DialogHeader>
-              <div className="dialog-options">
-                <Button
-                  variant="ghost"
-                  className={`option ${selectedAspectRatio === '1:1' ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedAspectRatio('1:1');
-                    setShowAspectRatioDialog(false);
-                  }}
-                >
-                  Square (1:1)
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`option ${selectedAspectRatio === '16:9' ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedAspectRatio('16:9');
-                    setShowAspectRatioDialog(false);
-                  }}
-                >
-                  Landscape (16:9)
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`option ${selectedAspectRatio === '9:16' ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedAspectRatio('9:16');
-                    setShowAspectRatioDialog(false);
-                  }}
-                >
-                  Portrait (9:16)
-                </Button>
               </div>
             </DialogContent>
           </Dialog>

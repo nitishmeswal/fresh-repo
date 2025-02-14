@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Brain, Search, Filter, Zap, Loader2, ShoppingBag, Star, Info, CheckCircle, Cpu, HardDrive, Box, ImageIcon, Video, Music, Bot, MessageSquare, Rocket, Trash2, ArrowRight, Heart } from 'lucide-react';
+import { Brain, Search, Filter, Zap, Loader2, ShoppingBag, Star, Info, CheckCircle, Cpu, HardDrive, Box, ImageIcon, Video, Music, Bot, MessageSquare, Rocket, Trash2, ArrowRight, Heart, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -348,169 +348,156 @@ export default function AIModelsPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-black min-h-screen [font-family:var(--font-neue-haas)]">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {view === 'explore' ? (
-          models.map((model) => (
-            <Card 
-              key={model.id} 
-              className="relative overflow-hidden group bg-[#111111] border border-gray-800/50 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:border-[#00FF94]/30 hover:shadow-[0_0_20px_rgba(0,255,148,0.15)]"
-            >
-              {model.id !== 'neurolov-image' && !isDev && (
-                <div className="absolute inset-0 z-50 backdrop-blur-md bg-black/50">
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center p-4">
-                      <h3 className="text-2xl font-bold text-[#0066FF] mb-2">
-                        Coming Soon
-                      </h3>
-                      <p className="text-base text-gray-300">
-                        This AI model will be available in the next version!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <Image
-                  src={`/ai-models/${model.id === 'neurolov-image' ? 'neuro-image-gen' : 
-                        model.id === 'text-to-video' || model.id === 'video' ? 'ai-video' : 
-                        model.id === 'music-ai' ? 'ai-music' : 
-                        'neuro-image-gen'}.png`}
-                  alt={model.name}
-                  fill
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80">
-                  <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-white text-[28px] font-medium tracking-[-0.02em] leading-none mb-1">{model.name}</h3>
-                      <span className="text-gray-400 text-[15px] font-light">{model.type}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-black">
+      {/* Header Section */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col space-y-8">
+          {/* Search and Filter Section */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                placeholder="Search models..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-12 pl-12 bg-[#1A1A1A] border-none rounded-xl text-white"
+              />
+              <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            </div>
+          </div>
 
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <p className="text-gray-400 text-[15px] leading-[1.4] max-w-[80%] font-light">
-                    {model.description}
-                  </p>
-                  <div className="text-right">
-                    <span className="text-[#00FF94] text-[32px] font-medium leading-none">95%</span>
-                    <div className="text-gray-500 text-[13px] mt-1">Popularity</div>
-                  </div>
-                </div>
-                
-                <div className="space-y-[14px]">
-                  {model.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <CheckIcon />
-                      <span className="text-gray-400 text-[15px] font-light">{feature}</span>
+          {/* Models Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {view === 'explore' ? (
+              filteredModels.map((model) => (
+                <div
+                  key={model.id}
+                  className="relative bg-[#141414] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+                >
+                  {/* Model Image */}
+                  <div className="relative h-40">
+                    <Image
+                      src={`/ai-models/${model.id === 'neurolov-image' ? 'neuro-image-gen' : 
+                            model.id === 'text-to-video' || model.id === 'video' ? 'ai-video' : 
+                            model.id === 'music-ai' ? 'ai-music' : 
+                            'neuro-image-gen'}.png`}
+                      alt={model.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                      <h3 className="text-2xl font-semibold text-white">{model.name}</h3>
+                      <span className="text-sm text-gray-300">{model.type}</span>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              <div className="px-6 pb-6 flex items-center justify-between mt-2">
-                <Button 
-                  className="bg-[#0066FF] hover:bg-[#0052CC] text-white font-medium py-3 px-6 rounded-xl flex items-center gap-2 text-[15px]"
-                  onClick={() => handleAddToBag(model)}
-                  disabled={!isDev && model.id !== 'neurolov-image'}
-                >
-                  {isDev || model.id === 'neurolov-image' ? 'Launch App' : 'Coming Soon'} {model.id === 'neurolov-image' ? <ArrowRight className="w-5 h-5" /> : <Rocket className="w-5 h-5" />}
-                </Button>
-                <div 
-                  className="flex items-center gap-2 text-gray-400 cursor-pointer group/like"
-                  onClick={(e) => handleLike(model.id, e)}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={`hover:text-red-500 transition-colors ${modelLikes[model.id]?.isLiked ? 'text-red-500' : 'text-gray-500'}`}
-                  >
-                    <Heart className={`w-5 h-5 ${modelLikes[model.id]?.isLiked ? 'fill-current' : ''}`} />
-                  </Button>
-                  <span className="text-sm text-muted-foreground">
-                    {modelLikes[model.id]?.count?.toLocaleString() || '7,869'}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          ))
-        ) : (
-          deployedContainers.map((container) => (
-            <Card 
-              key={container.id} 
-              className="relative overflow-hidden group bg-[#111111] border border-gray-800/50 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:border-[#00FF94]/30 hover:shadow-[0_0_20px_rgba(0,255,148,0.15)]"
-            >
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <Image
-                  src={`/ai-models/${container.model_name === 'neurolov-image' ? 'neuro-image-gen' : 
-                        container.model_name === 'text-to-video' || container.model_name === 'video' ? 'ai-video' : 
-                        container.model_name === 'music-ai' ? 'ai-music' : 
-                        'neuro-image-gen'}.png`}
-                  alt={container.model_name}
-                  fill
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80">
-                  <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-white text-[28px] font-medium tracking-[-0.02em] leading-none mb-1">{container.model_name}</h3>
-                      <span className="text-gray-400 text-[15px] font-light">{container.model_type}</span>
+                  {/* Model Details */}
+                  <div className="p-4">
+                    <p className="text-gray-300 text-sm mb-4">
+                      {model.description}
+                    </p>
+
+                    {/* Features List */}
+                    <ul className="space-y-2 mb-4">
+                      {model.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2 text-gray-300 text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-[#00FF94]" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Popularity */}
+                    
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-800">
+                      <Button
+                        onClick={() => handleAddToBag(model)}
+                        className="inline-flex items-center gap-1 bg-[#0066FF] text-white px-4 py-2 rounded-full text-sm hover:bg-[#0052CC] transition-colors"
+                      >
+                        Launch App
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
+                      <button
+                        onClick={(e) => handleLike(model.id, e)}
+                        className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm"
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${modelLikes[model.id]?.isLiked ? 'fill-red-500 text-red-500' : ''}`}
+                        />
+                        <span>{modelLikes[model.id]?.count || 0}</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))
+            ) : (
+              deployedContainers.map((container) => (
+                <div
+                  key={container.id}
+                  className="relative bg-[#141414] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+                >
+                  {/* Model Image */}
+                  <div className="relative h-40">
+                    <Image
+                      src={`/ai-models/${container.model_name === 'neurolov-image' ? 'neuro-image-gen' : 
+                            container.model_name === 'text-to-video' || container.model_name === 'video' ? 'ai-video' : 
+                            container.model_name === 'music-ai' ? 'ai-music' : 
+                            'neuro-image-gen'}.png`}
+                      alt={container.model_name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                      <h3 className="text-2xl font-semibold text-white">{container.model_name}</h3>
+                      <span className="text-sm text-gray-300">{container.model_type}</span>
+                    </div>
+                  </div>
 
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <p className="text-gray-400 text-[15px] leading-[1.4] max-w-[80%] font-light">
-                    {container.model_description}
-                  </p>
-                  <div className="text-right">
-                    <span className="text-[#00FF94] text-[32px] font-medium leading-none">95%</span>
-                    <div className="text-gray-500 text-[13px] mt-1">Popularity</div>
+                  {/* Model Details */}
+                  <div className="p-4">
+                    <p className="text-gray-300 text-sm mb-4">
+                      {container.model_description}
+                    </p>
+
+                    {/* Features List */}
+                    <ul className="space-y-2 mb-4">
+                      {container.model_features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2 text-gray-300 text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-[#00FF94]" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-800">
+                      <Button
+                        onClick={() => handleDeleteModel(container)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full flex items-center gap-1 text-sm"
+                      >
+                        Delete Model
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <button
+                        onClick={(e) => handleLike(container.model_name, e)}
+                        className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm"
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${modelLikes[container.model_name]?.isLiked ? 'fill-red-500 text-red-500' : ''}`}
+                        />
+                        <span>{modelLikes[container.model_name]?.count || 0}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="space-y-[14px]">
-                  {container.model_features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <CheckIcon />
-                      <span className="text-gray-400 text-[15px] font-light">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-6 pb-6 flex items-center justify-between mt-2">
-                <Button 
-                  className="bg-[#0066FF] hover:bg-[#0052CC] text-white font-medium py-3 px-6 rounded-xl flex items-center gap-2 text-[15px]"
-                  onClick={() => handleDeleteModel(container)}
-                  disabled={false}
-                >
-                  Delete Model <Trash2 className="w-5 h-5" />
-                </Button>
-                <div 
-                  className="flex items-center gap-2 text-gray-400 cursor-pointer group/like"
-                  onClick={(e) => handleLike(container.model_name, e)}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={`hover:text-red-500 transition-colors ${modelLikes[container.model_name]?.isLiked ? 'text-red-500' : 'text-gray-500'}`}
-                  >
-                    <Heart className={`w-5 h-5 ${modelLikes[container.model_name]?.isLiked ? 'fill-current' : ''}`} />
-                  </Button>
-                  <span className="text-sm text-muted-foreground">
-                    {modelLikes[container.model_name]?.count?.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          ))
-        )}
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
