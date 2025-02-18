@@ -2,19 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { toast } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
-import PageTransition from "@/components/page-transition";
-import { useUser } from '@/lib/hooks/useUser';
-import { signInWithProvider } from '@/lib/supabase';
-import ParticleEffect from '@/particle-effect/ParticleEffect';
+import { useUser } from '@/app/auth/useUser';
+import { signInWithProvider, getSupabaseClient } from '@/app/auth/supabase';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function RootPage() {
   const router = useRouter();
   const { user, loading } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [subscribed, setSubscribed] = useState(true);
 
   useEffect(() => {
     if (!loading && user) {
@@ -22,33 +21,60 @@ export default function RootPage() {
     }
   }, [user, loading, router]);
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleAuth = async () => {
     try {
       setIsLoading(true);
-      const { error } = await signInWithProvider('google');
-      if (error) {
-        console.error('Google sign in error:', error);
-        throw error;
+      
+      // Get the Supabase client
+      const client = getSupabaseClient();
+      
+      // Start Google auth
+      const { error: authError } = await signInWithProvider('google');
+      
+      if (authError) {
+        console.error('Google login error:', authError);
+        toast.error(authError.message || 'Error signing in with Google');
+        return;
       }
-    } catch (error: any) {
-      console.error('Sign in error:', error);
-      toast.error(error.message || 'Error signing in with Google');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handleGithubSignIn = async () => {
-    try {
-      setIsLoading(true);
-      const { error } = await signInWithProvider('github');
-      if (error) {
-        console.error('GitHub sign in error:', error);
-        throw error;
+      // Get the session after successful auth
+      const { data: { session }, error: sessionError } = await client.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        return;
       }
+
+      // If user subscribed to newsletter and we have their email, subscribe them
+      if (subscribed && session?.user?.email) {
+        try {
+          const response = await fetch('/api/newsletter', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            console.error('Newsletter subscription failed:', data.error);
+            toast.error(data.error || 'Failed to subscribe to newsletter');
+          } else {
+            toast.success(data.message || 'Successfully subscribed to newsletter!');
+          }
+        } catch (error) {
+          console.error('Newsletter error:', error);
+          toast.error('Failed to subscribe to newsletter');
+        }
+      }
+      
+      // Redirect to dashboard
+      router.replace('/dashboard');
     } catch (error: any) {
-      console.error('Sign in error:', error);
-      toast.error(error.message || 'Error signing in with GitHub');
+      console.error('Auth error:', error);
+      toast.error(error.message || 'Error during authentication');
     } finally {
       setIsLoading(false);
     }
@@ -57,135 +83,62 @@ export default function RootPage() {
   if (loading) return null;
 
   return (
-    <PageTransition>
-      <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]">
-        {/* Animated gradient orbs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-gradient-to-r from-[#3B82F6]/30 to-[#8B5CF6]/30 blur-[120px] animate-pulse-slow" />
-          <div className="absolute -bottom-[40%] -right-[20%] w-[70%] h-[70%] rounded-full bg-gradient-to-r from-[#10B981]/30 to-[#3B82F6]/30 blur-[120px] animate-pulse-slower" />
-        </div>
+    <div className="flex flex-col md:flex-row min-h-[100dvh]">
+      {/* Image Section */}
+      <div className="w-full md:w-2/3 relative h-[40vh] md:h-[100dvh]">
+        <Image
+          src="/login/login.png"
+          alt="Neurolov Login"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent" />
+      </div>
 
-        {/* Glassmorphism overlay */}
-        <div className="absolute inset-0 backdrop-blur-[8px]" />
-
-        {/* Content Container */}
-        <div className="relative z-10 w-full max-w-screen-xl mx-auto px-4">
-          {/* Logo and Particle Effect Container */}
-          <div className="w-[576px] h-[512px] relative -mt-16 mx-auto flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="w-full h-full"
-            >
-              <ParticleEffect
-                modelPath="/logo.glb"
-                width={576}
-                height={512}
-                particleCount={50000}
-                particleSize={0.004}
-                particleColor={0x40A6FF}
-                disperseSpeed={0.1}
-                disperseDistance={3.0}
-              />
-            </motion.div>
+      {/* Form Section */}
+      <div className="w-full md:w-1/3 bg-[#0066FF] flex-1 flex items-center justify-center p-4 md:p-8">
+        <div className="w-full max-w-md space-y-6 md:space-y-8">
+          {/* Title */}
+          <div className="text-center">
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
+              Sign in to Neurolov
+            </h2>
           </div>
 
-          {/* Login Container with enhanced animations */}
-          <div className="flex flex-col items-center -mt-24">
-            {/* Brand logo with glow effect */}
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
+          <div className="space-y-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-white text-[#0066FF] hover:bg-white/90"
+              onClick={handleGoogleAuth}
+              disabled={isLoading}
             >
-              <img src="/neurolov-logo.svg" alt="Neurolov" className="h-6" />
-            </motion.div>
+              {isLoading ? 'Signing in...' : 'Continue with Google'}
+            </Button>
 
-            {/* Welcome text with staggered animation */}
-            <motion.div
-              className="flex flex-col items-center space-y-2"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.2
-                  }
-                }
-              }}
-            >
-              <motion.h1
-                className="text-2xl font-semibold text-gray-100 text-center"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="newsletter"
+                checked={subscribed}
+                onCheckedChange={(checked) => setSubscribed(checked as boolean)}
+                className="border-white data-[state=checked]:bg-white data-[state=checked]:text-[#0066FF] mt-1"
+              />
+              <label
+                htmlFor="newsletter"
+                className="text-sm text-white leading-tight"
               >
-                Welcome to Neurolov
-              </motion.h1>
-              <motion.p
-                className="text-gray-400 text-base mt-1 mb-8 text-center"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-              >
-                Sign in to continue
-              </motion.p>
-            </motion.div>
-
-            {/* Auth buttons with hover effects */}
-            <motion.div
-              className="flex flex-col gap-3 w-full max-w-xs"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    delayChildren: 0.6,
-                    staggerChildren: 0.1
-                  }
-                }
-              }}
-            >
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, x: -20 },
-                  visible: { opacity: 1, x: 0 }
-                }}
-              >
-                <Button
-                  onClick={handleGoogleSignIn}
-                  disabled={isLoading}
-                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Continue with Google
-                </Button>
-              </motion.div>
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, x: -20 },
-                  visible: { opacity: 1, x: 0 }
-                }}
-              >
-                <Button
-                  onClick={handleGithubSignIn}
-                  disabled={isLoading}
-                  className="w-full py-5 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-xl font-medium relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Continue with GitHub
-                </Button>
-              </motion.div>
-            </motion.div>
+                Subscribe to our newsletter for updates and news
+              </label>
+            </div>
           </div>
         </div>
       </div>
-    </PageTransition>
+
+      {/* Circuit Pattern Background for Form Section */}
+      <div className="absolute right-0 top-0 w-full md:w-1/3 h-full pointer-events-none">
+        <div className="absolute inset-0 bg-[url('/circuit-pattern.svg')] opacity-10" />
+      </div>
+    </div>
   );
 }

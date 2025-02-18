@@ -17,7 +17,7 @@ import { useModelBag } from '@/store/model-bag';
 import { CheckIcon } from '@/components/icons/CheckIcon';
 import Image from 'next/image';
 import ModelStatus from "@/app/gpulab/model-status";
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
@@ -78,6 +78,9 @@ export default function AIModelsPage() {
 
   const { user } = useUser();
   const isDev = user?.email && DEV_EMAILS.includes(user.email);
+
+  console.log('User:', user?.email);
+  console.log('Is Dev:', isDev);
 
   const [modelLikes, setModelLikes] = useState<Record<string, { count: number, isLiked: boolean }>>({});
 
@@ -374,8 +377,8 @@ export default function AIModelsPage() {
                   key={model.id}
                   className="relative bg-[#141414] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
                 >
-                  {/* Coming Soon Overlay for all models except neurolov-image */}
-                  {model.id !== 'neurolov-image' && (
+                  {/* Coming Soon Overlay for all models except neurolov-image and dev users */}
+                  {model.id !== 'neurolov-image' && !isDev && (
                     <div className="absolute inset-0 z-50 backdrop-blur-md bg-black/50 flex items-center justify-center">
                       <div className="text-center">
                         <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
@@ -426,10 +429,10 @@ export default function AIModelsPage() {
                     <div className="flex items-center justify-between pt-2 border-t border-gray-800">
                       <Button
                         onClick={() => handleAddToBag(model)}
-                        disabled={model.id !== 'neurolov-image'}
-                        className={`inline-flex items-center gap-1 ${model.id !== 'neurolov-image' ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#0066FF] hover:bg-[#0052CC]'} text-white px-4 py-2 rounded-full text-sm transition-colors`}
+                        disabled={!isDev && model.id !== 'neurolov-image'}
+                        className={`inline-flex items-center gap-1 ${!isDev && model.id !== 'neurolov-image' ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#0066FF] hover:bg-[#0052CC]'} text-white px-4 py-2 rounded-full text-sm transition-colors`}
                       >
-                        {model.id !== 'neurolov-image' ? 'Coming Soon' : 'Launch App'}
+                        Launch App
                         <ArrowRight className="w-4 h-4" />
                       </Button>
                       <button

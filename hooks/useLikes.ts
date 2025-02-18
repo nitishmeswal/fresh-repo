@@ -33,7 +33,7 @@ export const useLikes = (modelId: string) => {
         // Get user's like status
         const { data: userLike } = await supabase
           .from('model_likes')
-          .select('id')
+          .select('*')
           .eq('model_id', modelId)
           .eq('user_id', user.id)
           .single();
@@ -42,34 +42,36 @@ export const useLikes = (modelId: string) => {
           setLikeCount(likeData.like_count);
         }
         setIsLiked(!!userLike);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching like status:', error);
-      } finally {
         setIsLoading(false);
       }
     };
 
-    fetchLikeStatus();
-
-    // Subscribe to changes
-    const channel = supabase
+    // Set up real-time subscription for like count updates
+    const subscription = supabase
       .channel(`model_likes:${modelId}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'model_likes',
-          filter: `model_id=eq.${modelId}`,
+          table: 'model_like_counts',
+          filter: `model_id=eq.${modelId}`
         },
-        () => {
-          fetchLikeStatus();
+        (payload: any) => {
+          if (payload.new) {
+            setLikeCount(payload.new.like_count);
+          }
         }
       )
       .subscribe();
 
+    fetchLikeStatus();
+
     return () => {
-      supabase.removeChannel(channel);
+      subscription.unsubscribe();
     };
   }, [modelId, user, supabase]);
 
@@ -84,7 +86,6 @@ export const useLikes = (modelId: string) => {
           .eq('model_id', modelId)
           .eq('user_id', user.id);
         
-        setLikeCount(prev => Math.max(7869, prev - 1));
         setIsLiked(false);
       } else {
         await supabase
@@ -94,8 +95,18 @@ export const useLikes = (modelId: string) => {
             user_id: user.id,
           });
         
-        setLikeCount(prev => prev + 1);
         setIsLiked(true);
+      }
+      
+      // Fetch updated like count after toggle
+      const { data: likeData } = await supabase
+        .from('model_like_counts')
+        .select('like_count')
+        .eq('model_id', modelId)
+        .single();
+
+      if (likeData) {
+        setLikeCount(likeData.like_count);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -106,6 +117,6 @@ export const useLikes = (modelId: string) => {
     likeCount,
     isLiked,
     isLoading,
-    toggleLike,
+    toggleLike
   };
 };

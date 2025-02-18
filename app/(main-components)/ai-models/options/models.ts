@@ -9,7 +9,7 @@ export const models: AIModel[] = [
     iconBg: 'bg-blue-500/10',
     features: [
       'Hyper-realistic Quality',
-      'Stunnign HD Quality',
+      'Stunning HD Quality',
       'Unlimited & Free',
       '100% Ad-Free'
     ],

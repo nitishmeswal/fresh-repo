@@ -23,6 +23,42 @@
   flex-direction: column;
 }
 
+/* Chat message container */
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+.chat-message.prompt {
+  align-items: flex-end;
+}
+
+.chat-message.response {
+  align-items: flex-start;
+}
+
+.message-content {
+  max-width: 80%;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+/* Prompt message styling */
+.chat-message.prompt .message-content {
+  background-color: var(--accent-blue);
+  color: white;
+  border-radius: 1rem 1rem 0 1rem;
+  margin-left: auto;
+}
+
+/* Response message styling */
+.chat-message.response .message-content {
+  background-color: var(--bg-input);
+  border-radius: 1rem 1rem 1rem 0;
+}
+
 /* Header */
 .header {
   position: fixed;
@@ -96,6 +132,8 @@
   flex-direction: column;
   gap: 2rem;
   padding-bottom: 8rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .image-card {
@@ -104,13 +142,64 @@
   overflow: hidden;
   background: #1a1a1a;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
+/* Mobile-first approach - full width images */
 .image-card img {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 12px;
+}
+
+/* Desktop optimization - smaller images */
+@media (min-width: 1024px) {
+  .generated-images {
+    padding: 2rem;
+  }
+
+  .image-card {
+    max-width: 512px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .image-card img {
+    width: 100%;
+    height: auto;
+    max-height: 512px;
+    object-fit: contain;
+  }
+
+  /* Chat message layout for desktop */
+  .chat-message {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .chat-message.prompt {
+    flex-direction: row-reverse;
+  }
+
+  .chat-message .message-content {
+    max-width: 400px;
+  }
+
+  .chat-message.response .image-card {
+    margin-right: auto;
+  }
+
+  .chat-message.prompt .message-content {
+    margin-right: 2rem;
+  }
+
+  .chat-message.response .message-content {
+    margin-left: 2rem;
+  }
 }
 
 .image-card .image-overlay {

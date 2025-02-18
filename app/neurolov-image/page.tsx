@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 import './neuroStyle.css';
 
 interface ChatMessage {
@@ -190,7 +190,7 @@ export default function NeuroImageGenerator() {
         <div className="image-gen" style={{ maxWidth: '1200px' }}>
           <div className="header-row">
             <div className="welcome-header">
-              <h2 className="greeting">Hi there, <span className="name">{userName}</span> what would you like to imageine today?</h2>
+              <h2 className="greeting">Hi there, <span className="name">{userName}</span> what would you like to imagine today?</h2>
             </div>
           </div>
 
@@ -198,30 +198,29 @@ export default function NeuroImageGenerator() {
           <div className="generated-images">
             {chatHistory.map((message, index) => (
               <div key={index} className={`chat-message ${message.type}`}>
-                <div className="message-content">
-                  {message.type === 'prompt' ? (
+                {message.type === 'prompt' ? (
+                  <div className="message-content">
                     <p>{message.content}</p>
-                  ) : message.image && (
-                    <div className="image-card">
-                      <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
-                      <div className="image-overlay">
-                        <div className="image-metadata">
-                          {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
-                          {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
-                          {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
-                        </div>
+                  </div>
+                ) : (
+                  <div className="image-card">
+                    <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
+                    <div className="image-overlay">
+                      <div className="image-metadata">
+                        {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
+                        {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
+                        {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
                       </div>
-                      <Button
-                        className="download-button"
-                        style={{ marginTop: '20px'}}
-                        onClick={() => handleDownload(message.image!)}
-                        aria-label="Download image"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
                     </div>
-                  )}
-                </div>
+                    <Button
+                      className="download-button"
+                      onClick={() => handleDownload(message.image!)}
+                      aria-label="Download image"
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

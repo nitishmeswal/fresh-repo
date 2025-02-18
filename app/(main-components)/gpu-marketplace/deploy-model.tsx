@@ -15,7 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { GPU, gpuData } from '@/constants/values';
 import { GPULabClient } from '@/app/gpulab/gpulab-service';
 import { useModelBag } from '@/store/model-bag';
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 import { useRouter } from 'next/navigation';
 
 const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];

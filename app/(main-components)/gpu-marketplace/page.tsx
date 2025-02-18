@@ -27,7 +27,7 @@ import { useModelBag } from '@/store/model-bag';
 import { DeployModelButton } from './deploy-model';
 import { GPULabClient } from '@/app/gpulab/gpulab-service';
 import { gpuData } from '@/constants/values';
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 
 const COMPATIBLE_GPUS = ['rtx4090', 'rtx3090ti', 'rtx3090', 'a6000', 'a5000', 'a4000', 'a100', 'a40', 'h100'];
 const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];

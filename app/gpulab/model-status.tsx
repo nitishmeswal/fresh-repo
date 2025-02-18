@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 
 interface DeploymentData {
   volume_identifier: string;

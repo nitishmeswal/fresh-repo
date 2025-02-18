@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { BiLogoGmail } from 'react-icons/bi';
+import { useUser } from '@/app/auth/useUser';
 
 interface ComingSoonOverlayProps {
   version?: string;
@@ -17,10 +18,18 @@ interface ComingSoonOverlayProps {
 export const ComingSoonOverlay = ({ 
   version = '2.0', 
   title = 'Coming Soon',
-  description = 'This feature will be available in the next version!',
+  description = 'This feature will be available soon.',
   type = 'fixed',
   className = ''
 }: ComingSoonOverlayProps) => {
+  const { user } = useUser();
+  const hasDevAccess = user?.email === 'nitish@neurolov.com';
+
+  // If user is a dev, don't show the overlay
+  if (hasDevAccess) {
+    return null;
+  }
+
   if (type === 'toast') {
     return (
       <Button

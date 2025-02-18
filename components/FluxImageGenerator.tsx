@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUser } from '@/lib/hooks/useUser';
+import { useUser } from '@/app/auth/useUser';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectItem } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';

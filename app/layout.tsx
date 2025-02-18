@@ -4,8 +4,8 @@ import "./globals.css";
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useUser } from '@/lib/hooks/useUser';
-import { signOut } from '@/lib/supabase';
+import { useUser } from '@/app/auth/useUser';
+import { signOut } from '@/app/auth/supabase';
 import Script from 'next/script';
 import { Bell, Search, Wallet, Settings, LayoutDashboard, Cpu, Brain, Coins, Users, Info, LogOut, User, Sparkles, Network, Menu } from 'lucide-react';
 import { ThemeProvider } from "next-themes";
@@ -123,8 +123,8 @@ function MainLayout({
     <div className="min-h-screen bg-black grid-background">
       {/* Header */}
       <header className="fixed top-0 z-50 w-full border-b border-gray-800 glass">
-        <div className="px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center flex-1 space-x-12">
+        <div className="px-4 md:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4 md:gap-12">
             {/* Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -134,12 +134,12 @@ function MainLayout({
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center ml-[-96px] md:ml-0">
+            <Link href="/" className="flex items-center">
               <img src="/neurolov-logo.svg" alt="Neurolov" className="h-8" />
             </Link>
 
-            {/* Search */}
-            <div className="relative flex-1 hidden md:block max-w-3xl">
+            {/* Search - Hidden on mobile */}
+            <div className="hidden md:block relative flex-1 max-w-3xl">
               <input
                 type="text"
                 placeholder="Search for something"
