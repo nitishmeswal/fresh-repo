@@ -21,19 +21,50 @@ export const getSupabaseClient = () => {
 
 // Simple auth helpers
 export const signInWithProvider = async (provider: 'google' | 'github') => {
-  const client = getSupabaseClient();
-  return client.auth.signInWithOAuth({
-    provider,
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-      skipBrowserRedirect: false,
-      preferredBrowser: 'external', // Force external browser for all auth attempts
-      queryParams: {
-        prompt: 'select_account',
-        access_type: 'offline'
+  try {
+    // Check if we're in Instagram's in-app browser
+    const isInstagramBrowser = /Instagram/.test(window.navigator.userAgent);
+    
+    if (isInstagramBrowser) {
+      // Get the current URL
+      const currentUrl = window.location.href;
+      
+      // Create a deep link to open in external browser
+      // For iOS
+      if (/iPhone|iPad|iPod/.test(window.navigator.userAgent)) {
+        window.location.href = `googlechromes://${currentUrl}`;
+        // Fallback for Safari if Chrome isn't installed
+        setTimeout(() => {
+          window.location.href = `safari-https://${currentUrl.replace('https://', '')}`;
+        }, 2000);
+      } 
+      // For Android
+      else {
+        window.location.href = `intent://${currentUrl.replace('https://', '')}#Intent;scheme=https;package=com.android.chrome;end`;
       }
-    },
-  });
+      
+      return { error: null };
+    }
+
+    const client = getSupabaseClient();
+    const { data, error } = await client.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        skipBrowserRedirect: false,
+        preferredBrowser: 'external', // Force external browser for all auth attempts
+        queryParams: {
+          prompt: 'select_account',
+          access_type: 'offline'
+        }
+      },
+    });
+
+    return { data, error };
+  } catch (error) {
+    console.error('Auth error:', error);
+    return { error };
+  }
 };
 
 // Email sign in helper
