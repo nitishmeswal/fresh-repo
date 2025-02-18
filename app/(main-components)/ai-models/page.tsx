@@ -178,6 +178,23 @@ export default function AIModelsPage() {
     initializeLikes();
   }, [user, supabase]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setModelLikes(prev => {
+        const newLikes = { ...prev };
+        Object.keys(newLikes).forEach(modelId => {
+          newLikes[modelId] = {
+            ...newLikes[modelId],
+            count: newLikes[modelId].count + 1
+          };
+        });
+        return newLikes;
+      });
+    }, 60000); // Every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLike = async (modelId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent card click
     
