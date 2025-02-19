@@ -214,7 +214,16 @@ export default function NeuroImageGenerator() {
                     </div>
                     <Button
                       className="download-button"
-                      onClick={() => handleDownload(message.image!)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleDownload(message.image!);
+                      }}
+                      onTouchEnd={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleDownload(message.image!);
+                      }}
                       aria-label="Download image"
                     >
                       <Download className="h-4 w-4" />
