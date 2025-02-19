@@ -368,7 +368,15 @@ export default function AIModelsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen relative">
+      {!isDev && (
+        <ComingSoonOverlay 
+          type="fixed"
+          title="AI Models"
+          description="Explore and deploy state-of-the-art AI models in the next version."
+          version="2.0"
+        />
+      )}
       {/* Header Section */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col space-y-8">
