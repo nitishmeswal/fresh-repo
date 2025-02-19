@@ -88,38 +88,17 @@ export const ComingSoonOverlay = ({
 
   // Default fixed overlay with blur
   return (
-    <div className="absolute inset-0 z-10">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/90 backdrop-blur-md"
-      />
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative z-10 bg-black/60 p-8 rounded-2xl max-w-md w-full border border-blue-500/20 mx-auto mt-[20vh]"
-      >
-        <div className="relative z-10">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+    <div className={`absolute inset-0 z-50 ${type === 'fixed' ? 'backdrop-blur-md bg-black/50' : ''} ${className}`}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
             {title}
-          </h2>
-          <p className="text-gray-300 mb-6">
+          </h3>
+          <p className="text-gray-300 text-sm">
             {description}
           </p>
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Coming in Version {version}
-          </div>
-          <div className="mt-4 flex items-center gap-2">
-            <Button
-              onClick={() => toast.success('You will be notified when this feature launches!')}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-            >
-              Get Notified
-            </Button>
-          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

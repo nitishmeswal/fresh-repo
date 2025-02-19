@@ -18,8 +18,8 @@ import { CheckIcon } from '@/components/icons/CheckIcon';
 import Image from 'next/image';
 import ModelStatus from "@/app/gpulab/model-status";
 import { useUser } from '@/app/auth/useUser';
-import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
 const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'test@example.com', 'jprateek961@gmail.com'];
 
@@ -369,14 +369,6 @@ export default function AIModelsPage() {
 
   return (
     <div className="min-h-screen relative">
-      {!isDev && (
-        <ComingSoonOverlay 
-          type="fixed"
-          title="AI Models"
-          description="Explore and deploy state-of-the-art AI models in the next version."
-          version="2.0"
-        />
-      )}
       {/* Header Section */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col space-y-8">
@@ -402,20 +394,15 @@ export default function AIModelsPage() {
                   key={model.id}
                   className="relative bg-[#141414] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
                 >
-                  {/* Coming Soon Overlay for all models except neurolov-image and dev users */}
-                  {model.id !== 'neurolov-image' && !isDev && (
-                    <div className="absolute inset-0 z-50 backdrop-blur-md bg-black/50 flex items-center justify-center">
-                      <div className="text-center">
-                        <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                          Coming Soon
-                        </h3>
-                        <p className="text-gray-300 text-sm">
-                          This model will be available soon!
-                        </p>
-                      </div>
-                    </div>
+                  {!isDev && model.id !== 'neurolov-image' && (
+                    <ComingSoonOverlay 
+                      type="fixed"
+                      title="Coming Soon"
+                      description="This model will be available in the next version."
+                      version="2.0"
+                      className="backdrop-blur-md"
+                    />
                   )}
-
                   {/* Model Image */}
                   <div className="relative h-40">
                     <Image
@@ -454,8 +441,7 @@ export default function AIModelsPage() {
                     <div className="flex items-center justify-between pt-2 border-t border-gray-800">
                       <Button
                         onClick={() => handleAddToBag(model)}
-                        disabled={!isDev && model.id !== 'neurolov-image'}
-                        className={`inline-flex items-center gap-1 ${!isDev && model.id !== 'neurolov-image' ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#0066FF] hover:bg-[#0052CC]'} text-white px-4 py-2 rounded-full text-sm transition-colors`}
+                        className="inline-flex items-center gap-1 bg-[#0066FF] hover:bg-[#0052CC] text-white px-4 py-2 rounded-full text-sm transition-colors"
                       >
                         Launch App
                         <ArrowRight className="w-4 h-4" />
