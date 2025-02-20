@@ -21,7 +21,7 @@ import { useUser } from '@/app/auth/useUser';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { ComingSoonOverlay } from '@/components/ComingSoonOverlay';
 
-const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'test@example.com', 'jprateek961@gmail.com'];
+const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];
 
 interface DeployedContainer {
   id: string;
