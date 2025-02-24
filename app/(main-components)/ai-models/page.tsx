@@ -141,27 +141,55 @@ export default function AIModelsPage() {
   console.log('User:', user?.email);
   console.log('Is Dev:', isDev);
 
-  const [modelLikes, setModelLikes] = useState<Record<string, { count: number, isLiked: boolean }>>({});
+  const [baseModelLikes, setBaseModelLikes] = useState<Record<string, { count: number, isLiked: boolean }>>({});
+  const [incrementedLikes, setIncrementedLikes] = useState<Record<string, number>>({});
 
-  // Patched realtime like subscription and initialization
   useEffect(() => {
-    let channel;
-
     const initializeLikes = async () => {
-      // Initialize with base counts for all models
-      const initialLikes: Record<string, { count: number, isLiked: boolean }> = {};
+      // Initialize with base counts
+      const initialBase: Record<string, { count: number, isLiked: boolean }> = {};
+      const initialIncrements: Record<string, number> = {};
+      
+      // Get saved state
+      const savedBase = localStorage.getItem('model_likes_base');
+      const savedIncrements = localStorage.getItem('model_likes_increments');
+      const lastUpdateTime = localStorage.getItem('likes_last_update_time');
+      
+      // Calculate minutes passed since last update
+      const minutesPassed = lastUpdateTime 
+        ? Math.floor((Date.now() - parseInt(lastUpdateTime)) / 60000)
+        : 0;
+
       models.forEach(model => {
-        initialLikes[model.id] = {
-          count: 7869,
-          isLiked: false
-        };
+        // Set base likes
+        if (savedBase) {
+          const savedState = JSON.parse(savedBase);
+          initialBase[model.id] = savedState[model.id] || { count: 7869, isLiked: false };
+        } else {
+          initialBase[model.id] = { count: 7869, isLiked: false };
+        }
+
+        // Set increments
+        if (savedIncrements) {
+          const savedIncs = JSON.parse(savedIncrements);
+          initialIncrements[model.id] = (savedIncs[model.id] || 0) + minutesPassed;
+        } else {
+          initialIncrements[model.id] = minutesPassed;
+        }
       });
-      setModelLikes(initialLikes);
+
+      setBaseModelLikes(initialBase);
+      setIncrementedLikes(initialIncrements);
+      
+      // Save current state
+      localStorage.setItem('model_likes_base', JSON.stringify(initialBase));
+      localStorage.setItem('model_likes_increments', JSON.stringify(initialIncrements));
+      localStorage.setItem('likes_last_update_time', Date.now().toString());
 
       if (!user) return;
 
       try {
-        // Fetch actual like counts
+        // Fetch actual like counts from server
         const { data: likeCounts, error: likeError } = await supabase
           .from('model_like_counts')
           .select('model_id, like_count');
@@ -176,46 +204,44 @@ export default function AIModelsPage() {
 
         const userLikedModels = new Set(userLikes?.map(like => like.model_id) || []);
 
-        // Update initialLikes with fetched counts and user likes
-        likeCounts?.forEach(count => {
-          if (initialLikes[count.model_id]) {
-            initialLikes[count.model_id].count = count.like_count;
-          }
-        });
-        userLikedModels.forEach(modelId => {
-          if (initialLikes[modelId]) {
-            initialLikes[modelId].isLiked = true;
-          }
-        });
-        setModelLikes(initialLikes);
+        // Update base likes with server data
+        if (likeCounts) {
+          const newBase = { ...initialBase };
+          likeCounts.forEach(count => {
+            if (newBase[count.model_id]) {
+              newBase[count.model_id].count = count.like_count;
+            }
+          });
+          userLikedModels.forEach(modelId => {
+            if (newBase[modelId]) {
+              newBase[modelId].isLiked = true;
+            }
+          });
+          setBaseModelLikes(newBase);
+          localStorage.setItem('model_likes_base', JSON.stringify(newBase));
+        }
 
         // Setup realtime subscription
-        channel = supabase
+        const channel = supabase
           .channel('model_likes_changes')
           .on(
             'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'model_likes'
-            },
+            { event: '*', schema: 'public', table: 'model_likes' },
             async (payload) => {
-              // Fetch updated counts when a change occurs
               const { data: updatedCounts, error: updateError } = await supabase
                 .from('model_like_counts')
                 .select('model_id, like_count');
+              
               if (!updateError && updatedCounts) {
-                setModelLikes(prev => {
-                  const newLikes = { ...prev };
+                setBaseModelLikes(prev => {
+                  const newBase = { ...prev };
                   updatedCounts.forEach(count => {
-                    if (newLikes[count.model_id]) {
-                      newLikes[count.model_id] = {
-                        ...newLikes[count.model_id],
-                        count: count.like_count
-                      };
+                    if (newBase[count.model_id]) {
+                      newBase[count.model_id].count = count.like_count;
                     }
                   });
-                  return newLikes;
+                  localStorage.setItem('model_likes_base', JSON.stringify(newBase));
+                  return newBase;
                 });
               }
             }
@@ -228,34 +254,39 @@ export default function AIModelsPage() {
     };
 
     initializeLikes();
-
-    // Cleanup subscription synchronously
-    return () => {
-      if (channel) {
-        channel.unsubscribe();
-      }
-    };
   }, [user, supabase]);
 
+  // Increment likes every minute
   useEffect(() => {
     const interval = setInterval(() => {
-      setModelLikes(prev => {
-        const newLikes = { ...prev };
-        Object.keys(newLikes).forEach(modelId => {
-          newLikes[modelId] = {
-            ...newLikes[modelId],
-            count: newLikes[modelId].count + 1
-          };
+      setIncrementedLikes(prev => {
+        const newIncrements = { ...prev };
+        Object.keys(newIncrements).forEach(modelId => {
+          newIncrements[modelId] = (newIncrements[modelId] || 0) + 1;
         });
-        return newLikes;
+        localStorage.setItem('model_likes_increments', JSON.stringify(newIncrements));
+        localStorage.setItem('likes_last_update_time', Date.now().toString());
+        return newIncrements;
       });
     }, 60000); // Every minute
 
     return () => clearInterval(interval);
   }, []);
 
+  // Combine base likes and increments for display
+  const modelLikes = useMemo(() => {
+    const combined: Record<string, { count: number, isLiked: boolean }> = {};
+    Object.keys(baseModelLikes).forEach(modelId => {
+      combined[modelId] = {
+        count: baseModelLikes[modelId].count + (incrementedLikes[modelId] || 0),
+        isLiked: baseModelLikes[modelId].isLiked
+      };
+    });
+    return combined;
+  }, [baseModelLikes, incrementedLikes]);
+
   const handleLike = async (modelId: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent card click
+    event.stopPropagation();
 
     if (!user) {
       toast.error('Please sign in to like models');
@@ -263,7 +294,7 @@ export default function AIModelsPage() {
     }
 
     try {
-      const currentLike = modelLikes[modelId];
+      const currentLike = baseModelLikes[modelId];
       if (!currentLike) return;
 
       if (currentLike.isLiked) {
@@ -276,7 +307,7 @@ export default function AIModelsPage() {
 
         if (error) throw error;
 
-        setModelLikes(prev => ({
+        setBaseModelLikes(prev => ({
           ...prev,
           [modelId]: {
             count: Math.max(7869, prev[modelId].count - 1),
@@ -294,7 +325,7 @@ export default function AIModelsPage() {
 
         if (error) throw error;
 
-        setModelLikes(prev => ({
+        setBaseModelLikes(prev => ({
           ...prev,
           [modelId]: {
             count: prev[modelId].count + 1,
@@ -303,7 +334,7 @@ export default function AIModelsPage() {
         }));
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error('Error updating like:', error);
       toast.error('Failed to update like');
     }
   };
