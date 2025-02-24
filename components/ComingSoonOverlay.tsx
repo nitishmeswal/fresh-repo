@@ -13,6 +13,7 @@ interface ComingSoonOverlayProps {
   description?: string;
   type?: 'hover' | 'fixed' | 'toast' | 'banner';
   className?: string;
+  customButton?: React.ReactNode;
 }
 
 export const ComingSoonOverlay = ({ 
@@ -20,7 +21,8 @@ export const ComingSoonOverlay = ({
   title = 'Coming Soon',
   description = 'This feature will be available soon.',
   type = 'fixed',
-  className = ''
+  className = '',
+  customButton
 }: ComingSoonOverlayProps) => {
   const { user } = useUser();
   const DEV_EMAILS = ['nitishmeswal@gmail.com', 'neohex262@gmail.com', 'neurolov.ai@gmail.com', 'jprateek961@gmail.com'];
@@ -64,6 +66,7 @@ export const ComingSoonOverlay = ({
           <p className="text-sm text-gray-300">
             {description}
           </p>
+          {customButton}
         </div>
       </motion.div>
     );
