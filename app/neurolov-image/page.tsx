@@ -45,7 +45,6 @@ export default function NeuroImageGenerator() {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showSamples, setShowSamples] = useState(true);
   const [generationCount, setGenerationCount] = useState(0);
-  const [cooldownTime, setCooldownTime] = useState(0);
 
   const samplePrompts: SamplePrompt[] = [
     {
@@ -75,15 +74,10 @@ export default function NeuroImageGenerator() {
       // Use full_name from user metadata if available, otherwise use email
       const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Guest';
       setUserName(name);
-    }
-  }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      const savedHistory = localStorage.getItem(`image_gen_history_${user.id}`);
-      if (savedHistory) {
-        setChatHistory(JSON.parse(savedHistory));
-      }
+      // Load generation count from localStorage
+      const savedCount = localStorage.getItem(`image_gen_count_${user.id}`);
+      if (savedCount) setGenerationCount(parseInt(savedCount));
     }
   }, [user]);
 
@@ -93,84 +87,22 @@ export default function NeuroImageGenerator() {
     }
   }, [chatHistory, user]);
 
-  useEffect(() => {
-    if (user) {
-      const savedCount = localStorage.getItem(`image_gen_count_${user.id}`);
-      const savedCooldown = localStorage.getItem(`image_gen_cooldown_${user.id}`);
-      const lastGenTime = localStorage.getItem(`image_gen_last_time_${user.id}`);
-
-      if (savedCount) setGenerationCount(parseInt(savedCount));
-      
-      // If there's a saved cooldown and last generation time
-      if (savedCooldown && lastGenTime) {
-        const timePassed = Date.now() - parseInt(lastGenTime);
-        const remainingCooldown = Math.max(0, parseInt(savedCooldown) - Math.floor(timePassed / 1000));
-        
-        if (remainingCooldown > 0) {
-          setCooldownTime(remainingCooldown);
-          // Start the countdown
-          const timer = setInterval(() => {
-            setCooldownTime(prev => {
-              const newTime = prev - 1;
-              if (newTime <= 0) {
-                clearInterval(timer);
-                localStorage.removeItem(`image_gen_cooldown_${user.id}`);
-                localStorage.removeItem(`image_gen_last_time_${user.id}`);
-                return 0;
-              }
-              return newTime;
-            });
-          }, 1000);
-          return () => clearInterval(timer);
-        }
-      }
-    }
-  }, [user]);
-
   const handleBack = () => {
     router.push('/ai-models');
   };
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
-    
-    // Check if user is in cooldown
-    if (cooldownTime > 0) {
-      // toast.error(`Please wait ${cooldownTime} seconds before generating again.`);
-      return;
-    }
 
     setIsGenerating(true);
     setShowSamples(false);
 
-    // Update generation count and cooldown
+    // Update generation count
     const newCount = generationCount + 1;
     setGenerationCount(newCount);
     
     if (user) {
       localStorage.setItem(`image_gen_count_${user.id}`, newCount.toString());
-      
-      // If reached max generations, set cooldown
-      if (newCount % 5 === 0) {
-        const cooldownSeconds = 60;
-        setCooldownTime(cooldownSeconds);
-        localStorage.setItem(`image_gen_cooldown_${user.id}`, cooldownSeconds.toString());
-        localStorage.setItem(`image_gen_last_time_${user.id}`, Date.now().toString());
-        
-        // Start the countdown
-        const timer = setInterval(() => {
-          setCooldownTime(prev => {
-            const newTime = prev - 1;
-            if (newTime <= 0) {
-              clearInterval(timer);
-              localStorage.removeItem(`image_gen_cooldown_${user.id}`);
-              localStorage.removeItem(`image_gen_last_time_${user.id}`);
-              return 0;
-            }
-            return newTime;
-          });
-        }, 1000);
-      }
     }
 
     // Create enhanced prompt for API but display simple prompt
@@ -448,17 +380,12 @@ export default function NeuroImageGenerator() {
             <button
               className="generate-button"
               onClick={handleGenerate}
-              disabled={isGenerating || !prompt.trim() || cooldownTime > 0}
+              disabled={isGenerating || !prompt.trim()}
             >
               {isGenerating ? (
                 <>
                   <Loader2 className="icon animate-spin" />
                   Generating...
-                </>
-              ) : cooldownTime > 0 ? (
-                <>
-                  <Loader2 className="icon animate-spin" />
-                  Cooldown: {cooldownTime} seconds
                 </>
               ) : (
                 <>
