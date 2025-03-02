@@ -43,25 +43,74 @@ export default function NeuroImageGenerator() {
   const [userName, setUserName] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [showSamples, setShowSamples] = useState(true);
   const [generationCount, setGenerationCount] = useState(0);
+  const [isPromptSectionCollapsed, setIsPromptSectionCollapsed] = useState(false);
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
 
   const samplePrompts: SamplePrompt[] = [
     {
       display: "Moonlit wolf with glowing eyes",
-      detailed: "A majestic wolf stands on a rocky cliff under a luminous full moon, bathed in soft moonlight. Its fur is a mix of silvery and deep midnight tones, shimmering subtly in the night. The wolf's eyes glow an intense, otherworldly color—either piercing blue, eerie green, or fiery amber—casting a faint light around them. Wisps of fog swirl around its paws, and the background is a dense, shadowy forest with faint silhouettes of trees. Stars glisten in the deep navy sky, adding to the mystical atmosphere. The wolf's posture is strong and regal, as if guarding the night, with an air of mystery and quiet power. The scene exudes a fantasy and slightly ethereal vibe, capturing the balance between beauty and wild strength."
+      detailed: "A majestic wolf stands on a rocky cliff under a luminous full moon, its fur silvery and eyes glowing with an otherworldly light."
     },
     {
       display: "AI-powered assassin dodging laser bullets",
-      detailed: "A sleek, cybernetic assassin in motion, their body twisting impossibly as they dodge streams of neon laser fire. Their suit is a mix of matte black armor and glowing circuit patterns. Advanced holographic displays surround them, predicting bullet trajectories. The environment is a high-tech corridor with reflective surfaces and ambient lighting. Energy trails follow their movements, and their eyes glow with artificial intelligence calculations. Laser bullets create a beautiful pattern of light and shadow, frozen in mid-air. The scene captures both the grace of movement and the advanced technology of the future."
+      detailed: "A sleek, cybernetic assassin in motion, their body twisting impossibly as they dodge streams of neon laser fire. Their suit is a mix of matte black armor and glowing circuit patterns."
     },
     {
-      display: "Futuristic soldier in cyber battlefield",
-      detailed: "An advanced combat soldier stands amidst a dystopian digital battlefield. Their armor is a sophisticated blend of titanium plates and holographic shields, with pulsing energy lines running through the suit. The helmet features an advanced HUD display with tactical readouts and augmented reality overlays. The battlefield is a mix of physical and digital reality, with data streams visible in the air and partially materialized structures. Debris and digital artifacts float in the anti-gravity field, while distant skyscrapers pierce through clouds of binary code. The lighting is a dramatic mix of harsh neon and moody shadows."
+      display: "Cyberpunk street market",
+      detailed: "A bustling night market in a cyberpunk city. Neon signs illuminate narrow streets, with holographic ads floating above vendor stalls."
     },
     {
-      display: "Softly glowing fox in dreamland",
-      detailed: "An ethereal fox with translucent fur that emits a soft, warm inner light. Its multiple tails leave trails of sparkling stardust as they move. The dreamscape around it features floating islands with bioluminescent flowers and crystalline trees. Auroras weave through the sky in pastel colors, while gentle orbs of light drift by like fireflies. The ground beneath the fox ripples like liquid mercury, reflecting the surreal environment. Wisps of dreams take the form of flowing ribbons in the air. The entire scene has a peaceful, otherworldly quality with a soft focus effect."
+      display: "Crystal garden in fantasy realm",
+      detailed: "A magical garden where crystals grow instead of plants, emitting soft multicolored light. Crystalline butterflies flutter between formations."
+    },
+    {
+      display: "Steampunk airship battle",
+      detailed: "Two massive steampunk airships engaged in battle among the clouds, brass and copper machinery gleaming, steam billowing from pipes."
+    },
+    {
+      display: "Ancient tree of wisdom",
+      detailed: "An enormous ancient tree with a face in its bark, branches reaching skyward like arms, roots glowing with magical energy."
+    },
+    {
+      display: "Underwater city of Atlantis",
+      detailed: "A majestic underwater city with classical Greek architecture, schools of fish swimming between buildings lit by bioluminescent plants."
+    },
+    {
+      display: "Desert nomad and sand dragon",
+      detailed: "A mysterious nomad riding a massive dragon made of living sand, its eyes glowing like golden sunlight."
+    },
+    {
+      display: "Space station garden",
+      detailed: "A lush hydroponics garden inside a futuristic space station, plants growing in geometric patterns with Earth visible through windows."
+    },
+    {
+      display: "Clockwork butterfly",
+      detailed: "A delicate mechanical butterfly with intricate gears and crystal wings that catch and reflect light in rainbow patterns."
+    },
+    {
+      display: "Northern lights village",
+      detailed: "A cozy Nordic village under spectacular aurora borealis, snow-covered cottages with warm lights in windows."
+    },
+    {
+      display: "Quantum computer core",
+      detailed: "The core of a quantum computer visualized as a complex crystalline structure with data streams flowing through it."
+    },
+    {
+      display: "Fairy tale book shop",
+      detailed: "An enchanted bookshop where stories come alive, books floating through air and magical creatures peeking from shelves."
+    },
+    {
+      display: "Robot repair cafe",
+      detailed: "A cozy cafe where robots come for repairs, android baristas serving oil in fancy cups while mechanics work."
+    },
+    {
+      display: "Crystal cave meditation",
+      detailed: "A serene meditation space inside a natural crystal cave, crystals emitting calming light in various colors."
+    },
+    {
+      display: "Time traveler's laboratory",
+      detailed: "A Victorian-era laboratory filled with time travel equipment, temporal energy swirling in containment chambers."
     }
   ];
 
@@ -95,7 +144,12 @@ export default function NeuroImageGenerator() {
     if (!prompt.trim() || isGenerating) return;
 
     setIsGenerating(true);
-    setShowSamples(false);
+    const currentPrompt = prompt;
+    setPrompt('');
+    setIsPromptSectionCollapsed(true); // Auto-collapse sample prompts
+    
+    // Cycle to next pair of prompts
+    setCurrentPromptIndex((prevIndex) => (prevIndex + 2) % samplePrompts.length);
 
     // Update generation count
     const newCount = generationCount + 1;
@@ -106,11 +160,11 @@ export default function NeuroImageGenerator() {
     }
 
     // Create enhanced prompt for API but display simple prompt
-    const enhancedPrompt = `${prompt}\n\nSettings:\n- Size: ${selectedSize}\n- Style: ${selectedStyle}\n${enhance ? '- Enhanced: Yes' : ''}`;
+    const enhancedPrompt = `${currentPrompt}\n\nSettings:\n- Size: ${selectedSize}\n- Style: ${selectedStyle}\n${enhance ? '- Enhanced: Yes' : ''}`;
 
     const promptMessage: ChatMessage = {
       type: 'prompt',
-      content: prompt // Only show the original prompt
+      content: currentPrompt // Use stored prompt
     };
     setChatHistory(prev => [...prev, promptMessage]);
 
@@ -123,7 +177,7 @@ export default function NeuroImageGenerator() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prompt: enhancedPrompt, // Send enhanced prompt to API
+          prompt: enhancedPrompt,
           width,
           height,
           num_samples: 1,
@@ -138,7 +192,7 @@ export default function NeuroImageGenerator() {
       if (data.images?.[0]) {
         const responseMessage: ChatMessage = {
           type: 'response',
-          content: prompt, // Only show the original prompt
+          content: currentPrompt, // Use stored prompt
           image: data.images[0],
           metadata: {
             size: selectedSize,
@@ -159,7 +213,6 @@ export default function NeuroImageGenerator() {
       setChatHistory(prev => [...prev, errorMessage]);
     } finally {
       setIsGenerating(false);
-      setPrompt('');
     }
   };
 
@@ -223,7 +276,6 @@ export default function NeuroImageGenerator() {
     if (user) {
       localStorage.removeItem(`image_gen_history_${user.id}`);
       setChatHistory([]);
-      setShowSamples(true);
     }
   };
 
@@ -276,50 +328,57 @@ export default function NeuroImageGenerator() {
                   </div>
                 ) : (
                   <div className="image-card">
-                    <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
-                    <div className="image-overlay">
-                      <div className="image-metadata">
-                        {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
-                        {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
-                        {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
+                    {message.image ? (
+                      <>
+                        <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
+                        <div className="image-overlay">
+                          <div className="image-metadata">
+                            {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
+                            {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
+                            {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
+                          </div>
+                        </div>
+                        <Button
+                          className="download-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(message.image!);
+                          }}
+                          aria-label="Download image"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          className="share-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShare(message.image!);
+                          }}
+                          aria-label="Share image"
+                        >
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="image-loading-placeholder">
+                        <div className="loader"></div>
+                        <div className="text">Creating your masterpiece...</div>
                       </div>
-                    </div>
-                    <Button
-                      className="download-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleDownload(message.image!);
-                      }}
-                      onTouchEnd={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleDownload(message.image!);
-                      }}
-                      aria-label="Download image"
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      className="share-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleShare(message.image!);
-                      }}
-                      onTouchEnd={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleShare(message.image!);
-                      }}
-                      aria-label="Share image"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
+                    )}
                   </div>
                 )}
               </div>
             ))}
+            {isGenerating && (
+              <div className="chat-message response">
+                <div className="image-card">
+                  <div className="image-loading-placeholder">
+                    <div className="loader"></div>
+                    <div className="text">Creating your masterpiece...</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -339,21 +398,34 @@ export default function NeuroImageGenerator() {
       {/* Prompt dialog */}
       <div className="prompt-dialog" style={{ left: 0 }}>
         <div className="prompt-input">
-          {showSamples && (
-            <div className="sample-prompts">
-              {samplePrompts.map((samplePrompt, index) => (
-                <button
-                  key={index}
-                  className="sample-prompt-button"
-                  onClick={() => handleSamplePrompt(samplePrompt)}
-                >
-                  {samplePrompt.display}
-                </button>
-              ))}
+          <div className="sample-prompts-container">
+            <div 
+              className="sample-prompts-header"
+              onClick={() => setIsPromptSectionCollapsed(!isPromptSectionCollapsed)}
+            >
+              <span>Sample Prompts</span>
+              <span className={`caret ${isPromptSectionCollapsed ? 'collapsed' : ''}`}>^</span>
             </div>
-          )}
+            {!isPromptSectionCollapsed && (
+              <div className="sample-prompts">
+                {[0, 1].map((offset) => {
+                  const promptIndex = (currentPromptIndex + offset) % samplePrompts.length;
+                  const prompt = samplePrompts[promptIndex];
+                  return (
+                    <button
+                      key={promptIndex}
+                      className="sample-prompt-button"
+                      onClick={() => handleSamplePrompt(prompt)}
+                    >
+                      {prompt.display}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <textarea
-            placeholder="Enter a detailed description.."
+            placeholder="Enter a detailed description..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {

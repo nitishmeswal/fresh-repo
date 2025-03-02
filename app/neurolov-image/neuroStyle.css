@@ -9,6 +9,8 @@
   --prompt-height: 8rem;
   --bg-darker: #141414;
   --text-secondary: #AAAAAA;
+  --border: rgba(255, 255, 255, 0.1);
+  --background: var(--bg-darker);
 }
 
 /* Chat UI */
@@ -343,6 +345,7 @@
 }
 
 .prompt-input {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -353,9 +356,9 @@
   height: var(--prompt-height);
   padding: 16px;
   background: var(--bg-input);
+  color: var(--text-primary);
   border: none;
   border-radius: 12px;
-  color: var(--text-primary);
   font-size: 16px;
   resize: none;
   outline: none;
@@ -449,12 +452,25 @@
   height: 18px;
 }
 
+.sample-prompts-container {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: var(--background);
+}
+
+.sample-prompts-header {
+  padding: 8px 12px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+
 .sample-prompts {
+  padding: 8px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 12px;
-  padding: 0 8px;
 }
 
 .sample-prompt-button {
@@ -657,4 +673,35 @@
   .welcome-header .greeting {
     font-size: 1rem;
   }
+}
+
+.image-loading-placeholder {
+  width: 100%;
+  height: 512px;
+  background: var(--bg-darker);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.image-loading-placeholder .loader {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--text-secondary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.image-loading-placeholder .text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

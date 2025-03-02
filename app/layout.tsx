@@ -235,11 +235,6 @@ function MainLayout({
                           <Icon className="h-5 w-5" />
                           <span>{item.name}</span>
                         </div>
-                        {item.isNew && (
-                          <span className="bg-[#40A6FF] text-xs px-2 py-1 rounded-full text-white">
-                            New
-                          </span>
-                        )}
                         {item.isLocked && <LockIcon />}
                       </Link>
                     );

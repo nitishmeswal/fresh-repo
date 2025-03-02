@@ -93,40 +93,7 @@ export const signInWithProvider = async (provider: 'google' | 'github') => {
   }
 };
 
-// Email sign in helper
-export const signInWithEmail = async (email: string) => {
-  try {
-    // Check rate limit
-    checkRateLimit();
 
-    const client = getSupabaseClient();
-    const { data, error } = await client.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      // Handle rate limit errors specifically
-      if (error.status === 429) {
-        throw new Error('Too many sign-in attempts. Please wait a few minutes and try again.');
-      }
-      throw error;
-    }
-
-    return { data, error: null };
-  } catch (error: any) {
-    console.error('Email sign in error:', error);
-    return { 
-      data: null, 
-      error: {
-        message: error.message || 'An error occurred during email sign in',
-        status: error.status || 500
-      }
-    };
-  }
-};
 
 // Sign out helper
 export const signOut = async () => {

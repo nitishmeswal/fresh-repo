@@ -57,13 +57,77 @@ export async function POST(request: NextRequest) {
       const data = await modelLabsResponse.json();
       console.log('ModelsLab Response:', data);
 
-      if (modelLabsResponse.ok && data.output) {
+      // If we have processing status with ETA, we need to wait regardless of future_links
+      if (data.status === "processing" && data.eta) {
+        const waitTime = data.eta * 1000; // Convert to milliseconds
+        console.log(`Image processing, ETA: ${data.eta} seconds. Waiting before returning image URLs...`);
+        
+        // Wait for the ETA time
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        
+        // After waiting, if we have future_links, use those
+        if (data.future_links && data.future_links.length > 0) {
+          console.log('Using future_links after waiting for ETA:', data.future_links);
+          return NextResponse.json({ 
+            images: data.future_links,
+            message: 'Image generated successfully', 
+            provider: 'modelslab',
+            generationTime: data.generationTime || 0,
+            metadata: data.meta || {}
+          });
+        }
+        
+        // If we have fetch_result URL, try to get the result
+        if (data.fetch_result) {
+          console.log(`Fetching result from: ${data.fetch_result}`);
+          
+          try {
+            // Fetch the result after waiting
+            const resultResponse = await fetch(data.fetch_result, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            });
+            
+            const resultData = await resultResponse.json();
+            console.log('Result after waiting for ETA:', resultData);
+            
+            if (resultData.status === "success" && resultData.output && resultData.output.length > 0) {
+              return NextResponse.json({ 
+                images: resultData.output,
+                message: 'Image generated successfully', 
+                provider: 'modelslab',
+                generationTime: resultData.generationTime || 0,
+                metadata: resultData.meta || data.meta || {}
+              });
+            }
+          } catch (error) {
+            console.error('Error fetching result:', error);
+            // If fetch fails but we have future_links, use those as fallback
+            if (data.future_links && data.future_links.length > 0) {
+              console.log('Fetch failed, falling back to future_links:', data.future_links);
+              return NextResponse.json({ 
+                images: data.future_links,
+                message: 'Image generated successfully (fallback)', 
+                provider: 'modelslab',
+                generationTime: data.generationTime || 0,
+                metadata: data.meta || {}
+              });
+            }
+          }
+        }
+      }
+
+      // If immediate success with output
+      if (modelLabsResponse.ok && data.output && data.output.length > 0) {
         return NextResponse.json({ 
           images: data.output,
           message: 'Image generated successfully', 
           provider: 'modelslab'
         });
       }
+      
       throw new Error(data.error || data.message || 'ModelsLab generation failed');
     } catch (modelLabsError) {
       console.warn('ModelsLab failed, trying Stability AI:', modelLabsError);
