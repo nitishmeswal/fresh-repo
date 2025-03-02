@@ -138,8 +138,8 @@ export default function AIModelsPage() {
   const { user } = useUser();
   const isDev = user?.email && DEV_EMAILS.includes(user.email);
 
-  console.log('User:', user?.email);
-  console.log('Is Dev:', isDev);
+  // console.log('User:', user?.email);
+  // console.log('Is Dev:', isDev);
 
   const [baseModelLikes, setBaseModelLikes] = useState<Record<string, { count: number, isLiked: boolean }>>({});
   const [incrementedLikes, setIncrementedLikes] = useState<Record<string, number>>({});

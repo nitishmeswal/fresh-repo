@@ -21,7 +21,7 @@ export class GPULabClient {
     if (envApiKey && !this.initialized) {
       this.apiKey = envApiKey;
       this.initialized = true;
-      console.log('[GPULab] Initialized with environment API key');
+      // console.log('[GPULab] Initialized with environment API key');
     }
   }
 
