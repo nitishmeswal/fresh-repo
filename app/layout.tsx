@@ -52,7 +52,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={localInter.variable}>
+   <body className={`${localInter.variable} `}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -121,10 +121,10 @@ function MainLayout({
       <header className="fixed top-0 z-[40] w-full border-b border-gray-800 bg-black/95">
         <div className="px-4 md:px-8 h-20 flex items-center justify-between relative">
           <div className="flex items-center gap-4 md:gap-12">
-            {/* Hamburger Menu */}
+            {/* Hamburger Menu  */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 hover:bg-white/5 rounded-lg"
+              className="p-2 hover:bg-white/5 rounded-lg lg:hidden md:hidden"
             >
               <Menu className="h-6 w-6 text-gray-400" />
             </button>
@@ -133,8 +133,6 @@ function MainLayout({
             <Link href="/" className="flex items-center">
               <img src="/neurolov-logo.svg" alt="Neurolov" className="h-8" />
             </Link>
-
-            
           </div>
 
           <div className="flex items-center space-x-4">
@@ -197,7 +195,44 @@ function MainLayout({
 
       {/* Main Layout */}
       <div className="flex h-screen pt-20">
-        {/* Navigation Menu Dropdown */}
+   
+        <div className="hidden md:block fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass backdrop-blur-xl">
+          <nav className="h-full px-4 py-5">
+            <div className="space-y-1.5">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (item.disabled) {
+                        e.preventDefault();
+                        return;
+                      }
+                    }}
+                    className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-white/10 text-white'
+                        : item.disabled
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </div>
+                    {item.isLocked && <LockIcon />}
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        </div>
+
+        {/* Mobile Sidebar */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -205,7 +240,7 @@ function MainLayout({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -300 }}
               transition={{ duration: 0.3 }}
-              className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass z-50 backdrop-blur-xl"
+              className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass z-50 backdrop-blur-xl md:hidden"
             >
               <nav className="h-full px-4 py-5">
                 <div className="space-y-1.5">
@@ -221,7 +256,7 @@ function MainLayout({
                             e.preventDefault();
                             return;
                           }
-                          setIsSidebarCollapsed(true);
+                          setIsMenuOpen(false);
                         }}
                         className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
                           isActive
@@ -246,7 +281,7 @@ function MainLayout({
         </AnimatePresence>
 
         {/* Main Content */}
-        <main className="flex-1 px-8 py-6">
+        <main className="flex-1  px-4 overflow-x-hidden sm:px-6 md:pl-72 lg:pl-72 py-6">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>
