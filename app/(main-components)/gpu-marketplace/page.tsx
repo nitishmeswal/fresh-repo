@@ -42,6 +42,8 @@ export default function Home() {
   const [showModelBag, setShowModelBag] = useState(false);
   const [showDeployDialog, setShowDeployDialog] = useState(false);
   const [showGpuForm, setShowGpuForm] = useState(false);
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
   const [selectedGpu, setSelectedGpu] = useState<gpuData[number] | null>(null);
   const [isDeploying, setIsDeploying] = useState(false);
   const [containerId, setContainerId] = useState<string | null>(null);
@@ -92,6 +94,11 @@ export default function Home() {
     setShowDeployDialog(true);
   };
 
+  const toggleFilterMenu = () => {
+    setIsFilterMenuOpen(!isFilterMenuOpen);
+  };
+
+
   const handleBuyNow = () => {
     if (!selectedModel) {
       toast({
@@ -130,8 +137,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
-      <nav className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-20">
+    <div className="min-h-screen  bg-gradient-to-b from-black to-gray-900 text-white">
+       <nav className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
@@ -147,8 +154,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Side */}
-            <div className="flex items-center space-x-4">
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-[#0A0A0A] text-white border-none hover:bg-[#1A1A1A]"
+                onClick={toggleFilterMenu}
+              >
+                <ChevronDown className="h-4 w-4" />
+                Filters
+              </Button>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-4">
               {/* Models Bag Button */}
               <Button
                 variant="outline"
@@ -228,8 +247,93 @@ export default function Home() {
         </div>
       </nav>
 
+      {isFilterMenuOpen && (
+        <div className="lg:hidden px-4 py-3 space-y-3 bg-black/80 border-b border-gray-800">
+          <div className="flex justify-between items-center">
+            <Button
+              variant="outline"
+              className={`w-full navbar-models relative flex items-center justify-center gap-2 bg-[#0A0A0A] text-white border border-gray-800 hover:bg-[#1A1A1A] transition-all ${
+                selectedModel ? 'border-blue-500 text-blue-500' : ''
+              }`}
+              onClick={() => setShowModelBag(true)}
+            >
+              <div className="relative">
+                <ShoppingBag className="w-4 h-4" />
+                {selectedModel && (
+                  <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+                )}
+              </div>
+              <span>Models Bag</span>
+              {selectedModel && (
+                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                  1
+                </div>
+              )}
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant={showFiveStar ? "default" : "outline"}
+              className={`flex items-center justify-center gap-2 ${
+                showFiveStar 
+                  ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                  : "bg-[#0A0A0A] text-white border-none hover:bg-[#1A1A1A]"
+              }`}
+              onClick={() => setShowFiveStar(!showFiveStar)}
+            >
+              <Star className="h-4 w-4" />
+              <span className="text-sm">5 & above</span>
+            </Button>
+
+            <Button
+              variant={showAssured ? "default" : "outline"}
+              className={`flex items-center justify-center gap-2 ${
+                showAssured 
+                  ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                  : "bg-[#0A0A0A] text-white border-none hover:bg-[#1A1A1A]"
+              }`}
+              onClick={() => setShowAssured(!showAssured)}
+            >
+              <Shield className="h-4 w-4" />
+              <span className="text-sm">Neurolov</span>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-[#0A0A0A] text-white border-none hover:bg-[#1A1A1A]"
+              onClick={() => setShowGpuForm(true)}
+            >
+              <Search className="h-4 w-4" />
+              <span className="text-sm">GPU Request</span>
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 bg-[#0A0A0A] text-white border-none hover:bg-[#1A1A1A]">
+                  <span className="text-sm">Sort: {sortBy === 'price' ? 'Price' : 'Perf'}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setSortBy('performance')}>
+                  Performance
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy('price')}>
+                  Price
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      )}
+
+
       {/* GPU Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+
         {sortedGpus.map((gpu) => (
           <div key={gpu.id} className="relative rounded-2xl overflow-hidden bg-[#0A0A0A] group hover:cursor-pointer">
             {/* GPU Name */}
@@ -238,7 +342,7 @@ export default function Home() {
             </div>
 
             {/* Card Content */}
-            <div className="w-full aspect-video p-12 flex items-center justify-center">
+            <div className="w-full aspect-video p-12 flex flex-col items-center justify-center">
               {/* GPU Image */}
               <Image
                 src={gpu.image}
@@ -248,28 +352,25 @@ export default function Home() {
                 className="object-contain w-[80%] h-[80%] transition-all duration-500 group-hover:scale-105 group-hover:brightness-75"
                 priority
               />
+              
+              {/* Mobile Join Waitlist Button */}
+              {!isGpuAvailable(gpu.id) && gpu.id.toLowerCase().startsWith('rtx') && (
+                <div className="block md:hidden mt-4">
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                    onClick={handleJoinWaitlist}
+                  >
+                    Join Waitlist
+                  </Button>
+                </div>
+              )}
             </div>
 
-            {/* Price and Button Container */}
-            <div 
-              className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300"
-              onClick={() => handleGpuSelect(gpu)}
-            >
-              <div className="flex items-center justify-between px-4 pb-4">
-                <p className="text-[#40A6FF] font-medium">
-                  From ${gpu.price.usd}/hr
-                </p>
-                <button className={styles.selectButton}>
-                  Buy Now
-                </button>
-              </div>
-            </div>
-
-            {/* Coming Soon Overlay */}
+            {/* Desktop Coming Soon Overlay */}
             {!isGpuAvailable(gpu.id) && (
-              <div className="absolute inset-0 z-20">
+              <div className="hidden md:block absolute inset-0 z-20">
                 <ComingSoonOverlay 
-                  type="hover" 
+                  type="hover"
                   title="GPU Coming Soon"
                   description={gpu.id.toLowerCase().startsWith('rtx') 
                     ? "Join our waitlist to get early access to this high-performance RTX GPU!"
@@ -286,6 +387,21 @@ export default function Home() {
                 />
               </div>
             )}
+
+            {/* Price and Button Container */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300"
+              onClick={() => handleGpuSelect(gpu)}
+            >
+              <div className="flex items-center justify-between px-4 pb-4">
+                <p className="text-[#40A6FF] font-medium">
+                  From ${gpu.price.usd}/hr
+                </p>
+                <button className={styles.selectButton}>
+                  Buy Now
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

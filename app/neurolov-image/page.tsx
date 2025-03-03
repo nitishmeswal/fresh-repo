@@ -13,8 +13,8 @@ import {
   Trash2,
   X,
   Settings,
-  Share2,
-  Copy
+  Copy,
+  Share
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -28,7 +28,6 @@ interface ChatMessage {
   metadata?: {
     size?: string;
     style?: string;
-    enhance?: boolean;
   };
 }
 
@@ -40,16 +39,43 @@ export default function NeuroImageGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedSize, setSelectedSize] = useState('1024x1024');
   const [selectedStyle, setSelectedStyle] = useState('photorealistic');
-  const [enhance, setEnhance] = useState(true);
   const [showSizeDialog, setShowSizeDialog] = useState(false);
   const [showStyleDialog, setShowStyleDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [showProgressDialog, setShowProgressDialog] = useState(false);
-  const [generationProgress, setGenerationProgress] = useState(0);
   const [userName, setUserName] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [activeShareIndex, setActiveShareIndex] = useState<number | null>(null);
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+
+  // Sample prompts with short and detailed versions
+  const samplePrompts = [
+    { short: "Moonlit wolf with glowing eyes", detailed: "A majestic wolf standing on a rocky outcrop under a full moon, its eyes glowing with an ethereal blue light, surrounded by wisps of mist in a dark forest" },
+    { short: "AI assassin dodging lasers", detailed: "A cybernetic assassin in sleek black armor performing an acrobatic dodge through a grid of crimson laser beams, trailing digital distortion effects" },
+    { short: "Futuristic soldier in battle", detailed: "A heavily armored future soldier in adaptive camouflage engaging in combat amidst the ruins of a neon-lit cyberpunk city, energy weapons lighting up the scene" },
+    { short: "Glowing fox in dreamland", detailed: "A mystical fox with softly glowing fur wandering through a surreal dreamscape filled with floating crystals and bioluminescent flowers" },
+    { short: "Crystal dragon in flight", detailed: "A magnificent dragon with scales made of translucent crystal soaring through aurora-filled skies, its wings leaving trails of sparkling light" },
+    { short: "Steampunk city at dusk", detailed: "A sprawling Victorian steampunk city at sunset, brass airships docking at floating platforms, steam and gears visible throughout the architecture" },
+    { short: "Neon samurai meditation", detailed: "A cybernetic samurai meditating in a zen garden, surrounded by holographic cherry blossoms and neon signs reflecting in puddles" },
+    { short: "Ancient tech ruins", detailed: "The ruins of an ancient advanced civilization, with partially activated technology casting ethereal lights through overgrown vegetation" },
+    { short: "Quantum realm explorer", detailed: "A scientist in an iridescent protective suit exploring the quantum realm, surrounded by impossible geometric patterns and probability waves" },
+    { short: "Deep sea bio-mech", detailed: "A bioluminescent mechanical creature in the deep ocean, part organic and part machine, with tentacles of fiber optic cables" },
+    { short: "Desert nomad caravan", detailed: "A caravan of nomads riding biomechanical creatures across vast desert dunes, their tech-enhanced tents glowing under twin moons" },
+    { short: "Forest spirit gathering", detailed: "Ancient forest spirits gathering in a mystical grove, their ethereal forms interacting with floating orbs of natural energy" },
+    { short: "Space station garden", detailed: "A lush hydroponics garden inside a space station, with Earth visible through the dome window and astronauts tending to exotic plants" },
+    { short: "Time wizard's study", detailed: "The cluttered study of a time-traveling wizard, with temporal artifacts, floating chronometers, and windows showing different eras" },
+    { short: "Crystal cave meditation", detailed: "A monk meditating in a cave of giant crystals, energy flowing between the crystals and creating mesmerizing light patterns" },
+    { short: "Nanotech transformation", detailed: "A stream of nanobots transforming a desolate landscape into a thriving ecosystem, the transformation visible in mid-process" }
+  ];
+
+  // Function to get current two prompts
+  const getCurrentPrompts = () => {
+    const firstIndex = currentPromptIndex % samplePrompts.length;
+    const secondIndex = (currentPromptIndex + 1) % samplePrompts.length;
+    return [samplePrompts[firstIndex], samplePrompts[secondIndex]];
+  };
+
+  const handleSamplePromptClick = (detailedPrompt: string) => {
+    setPrompt(detailedPrompt);
+  };
 
   // Hide sensitive API endpoint logging in production.
   React.useEffect(() => {
@@ -156,20 +182,29 @@ export default function NeuroImageGenerator() {
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
     setIsGenerating(true);
-
-    // Show progress dialog and start progress simulation.
-    setShowProgressDialog(true);
-    setGenerationProgress(0);
-    const intervalId = setInterval(() => {
-      setGenerationProgress(prev => (prev < 90 ? prev + 3 : prev));
-    }, 100);
+    setPrompt('');
+    setCurrentPromptIndex(prev => prev + 2); // Cycle to next two prompts
 
     // Create a prompt that includes style-specific hints.
     const finalPrompt = getStyledPrompt(prompt, selectedStyle);
 
-    // Log only the raw prompt in history.
-    const promptMessage: ChatMessage = { type: 'prompt', content: prompt };
-    setChatHistory(prev => [...prev, promptMessage]);
+    // First add the user's prompt message
+    const userPromptMessage: ChatMessage = { 
+      type: 'prompt', 
+      content: prompt 
+    };
+    setChatHistory(prev => [...prev, userPromptMessage]);
+
+    // Then add a placeholder message for loading state
+    const loadingMessage: ChatMessage = { 
+      type: 'response', 
+      content: prompt,
+      metadata: {
+        size: selectedSize,
+        style: selectedStyle
+      }
+    };
+    setChatHistory(prev => [...prev, loadingMessage]);
 
     try {
       const [width, height] = selectedSize.split('x').map(Number);
@@ -183,7 +218,6 @@ export default function NeuroImageGenerator() {
           width,
           height,
           num_samples: 1,
-          enhance_prompt: enhance,
           art_style: selectedStyle,
           negative_prompt: 'blurry, low quality, distorted, deformed',
           controlnet: controlnetConfig
@@ -192,36 +226,30 @@ export default function NeuroImageGenerator() {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to generate image');
+      
       if (data.images?.[0]) {
-        const responseMessage: ChatMessage = {
-          type: 'response',
-          content: prompt,
-          image: data.images[0],
-          metadata: {
-            size: selectedSize,
-            style: selectedStyle,
-            enhance
-          }
-        };
-        setChatHistory(prev => [...prev, responseMessage]);
+        // Update the placeholder message with the generated image
+        setChatHistory(prev => prev.map((msg, i) => 
+          i === prev.length - 1 ? { ...msg, image: data.images[0] } : msg
+        ));
       }
-      setGenerationProgress(100);
     } catch (error) {
       console.error('Generation error:', error);
+      setChatHistory(prev => prev.slice(0, -1)); // Remove the loading message but keep the prompt
       const errorMessage: ChatMessage = {
         type: 'response',
         content: 'Failed to generate image. The system will automatically try alternative services.',
       };
       setChatHistory(prev => [...prev, errorMessage]);
-      setGenerationProgress(100);
     } finally {
-      clearInterval(intervalId);
       setIsGenerating(false);
-      setPrompt('');
-      setTimeout(() => {
-        setShowProgressDialog(false);
-        setGenerationProgress(0);
-      }, 500);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleGenerate();
     }
   };
 
@@ -258,24 +286,6 @@ export default function NeuroImageGenerator() {
     setSelectedImage(null);
   };
 
-  // Sharing functions for individual images.
-  const shareImageOnTwitter = (imageUrl: string) => {
-    const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
-    window.open(url, '_blank');
-    setActiveShareIndex(null);
-  };
-
-  const shareImageOnInstagram = (imageUrl: string) => {
-    window.open('https://www.instagram.com', '_blank');
-    setActiveShareIndex(null);
-  };
-
-  const shareImageOnTelegram = (imageUrl: string) => {
-    const url = `https://t.me/share/url?url=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
-    window.open(url, '_blank');
-    setActiveShareIndex(null);
-  };
-
   const copyImageToClipboard = async (imageUrl: string) => {
     try {
       await navigator.clipboard.writeText(imageUrl);
@@ -283,26 +293,6 @@ export default function NeuroImageGenerator() {
     } catch (err) {
       console.error('Failed to copy!', err);
     }
-    setActiveShareIndex(null);
-  };
-
-  // Global sharing functions.
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const shareOnTwitter = () => {
-    const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
-    window.open(url, '_blank');
-    setShowShareDialog(false);
-  };
-
-  const shareOnInstagram = () => {
-    window.open('https://www.instagram.com', '_blank');
-    setShowShareDialog(false);
-  };
-
-  const shareOnTelegram = () => {
-    const url = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
-    window.open(url, '_blank');
-    setShowShareDialog(false);
   };
 
   const sizeOptions = ['512x512', '1024x1024'];
@@ -310,24 +300,28 @@ export default function NeuroImageGenerator() {
 
   return (
     <>
-      <div className="main-content" style={{ left: 0 }}>
-        <div className="sticky-header compact-header">
-          <button className="back-button" onClick={handleBack}>
-            <ArrowLeft className="icon" />
-            All AI Models
-          </button>
-        </div>
-
+      <div className="main-content bg-[#2c2c2c]" style={{ left: 0 }}>
+        <div className='bg-black/10 relative'>
+          <span className='text-xl sm:text-2xl lg:text-4xl absolute lg:top-8 top-2 left-4 sm:left-10 md:top-4'>Neurolov Image Gen</span>
+          <img src='/ai-models/neuro image.png' className='h-16 lg:h-24 w-full object-cover'/>
+        </div> 
+      
         <div className="image-gen" style={{ maxWidth: '1200px' }}>
-          <div className="header-row">
-            <div className="welcome-header">
-              <h2 className="greeting">
-                Hi there, <span className="name">{userName}</span> what would you like to imagine today?
-              </h2>
-            </div>
+          <div className="sticky-header compact-header mt-2">
+            <button className="back-button" onClick={handleBack}>
+              <div className='rounded-full border border-white p-1'> <ArrowLeft className="icon" /></div>
+              All AI Models
+            </button>
           </div>
 
           <div className="generated-images">
+            <div className="welcome-header my-2 px-4 sm:px-0">
+              <h2 className="greeting text-white font-bold text-2xl sm:text-3xl md:text-4xl">
+                Hi there, <span className="name">{userName}</span> <br /> what would you like to imagine today?
+              </h2>
+              
+            </div>
+
             {chatHistory.map((message, index) => (
               <div key={index} className={`chat-message ${message.type}`}>
                 {message.type === 'prompt' ? (
@@ -336,68 +330,44 @@ export default function NeuroImageGenerator() {
                   </div>
                 ) : (
                   <div className="image-card" style={{ position: 'relative' }}>
-                    <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
-                    <div className="image-overlay">
-                      <div className="image-metadata">
-                        {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
-                        {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
-                        {message.metadata?.enhance && <span className="metadata-tag enhance">Enhanced</span>}
+                    {isGenerating && !message.image ? (
+                      <div className="image-loading-placeholder">
+                        <div className="loading-icon">
+                          <Image className="h-6 w-6 animate-spin" />
+                        </div>
                       </div>
-                    </div>
-                    <button
-                      className="share-icon"
-                      style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: '#fff',
-                        border: 'none',
-                        borderRadius: '50%',
-                        padding: '4px',
-                        cursor: 'pointer',
-                        zIndex: 2,
-                        boxShadow: '0 0 4px rgba(0,0,0,0.2)'
-                      }}
-                      onClick={() => setActiveShareIndex(activeShareIndex === index ? null : index)}
-                      aria-label="Share image"
-                    >
-                      <Share2 className="icon" style={{ color: 'black' }} />
-                    </button>
-                    {activeShareIndex === index && (
-                      <div
-                        className="share-overlay"
-                        style={{
-                          position: 'absolute',
-                          top: '40px',
-                          right: '8px',
-                          background: '#fff',
-                          border: '1px solid #ddd',
-                          borderRadius: '4px',
-                          padding: '4px',
-                          zIndex: 2,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                          color: 'black'
-                        }}
-                      >
-                        <Button variant="ghost" className="option" onClick={() => shareImageOnTwitter(message.image!)}>
-                          Twitter
+                    ) : (
+                      <>
+                        <img src={message.image} alt={message.content} onClick={() => handleImageClick(message.image!)} />
+                        <div className="image-overlay">
+                          <div className="image-metadata">
+                            {message.metadata?.size && <span className="metadata-tag">{message.metadata.size}</span>}
+                            {message.metadata?.style && <span className="metadata-tag">{message.metadata.style}</span>}
+                          </div>
+                        </div>
+                        <Button className="download-button" onClick={() => handleDownload(message.image!)} aria-label="Download image">
+                          <Download className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" className="option" onClick={() => shareImageOnInstagram(message.image!)}>
-                          Instagram
+                        <Button className="share-button" onClick={async () => {
+                          try {
+                            const response = await fetch(message.image!);
+                            const blob = await response.blob();
+                            const file = new File([blob], `neurolov-${Date.now()}.png`, { type: 'image/png' });
+                            if (navigator.share) {
+                              await navigator.share({
+                                files: [file],
+                                title: 'AI Generated Image by Neurolov',
+                                text: '🎨 Hey! Check out this amazing image I created using app.neurolov.ai! They have incredible AI models, agents, GPU marketplace and much more. Create your own AI art at app.neurolov.ai 🚀'
+                              });
+                            }
+                          } catch (error) {
+                            console.error('Error sharing:', error);
+                          }
+                        }} aria-label="Share image">
+                          <Share className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" className="option" onClick={() => shareImageOnTelegram(message.image!)}>
-                          Telegram
-                        </Button>
-                        <Button variant="ghost" className="option" onClick={() => copyImageToClipboard(message.image!)}>
-                          <Copy className="icon" style={{ color: 'black' }} /> Copy URL
-                        </Button>
-                      </div>
+                      </>
                     )}
-                    <Button className="download-button" onClick={() => handleDownload(message.image!)} aria-label="Download image">
-                      <Download className="h-4 w-4" />
-                    </Button>
                   </div>
                 )}
               </div>
@@ -407,75 +377,83 @@ export default function NeuroImageGenerator() {
       </div>
 
       {selectedImage && (
-        <div className="image-modal" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-button" onClick={handleCloseModal}>
-              <X className="icon" />
-            </button>
-            <img src={selectedImage} alt="Generated" />
-          </div>
-        </div>
+        <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Generated Image</DialogTitle>
+            </DialogHeader>
+            <div className="relative">
+              <img src={selectedImage} alt="Generated" className="w-full rounded-lg" />
+              <div className="absolute bottom-4 right-4 flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = selectedImage;
+                    link.download = `neurolov-${Date.now()}.png`;
+                    link.click();
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedImage);
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
 
-      <div className="prompt-dialog" style={{ left: 0 }}>
+      <div className="prompt-dialog bg-[#2c2c2c]" style={{ left: 0 }}>
         <div className="prompt-input">
+          <div className="sample-prompts-row">
+            {getCurrentPrompts().map((samplePrompt, index) => (
+              <button
+                key={index}
+                className="sample-prompt-pill"
+                onClick={() => handleSamplePromptClick(samplePrompt.detailed)}
+              >
+                {samplePrompt.short}
+              </button>
+            ))}
+          </div>
           <textarea
             placeholder="Enter a detailed description of what you want to create..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleGenerate();
-              }
-            }}
+            onKeyDown={handleKeyDown}
           />
-          <div className="feature-buttons">
-            <button className="feature-button" onClick={() => setShowShareDialog(true)}>
-              <Share2 className="icon" />
-              Share
-            </button>
+          <div className="feature-buttons flex-wrap">
             <button className="clear-history" onClick={handleClearHistory}>
               <Trash2 className="icon" />
-              Clear History
+              <span className="hidden sm:inline">Clear History</span>
             </button>
             <button className="feature-button" onClick={() => setShowSettingsDialog(true)}>
               <Settings className="icon" />
-              Settings
+              <span className="hidden sm:inline">Settings</span>
             </button>
             <button className="generate-button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}>
               {isGenerating ? (
                 <>
                   <Loader2 className="icon animate-spin" />
-                  Generating...
+                  <span className="hidden xs:inline">Generating...</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="icon" />
-                  Generate →
+                  <span className="hidden xs:inline">Generate</span> →
                 </>
               )}
             </button>
           </div>
-
-          <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-            <DialogContent className="dialog-content" style={{ backgroundColor: '#fff', color: 'black' }}>
-              <DialogHeader>
-                <DialogTitle>Share Options</DialogTitle>
-              </DialogHeader>
-              <div className="dialog-options share-options">
-                <Button variant="ghost" className="option" onClick={shareOnTwitter}>
-                  Twitter
-                </Button>
-                <Button variant="ghost" className="option" onClick={shareOnInstagram}>
-                  Instagram
-                </Button>
-                <Button variant="ghost" className="option" onClick={shareOnTelegram}>
-                  Telegram
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
 
           <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
             <DialogContent className="dialog-content">
@@ -502,16 +480,6 @@ export default function NeuroImageGenerator() {
                 >
                   <Palette className="icon" />
                   Style
-                </button>
-                <button
-                  className={`feature-button ${enhance ? 'active' : ''}`}
-                  onClick={() => {
-                    setEnhance(!enhance);
-                    setShowSettingsDialog(false);
-                  }}
-                >
-                  <Sparkles className="icon" />
-                  Enhance
                 </button>
               </div>
             </DialogContent>
@@ -565,36 +533,24 @@ export default function NeuroImageGenerator() {
         </div>
       </div>
 
-      <Dialog open={showProgressDialog} onOpenChange={setShowProgressDialog}>
-        <DialogContent className="dialog-content">
-          <DialogHeader>
-            <DialogTitle>Image Generation Progress</DialogTitle>
-          </DialogHeader>
-          <div className="progress-content">
-            <p>Generating image... {generationProgress}% completed</p>
-            <div
-              className="progress-bar"
-              style={{
-                backgroundColor: '#e0e0e0',
-                height: '10px',
-                borderRadius: '5px',
-                overflow: 'hidden',
-                marginTop: '10px'
-              }}
-            >
-              <div
-                className="progress"
-                style={{
-                  width: `${generationProgress}%`,
-                  backgroundColor: '#3b82f6',
-                  height: '100%',
-                  transition: 'width 0.5s ease-in-out'
-                }}
-              ></div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* You might need to add some additional CSS for responsiveness */}
+      <style jsx global>{`
+        @media (max-width: 640px) {
+          .feature-buttons {
+            justify-content: space-between;
+          }
+          
+          .feature-button, .clear-history, .generate-button {
+            padding: 8px 12px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .xs\\:inline {
+            display: inline;
+          }
+        }
+      `}</style>
     </>
   );
 }

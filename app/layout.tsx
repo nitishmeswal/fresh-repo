@@ -25,7 +25,7 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Compute', href: '/gpu-marketplace', icon: Cpu, isNew: true },
+  { name: 'Compute', href: '/gpu-marketplace', icon: Cpu,  },
   { name: 'AI Models', href: '/ai-models', icon: Brain, isNew: true },
   { name: 'AI Agents', href: '#', icon: Sparkles, isLocked: true, disabled: true },
   { name: 'Earnings', href: '#', icon: Coins, isLocked: true, disabled: true },
@@ -175,15 +175,15 @@ function MainLayout({
                 <DropdownMenuTrigger className="p-2 hover:bg-white/5 rounded-lg">
                   <User className="h-6 w-6 text-gray-400" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" sideOffset={8} className="w-48 bg-black/90 backdrop-blur-xl border border-white/10 z-[50]">
+                <DropdownMenuContent align="end" sideOffset={8} className="min-w-fit p-2 bg-black/90 backdrop-blur-xl border border-white/10 z-[50]">
                   <DropdownMenuItem 
-                    className="text-gray-300 hover:text-white focus:text-white cursor-pointer"
+                    className="flex items-center justify-center p-3 text-gray-300 hover:text-white focus:text-white cursor-pointer"
                     onClick={() => router.push('/auth/profile')}
                   >
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    className="text-gray-300 hover:text-white focus:text-white cursor-pointer"
+                    className="flex items-center justify-center p-3 text-gray-300 hover:text-white focus:text-white cursor-pointer"
                     onClick={handleLogout}
                   >
                     Log out
@@ -197,56 +197,117 @@ function MainLayout({
 
       {/* Main Layout */}
       <div className="flex h-screen pt-20">
-        {/* Navigation Menu Dropdown */}
+        {/* Persistent Sidebar for Desktop */}
+        <div className="hidden md:block fixed top-20 bottom-0 w-64 border-r border-gray-800 glass backdrop-blur-xl ">
+          <nav className="h-full px-4 py-5">
+            <div className="space-y-1.5">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (item.disabled) {
+                        e.preventDefault();
+                        return;
+                      }
+                    }}
+                    className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-white/10 text-white'
+                        : item.disabled
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {item.isNew && (
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full text-white bg-[#06115D] animate-pulse">
+                          NEW
+                        </span>
+                      )}
+                      {item.isLocked && <LockIcon />}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        </div>
+
+        {/* Mobile Sidebar */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: -300 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -300 }}
-              transition={{ duration: 0.3 }}
-              className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass z-50 backdrop-blur-xl"
-            >
-              <nav className="h-full px-4 py-5">
-                <div className="space-y-1.5">
-                  {navigation.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={(e) => {
-                          if (item.disabled) {
-                            e.preventDefault();
-                            return;
-                          }
-                          setIsSidebarCollapsed(true);
-                        }}
-                        className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
-                          isActive
-                            ? 'bg-white/10 text-white'
-                            : item.disabled
-                              ? 'text-gray-400 cursor-not-allowed'
-                              : 'text-gray-400 hover:text-white hover:bg-white/5'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <Icon className="h-5 w-5" />
-                          <span>{item.name}</span>
-                        </div>
-                        {item.isLocked && <LockIcon />}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </nav>
-            </motion.div>
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 bg-black/20 z-40 md:hidden"
+                onClick={() => setIsMenuOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, x: -300 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -300 }}
+                transition={{ duration: 0.3 }}
+                className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 border-r border-gray-800 glass z-50 backdrop-blur-xl md:hidden"
+              >
+                <nav className="h-full px-4 py-5">
+                  <div className="space-y-1.5">
+                    {navigation.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={(e) => {
+                            if (item.disabled) {
+                              e.preventDefault();
+                              return;
+                            }
+                            setIsMenuOpen(false);
+                          }}
+                          className={`group flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-lg transition-colors ${
+                            isActive
+                              ? 'bg-white/10 text-white'
+                              : item.disabled
+                                ? 'text-gray-400 cursor-not-allowed'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <Icon className="h-5 w-5" />
+                            <span>{item.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {item.isNew && (
+                              <span className="px-2 py-1 text-xs font-semibold rounded-full text-white bg-[#06115D] animate-pulse">
+                                NEW
+                              </span>
+                            )}
+                            {item.isLocked && <LockIcon />}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </nav>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
 
         {/* Main Content */}
-        <main className="flex-1 px-8 py-6">
+        <main className="flex-1 px-8 py-6 md:ml-64">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>

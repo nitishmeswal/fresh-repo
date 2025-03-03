@@ -4,7 +4,7 @@ export const models: AIModel[] = [
   {
     id: 'neurolov-image',
     name: 'Neuro Image Gen',
-    description: 'Advanced AI image generation. Create stunning visuals with our cutting-edge technology.Experience the future of image generation-Faster,Smarter and Limitless',
+    description: 'Advanced AI image generation. Create stunning visuals with our cutting-edge technology.Faster,Smarter and Limitless',
     tags: ['Image Generation', 'AI', 'Multi-Model'],
     iconBg: 'bg-blue-500/10',
     features: [
@@ -22,7 +22,7 @@ export const models: AIModel[] = [
   },
   {
     id: 'uncensored-chat',
-    name: 'Uncensored Chat',
+    name: 'Freedom-AI',
     description: 'Engage in unrestricted conversations without any censorship or limitations,dive in with your thoughts. Ask anything and get unfiltered responses.',
     features: [
       'Unrestricted conversations',
@@ -30,15 +30,14 @@ export const models: AIModel[] = [
       'Unfiltered responses',
       'Advanced context understanding'
     ],
-    category: 'text',
-    isComingSoon: false,
-    isPopular: true,
-    isFeatured: true,
-    price: 0,
-    gpuRequirements: {
-      minGPU: 'T4',
-      minVRAM: 8,
-      minCores: 1
+    link: '/ai-models/uncensored-chat',
+    likes: 9267,
+    isNew: true,
+    isBeta: true,
+    iconBg: 'bg-purple-500/10',
+    icon: {
+      name: 'chat',
+      color: 'text-purple-500'
     }
   },
   {

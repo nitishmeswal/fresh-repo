@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-
 // Helper function to ensure we always return JSON
 const errorResponse = (message: string, status: number = 500, details: any = null) => {
   return new NextResponse(
@@ -17,7 +16,6 @@ const errorResponse = (message: string, status: number = 500, details: any = nul
   );
 };
 
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -25,21 +23,21 @@ export async function POST(request: NextRequest) {
     // Get API key from environment variable
     const modelslabApiKey = process.env.NEXT_PUBLIC_MODELSLAB_API_KEY;
 
-
     if (!modelslabApiKey) {
       console.error('ModelsLab API key not found in environment variables');
       return errorResponse('ModelsLab API key not configured', 500);
     }
 
-
     if (!body.messages || !Array.isArray(body.messages)) {
       return errorResponse('Messages array is required', 400);
     }
 
-
     const modelLabsBody = {
       key: modelslabApiKey,
-      messages: body.messages,
+      messages: body.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      })),
       max_tokens: body.max_tokens || 1000,
       temperature: 1,
       top_p: 1,
@@ -48,7 +46,6 @@ export async function POST(request: NextRequest) {
       track_id: null,
       webhook: null
     };
-
 
     // Call ModelsLab uncensored chat API
     try {
@@ -61,21 +58,17 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(modelLabsBody)
       });
 
-
       if (!modelLabsResponse.ok) {
         throw new Error(`HTTP error! status: ${modelLabsResponse.status}`);
       }
 
-
       const data = await modelLabsResponse.json();
       console.log('ModelsLab Response:', data);
-
 
       // Handle error response from ModelsLab
       if (data.status === 'error') {
         return errorResponse(data.message || 'ModelsLab API error', 500);
       }
-
 
       if (data.status === 'success' && data.message) {
         // Return both the message and meta information
@@ -92,7 +85,6 @@ export async function POST(request: NextRequest) {
         });
       }
 
-
       throw new Error('Invalid response format from ModelsLab API');
     } catch (error: any) {
       console.error('Chat error:', error);
@@ -103,6 +95,3 @@ export async function POST(request: NextRequest) {
     return errorResponse('Failed to process request', 400);
   }
 }
-
-
-

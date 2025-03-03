@@ -30,7 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-width: 100%;
+  width: 100%;
 }
 
 .chat-message.prompt {
@@ -42,16 +42,17 @@
 }
 
 .message-content {
-  max-width: 80%;
-  padding: 1rem;
-  border-radius: 1rem;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  background: #2c2c2c;
+  color: #ffffff;
 }
 
 /* Prompt message styling */
 .chat-message.prompt .message-content {
-  background-color: var(--accent-blue);
-  color: white;
-  border-radius: 1rem 1rem 0 1rem;
+  background: #06115D;
+  border: 1px solid #333333;
   margin-left: auto;
 }
 
@@ -95,7 +96,7 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   transition: color 0.2s;
   padding: 0.5rem 0;
 }
@@ -116,26 +117,19 @@
   left: 0;
   right: 0;
   bottom: var(--prompt-height);
-  background: var(--bg-dark);
   overflow-y: auto;
-  padding: 32px;
+  padding-bottom: 2rem;
 }
 
 /* Image generation area */
 .image-gen {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px;
+  min-height: 100%;
 }
 
-.image-gen h1 {
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 32px;
-}
-
-/* Generated images */
+/* Generated images container */
 .generated-images {
   display: flex;
   flex-direction: column;
@@ -147,86 +141,49 @@
 
 .image-card {
   position: relative;
-  border-radius: 12px;
+  border: 1px solid #333333;
+  border-radius: 8px;
   overflow: hidden;
   background: #1a1a1a;
   transition: all 0.3s ease;
   width: 100%;
+  margin-bottom: 1rem;
 }
 
-/* Mobile-first approach - full width images */
-.image-card img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-}
-
-/* Desktop optimization - smaller images */
-@media (min-width: 1024px) {
-  .generated-images {
-    padding: 2rem;
-  }
-
-  .image-card {
-    max-width: 512px;
-    margin: 0;
-    width: 100%;
-  }
-
-  .image-card img {
-    width: 100%;
-    height: auto;
-    max-height: 512px;
-    object-fit: contain;
-  }
-
-  /* Chat message layout for desktop */
-  .chat-message {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .chat-message.prompt {
-    flex-direction: row-reverse;
-  }
-
-  .chat-message .message-content {
-    max-width: 400px;
-  }
-
-  .chat-message.response .image-card {
-    margin-right: auto;
-  }
-
-  .chat-message.prompt .message-content {
-    margin-right: 2rem;
-  }
-
-  .chat-message.response .message-content {
-    margin-left: 2rem;
-  }
-}
-
-.image-card .image-overlay {
+.image-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  padding: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  padding: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: flex-end;
+  opacity: 1;
 }
 
-.image-card:hover .image-overlay {
-  opacity: 1;
+.image-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-right: 100px;
+}
+
+.metadata-tag {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+
+.metadata-tag.enhance {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60A5FA;
 }
 
 .download-button,
@@ -236,8 +193,8 @@
   background: white;
   border: none;
   border-radius: 8px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,11 +204,11 @@
 }
 
 .download-button {
-  left: 16px;
+  right: 52px;
 }
 
 .share-button {
-  left: 64px;
+  right: 8px;
 }
 
 .download-button:hover,
@@ -267,28 +224,51 @@
   color: #1a1a1a;
 }
 
-.image-metadata {
-  position: absolute;
-  right: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: auto;
+/* Desktop hover effect */
+@media (min-width: 1024px) {
+  .image-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-card:hover .image-overlay {
+    opacity: 1;
+  }
 }
 
-.metadata-tag {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  backdrop-filter: blur(4px);
-}
+@media (min-width: 1024px) {
+  .generated-images {
+    padding: 2rem;
+  }
 
-.metadata-tag.enhance {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.4);
-  color: #60A5FA;
+  .chat-message {
+    display: grid;
+    grid-template-columns: 512px 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .chat-message.prompt .message-content {
+    grid-column: 2;
+    margin-left: auto;
+    max-width: 400px;
+  }
+
+  .chat-message.response .image-card {
+    grid-column: 1;
+    width: 512px;
+    height: 512px;
+  }
+
+  .image-card img {
+    width: 512px;
+    height: 512px;
+    object-fit: cover;
+  }
+
+  .image-overlay {
+    padding: 1rem;
+  }
 }
 
 /* Image Modal */
@@ -338,7 +318,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-dark);
+  /* background: var(--bg-dark); */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px;
   z-index: 40;
@@ -497,6 +477,53 @@
   transform: translateY(0);
 }
 
+.sample-prompts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.sample-prompt-btn {
+  background: #06115D;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sample-prompt-btn:hover {
+  background: #091c8f;
+  transform: translateY(-1px);
+}
+
+.sample-prompts-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sample-prompt-pill {
+  background: #06115D;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  transition: all 0.2s;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sample-prompt-pill:hover {
+  background: #091c8f;
+  transform: translateY(-1px);
+}
+
 /* Dialog styles */
 .dialog-content {
   background: var(--bg-darker);
@@ -505,7 +532,7 @@
   padding: 24px;
   color: var(--text-primary);
   max-width: 90vw;
-  width: 400px;
+  width: 275px;
 }
 
 .dialog-options {
@@ -539,13 +566,13 @@
 
 /* Welcome header */
 .welcome-header {
-  text-align: center;
-  margin-bottom: 40px;
+  text-align: start;
+
 }
 
 .greeting {
-  font-size: 24px;
-  color: var(--text-secondary);
+  /* font-size: 24px; */
+  /* color: var(--text-secondary); */
   margin-bottom: 8px;
 }
 
@@ -675,33 +702,60 @@
   }
 }
 
+.image-loading-container {
+  width: 100%;
+  height: 512px;
+  background: #2c2c2c;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
 .image-loading-placeholder {
   width: 100%;
   height: 512px;
-  background: var(--bg-darker);
+  background: #1a1a1a;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  border: 1px solid #333333;
 }
 
-.image-loading-placeholder .loader {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--text-secondary);
-  border-top-color: transparent;
+.loading-icon {
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  padding: 20px;
 }
 
-.image-loading-placeholder .text {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.image-loading-placeholder::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, #00ff94, #00b8ff);
+  animation: loading 2s infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
