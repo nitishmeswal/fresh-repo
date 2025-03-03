@@ -51,6 +51,13 @@ export default function NeuroImageGenerator() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [activeShareIndex, setActiveShareIndex] = useState<number | null>(null);
 
+  // Sample prompts that users can click on
+  const samplePrompts = [
+    "In a serene depiction, two transparent chairs crafted from intricately shattered glass are elegantly positioned in shallow, crystal-clear water, their delicate forms reflecting the bright sunlight.",
+    "A majestic snow-capped mountain peak at sunrise, with golden light casting long shadows across an alpine meadow filled with wildflowers in full bloom.",
+    "A futuristic cityscape at night with neon lights reflecting off wet streets, flying vehicles streaming between towering skyscrapers as a full moon rises above."
+  ];
+
   // Hide sensitive API endpoint logging in production.
   React.useEffect(() => {
     if (process.env.NODE_ENV !== 'development') {
@@ -258,6 +265,16 @@ export default function NeuroImageGenerator() {
     setSelectedImage(null);
   };
 
+
+  const handleSamplePromptClick = (promptText: string) => {
+    setPrompt(promptText);
+
+    const textarea = document.querySelector('.prompt-input textarea') as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.focus();
+    }
+  };
+
   // Sharing functions for individual images.
   const shareImageOnTwitter = (imageUrl: string) => {
     const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
@@ -289,7 +306,7 @@ export default function NeuroImageGenerator() {
   // Global sharing functions.
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareOnTwitter = () => {
-    const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
+    const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image generator!")}`;
     window.open(url, '_blank');
     setShowShareDialog(false);
   };
@@ -300,7 +317,7 @@ export default function NeuroImageGenerator() {
   };
 
   const shareOnTelegram = () => {
-    const url = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image!")}`;
+    const url = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent("Check out this cool image generator!")}`;
     window.open(url, '_blank');
     setShowShareDialog(false);
   };
@@ -310,24 +327,47 @@ export default function NeuroImageGenerator() {
 
   return (
     <>
-      <div className="main-content" style={{ left: 0 }}>
-        <div className="sticky-header compact-header">
-          <button className="back-button" onClick={handleBack}>
-            <ArrowLeft className="icon" />
-            All AI Models
-          </button>
-        </div>
-
+      <div className="main-content bg-[#2c2c2c]" style={{ left: 0 }}>
+        <div className='bg-black/10 relative'>
+          <span className='text-xl sm:text-2xl lg:text-4xl absolute lg:top-8 top-2 left-4 sm:left-10 md:top-4'>Neurolov Image Gen</span>
+          <img src='/ai-models/image-model.png' className='h-16 lg:h-auto w-full object-cover'/>
+        </div> 
+      
         <div className="image-gen" style={{ maxWidth: '1200px' }}>
+          <div className="sticky-header compact-header mt-4">
+            <button className="back-button" onClick={handleBack}>
+              <div className='rounded-full border border-white p-1'> <ArrowLeft className="icon" /></div>
+              All AI Models
+            </button>
+          </div>
           <div className="header-row">
-            <div className="welcome-header">
-              <h2 className="greeting">
-                Hi there, <span className="name">{userName}</span> what would you like to imagine today?
+            <div className="welcome-header my-4 px-4 sm:px-0">
+              <h2 className="greeting text-white font-bold text-2xl sm:text-3xl md:text-4xl">
+                Hi there, <span className="name">{userName}</span> <br /> what would you like to imagine today?
               </h2>
+              <h3 className='font-light text-base sm:text-lg md:text-xl text-white w-auto mt-2'>
+                Enter your text prompt here. Be as descriptive as possible! (e.g., 'A photorealistic image of a majestic lion resting on a grassy savanna at sunset, with golden light filtering through the clouds.)
+              </h3>
             </div>
           </div>
 
-          <div className="generated-images">
+          {/* Sample Prompts  */}
+          <div className='flex flex-col sm:flex-row justify-around items-center w-auto gap-4 border-b border-white/25 pb-8 px-4 sm:px-2'>
+            {samplePrompts.map((samplePrompt, index) => (
+              <div 
+                key={index}
+                className='bg-[#4f4f4f] px-4 sm:px-6 py-4 rounded-lg w-full sm:w-1/3 text-xs sm:text-sm hover:scale-[1.02] transition-all duration-150 cursor-pointer flex h-auto md:h-48 lg:h-32'
+                onClick={() => handleSamplePromptClick(samplePrompt)}
+              >
+                <div className="flex-1">{samplePrompt}</div>
+                <div className="flex items-center ml-2 text-blue-300">
+                  <Copy size={16} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="generated-images lg:mt-4 md:mt-6 mt-8">
             {chatHistory.map((message, index) => (
               <div key={index} className={`chat-message ${message.type}`}>
                 {message.type === 'prompt' ? (
@@ -417,7 +457,7 @@ export default function NeuroImageGenerator() {
         </div>
       )}
 
-      <div className="prompt-dialog" style={{ left: 0 }}>
+      <div className="prompt-dialog bg-[#2c2c2c]" style={{ left: 0 }}>
         <div className="prompt-input">
           <textarea
             placeholder="Enter a detailed description of what you want to create..."
@@ -430,29 +470,29 @@ export default function NeuroImageGenerator() {
               }
             }}
           />
-          <div className="feature-buttons">
+          <div className="feature-buttons flex-wrap">
             <button className="feature-button" onClick={() => setShowShareDialog(true)}>
               <Share2 className="icon" />
-              Share
+              <span className="hidden sm:inline">Share</span>
             </button>
             <button className="clear-history" onClick={handleClearHistory}>
               <Trash2 className="icon" />
-              Clear History
+              <span className="hidden sm:inline">Clear History</span>
             </button>
             <button className="feature-button" onClick={() => setShowSettingsDialog(true)}>
               <Settings className="icon" />
-              Settings
+              <span className="hidden sm:inline">Settings</span>
             </button>
             <button className="generate-button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}>
               {isGenerating ? (
                 <>
                   <Loader2 className="icon animate-spin" />
-                  Generating...
+                  <span className="hidden xs:inline">Generating...</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="icon" />
-                  Generate →
+                  <span className="hidden xs:inline">Generate</span> →
                 </>
               )}
             </button>
@@ -595,6 +635,25 @@ export default function NeuroImageGenerator() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* You might need to add some additional CSS for responsiveness */}
+      <style jsx global>{`
+        @media (max-width: 640px) {
+          .feature-buttons {
+            justify-content: space-between;
+          }
+          
+          .feature-button, .clear-history, .generate-button {
+            padding: 8px 12px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .xs\\:inline {
+            display: inline;
+          }
+        }
+      `}</style>
     </>
   );
 }
