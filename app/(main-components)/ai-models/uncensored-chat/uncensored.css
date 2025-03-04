@@ -1,10 +1,8 @@
+/* Mobile-first styles */
 .chat-container {
+  height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px);
-  position: relative;
-  background-color: transparent;
-  color: #e5e5e5;
 }
 
 .chat-header {
@@ -237,16 +235,69 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Input container positioning */
+.input-container {
+  position: sticky;
+  bottom: 0;
+  background-color: inherit;
+  z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
-  .input-container {
-    margin-left: 0; /* Reset sidebar margin for mobile */
-  }
-  
   .chat-header {
     padding: 0.75rem;
   }
-
+  
+  .chat-content {
+    padding: 0.5rem;
+  }
+  
+  .input-container {
+    padding: 0.5rem;
+    margin-left: 0; /* Reset sidebar margin for mobile */
+  }
+  
+  .sample-prompts {
+    padding: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure buttons are easily tappable */
+  button {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Improve touch targets */
+  .nav-link, .button {
+    padding: 0.75rem;
+    margin: 0.25rem;
+  }
+  
+  /* Ensure sufficient spacing between elements */
+  .message {
+    margin: 0.5rem 0;
+  }
+  
+  /* Make text more readable on mobile */
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  /* Ensure proper spacing for the input area */
+  .input-wrapper {
+    padding: 0.5rem;
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  
   .welcome-container {
     padding: 1rem;
     margin-bottom: 1rem;
@@ -283,6 +334,23 @@
     min-width: 36px !important;
     height: 36px !important;
   }
+  
+  .chat-container {
+    padding-bottom: 60px; /* Add extra padding for keyboard */
+  }
+  
+  .input-container {
+    position: sticky;
+    bottom: 0;
+    background-color: #2c2c2c;
+    padding: 0.5rem;
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent content jump when keyboard appears */
+  .chat-content {
+    min-height: calc(100vh - 200px);
+  }
 }
 
 /* Tablet styles */
@@ -296,4 +364,18 @@
   .hexagon-logo {
     margin-top: 1rem;
   }
+}
+
+/* Ensure proper z-index stacking */
+.header {
+  z-index: 50;
+}
+
+.input-container {
+  z-index: 40;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.3s ease;
 }
